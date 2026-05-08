@@ -1984,11 +1984,45 @@ function toggleSpeakingMic() {
 }
 
 function startSpeakingMic() {
+  // Check browser support
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+    showMicError('❌ 您的浏览器不支持语音识别<br><br>请使用 <strong>Chrome</strong> 或 <strong>Edge</strong> 浏览器');
     return;
   }
 
+  // Check HTTPS requirement
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    showMicError('⚠️ 语音识别需要 HTTPS 环境<br><br>请通过 <strong>GitHub Pages</strong> 访问：<br>https://hildaisbest.github.io/reach-higher-2a/');
+    return;
+  }
+
+  // Check microphone permission
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(function(stream) {
+        // Permission granted, stop the stream immediately
+        stream.getTracks().forEach(track => track.stop());
+        // Continue with speech recognition
+        startSpeechRecognition();
+      })
+      .catch(function(err) {
+        showMicError('🎤 麦克风权限被拒绝<br><br>请在浏览器设置中允许使用麦克风');
+      });
+  } else {
+    startSpeechRecognition();
+  }
+}
+
+function showMicError(message) {
+  const transcriptEl = document.getElementById('spTranscriptText');
+  if (transcriptEl) {
+    transcriptEl.innerHTML = message;
+    transcriptEl.style.color = '#F44336';
+    transcriptEl.style.fontStyle = 'normal';
+  }
+}
+
+function startSpeechRecognition() {
   speakingState.isRecording = true;
   speakingState.transcript = '';
 
