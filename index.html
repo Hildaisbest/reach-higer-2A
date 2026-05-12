@@ -1,2470 +1,1125 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reach Higher 2A - English Learning</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  :root {
-    --blue: #1976D2;
-    --blue-light: #E3F2FD;
-    --blue-mid: #42A5F5;
-    --orange: #FF7043;
-    --green: #43A047;
-    --purple: #7B1FA2;
-    --text: #1A237E;
-    --text-sub: #5C6BC0;
-    --bg: #F5F7FF;
-    --white: #FFFFFF;
-    --card-shadow: 0 2px 12px rgba(25,118,210,0.12);
-    --radius: 16px;
-  }
-  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); min-height: 100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reach Higher 2A - English Learning App</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --secondary: #7c3aed;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
 
-  /* ===== TOP NAV ===== */
-  .app-header {
-    background: var(--blue);
-    padding: 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-inner {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 16px 20px 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .header-logo {
-    width: 36px; height: 36px;
-    background: rgba(255,255,255,0.25);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-  }
-  .header-title { color: white; }
-  .header-title h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
-  .header-title p { font-size: 12px; opacity: 0.8; margin-top: 1px; }
-  .header-streak {
-    margin-left: auto;
-    background: rgba(255,255,255,0.2);
-    border-radius: 20px;
-    padding: 4px 12px;
-    color: white;
-    font-size: 13px;
-    font-weight: 600;
-    display: flex; align-items: center; gap: 4px;
-  }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* ===== PAGE ROUTER ===== */
-  .page { display: none; max-width: 480px; margin: 0 auto; padding: 16px 16px 80px; }
-  .page.active { display: block; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
-  /* ===== HOME PAGE ===== */
-  .review-banner {
-    background: linear-gradient(135deg, #FF7043 0%, #FF8A65 100%);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    color: white;
-    margin-bottom: 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .review-banner-icon { font-size: 32px; }
-  .review-banner h3 { font-size: 16px; font-weight: 700; }
-  .review-banner p { font-size: 13px; opacity: 0.9; margin-top: 3px; }
-  .review-banner .badge {
-    margin-left: auto;
-    background: rgba(255,255,255,0.3);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 14px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
 
-  .section-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-  .section-title span { color: var(--text-sub); font-size: 13px; font-weight: 400; }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-  .unit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .unit-card {
-    border-radius: var(--radius);
-    padding: 16px;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-    position: relative;
-    overflow: hidden;
-    border: none;
-    text-align: left;
-    width: 100%;
-  }
-  .unit-card:active { transform: scale(0.96); }
-  .unit-card .unit-icon { font-size: 28px; margin-bottom: 8px; display: block; }
-  .unit-card .unit-num { font-size: 11px; font-weight: 600; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
-  .unit-card .unit-name { font-size: 14px; font-weight: 700; margin-top: 2px; }
-  .unit-card .unit-theme { font-size: 11px; opacity: 0.7; margin-top: 2px; }
-  .unit-card .unit-progress-bar { height: 4px; border-radius: 2px; background: rgba(0,0,0,0.12); margin-top: 12px; }
-  .unit-card .unit-progress-fill { height: 100%; border-radius: 2px; background: rgba(0,0,0,0.3); transition: width 0.5s; }
-  .unit-card .unit-progress-text { font-size: 11px; opacity: 0.65; margin-top: 4px; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .logo h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
+        .logo span { font-size: 0.75rem; opacity: 0.85; font-weight: 400; }
 
-  /* ===== UNIT DETAIL PAGE ===== */
-  .back-btn {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 15px; color: var(--blue); font-weight: 600;
-    background: none; border: none; cursor: pointer;
-    padding: 8px 0; margin-bottom: 16px;
-  }
+        .nav-tabs { display: flex; gap: 4px; background: rgba(255,255,255,0.15); padding: 4px; border-radius: 10px; }
+        .nav-tab { padding: 8px 18px; border: none; background: transparent; color: white; cursor: pointer; border-radius: 8px; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; opacity: 0.8; }
+        .nav-tab:hover { opacity: 1; background: rgba(255,255,255,0.15); }
+        .nav-tab.active { background: white !important; color: var(--primary) !important; opacity: 1; font-weight: 600; }
 
-  .unit-header-card {
-    border-radius: var(--radius);
-    padding: 20px;
-    color: white;
-    margin-bottom: 20px;
-    display: flex; align-items: center; gap: 16px;
-  }
-  .unit-header-icon { font-size: 44px; }
-  .unit-header-info h2 { font-size: 18px; font-weight: 700; }
-  .unit-header-info p { font-size: 13px; opacity: 0.85; margin-top: 3px; }
-  .unit-stats { display: flex; gap: 16px; margin-top: 8px; }
-  .unit-stat { font-size: 12px; opacity: 0.8; }
-  .unit-stat strong { display: block; font-size: 18px; font-weight: 700; opacity: 1; }
+        /* Main Content */
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
 
-  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-  .action-card {
-    background: white;
-    border-radius: var(--radius);
-    padding: 18px 16px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    text-align: center;
-    transition: all 0.15s;
-  }
-  .action-card:active { transform: scale(0.96); }
-  .action-card .action-icon { font-size: 30px; display: block; margin-bottom: 8px; }
-  .action-card .action-title { font-size: 14px; font-weight: 600; color: var(--text); }
-  .action-card .action-desc { font-size: 11px; color: var(--text-sub); margin-top: 3px; }
-  .action-card.green { border-color: #C8E6C9; background: #F1F8E9; }
-  .action-card.blue { border-color: #BBDEFB; background: #E3F2FD; }
-  .action-card.orange { border-color: #FFE0B2; background: #FFF8F0; }
-  .action-card.purple { border-color: #E1BEE7; background: #F3E5F5; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-  /* ===== WORD LEARNING PAGE ===== */
-  .word-progress-bar { height: 6px; background: #E0E0E0; border-radius: 3px; margin-bottom: 20px; }
-  .word-progress-fill { height: 100%; border-radius: 3px; background: var(--blue); transition: width 0.4s; }
-  .word-counter { text-align: center; font-size: 13px; color: var(--text-sub); margin-bottom: 16px; }
+        /* ===== HOME ===== */
+        .home-banner {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .home-banner h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.25rem; }
+        .home-banner p { opacity: 0.9; font-size: 1rem; }
 
-  .word-card-container { perspective: 1000px; margin: 0 auto; max-width: 340px; height: 220px; cursor: pointer; }
-  .word-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
-  .word-card.flipped { transform: rotateY(180deg); }
-  .card-face {
-    position: absolute; width: 100%; height: 100%;
-    backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    border-radius: 20px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 24px;
-  }
-  .card-front { background: white; box-shadow: var(--card-shadow); }
-  .card-back { background: var(--blue); transform: rotateY(180deg); box-shadow: var(--card-shadow); }
+        .unit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
 
-  .card-front .word { font-size: 36px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-  .card-front .phonetic { font-size: 16px; color: var(--text-sub); margin-bottom: 8px; }
-  .card-front .pos { font-size: 13px; background: var(--blue-light); color: var(--blue); padding: 3px 10px; border-radius: 20px; }
-  .card-front .tap-hint { position: absolute; bottom: 16px; font-size: 12px; color: #BDBDBD; }
+        .unit-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+        .unit-card:hover:not(.locked) { transform: translateY(-4px); box-shadow: 0 16px 32px -8px rgba(0,0,0,0.15); }
+        .unit-card.locked { opacity: 0.6; cursor: not-allowed; }
 
-  .card-back .cn-meaning { font-size: 32px; font-weight: 700; color: white; margin-bottom: 12px; text-align: center; }
-  .card-back .en-word { font-size: 16px; color: rgba(255,255,255,0.7); margin-bottom: 10px; }
-  .card-back .sentence { font-size: 13px; color: rgba(255,255,255,0.85); text-align: center; line-height: 1.6; }
+        /* Unit header with gradient */
+        .unit-header {
+            padding: 1.75rem 1.5rem 1.25rem;
+            color: white;
+            position: relative;
+        }
+        .unit-card:nth-child(1) .unit-header { background: linear-gradient(160deg, #7c3aed 0%, #db2777 100%); }
+        .unit-card:nth-child(2) .unit-header { background: linear-gradient(160deg, #0891b2 0%, #059669 100%); }
+        .unit-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2.5px; opacity: 0.85; margin-bottom: 4px; font-weight: 700; }
+        .unit-name { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+        .unit-question { font-size: 0.9rem; opacity: 0.9; font-style: italic; }
 
-  .speak-btn {
-    background: none; border: none; cursor: pointer;
-    font-size: 22px; padding: 8px;
-    transition: transform 0.1s;
-  }
-  .speak-btn:active { transform: scale(1.2); }
+        /* Unit body */
+        .unit-body { padding: 1.25rem 1.5rem 1.5rem; }
 
-  /* ===== MIC / PRONUNCIATION ===== */
-  .mic-btn {
-    background: var(--blue-light); border: 2px solid var(--blue);
-    border-radius: 50%; width: 52px; height: 52px;
-    font-size: 22px; cursor: pointer; display: flex;
-    align-items: center; justify-content: center;
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-  .mic-btn:active { transform: scale(0.92); }
-  .mic-btn.recording {
-    background: #FFEBEE; border-color: #F44336;
-    animation: micPulse 1.2s ease-in-out infinite;
-  }
-  .mic-btn.done-correct { background: #E8F5E9; border-color: #4CAF50; }
-  .mic-btn.done-wrong { background: #FFEBEE; border-color: #F44336; }
-  @keyframes micPulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244,67,54,0.4); }
-    50% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(244,67,54,0); }
-  }
-  .pronun-feedback {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    min-height: 48px; margin-top: 12px;
-    font-size: 16px; font-weight: 600;
-  }
-  .pronun-feedback.correct { color: var(--green); }
-  .pronun-feedback.wrong { color: #F44336; }
-  .pronun-feedback.listening { color: var(--text-sub); font-size: 14px; }
+        /* Progress bar */
+        .unit-progress { margin-bottom: 1rem; }
+        .progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.8rem; color: var(--text-muted); }
+        .progress-track { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 999px; }
+        .unit-card:nth-child(1) .progress-fill { background: linear-gradient(90deg, #7c3aed, #db2777); }
+        .unit-card:nth-child(2) .progress-fill { background: linear-gradient(90deg, #0891b2, #059669); }
 
-  .pronun-score-bar {
-    display: flex; align-items: center; gap: 8px;
-    margin-top: 10px; padding: 10px 16px;
-    background: white; border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  .pronun-score-label { font-size: 13px; color: var(--text-sub); }
-  .pronun-score-dots { display: flex; gap: 5px; }
-  .pronun-dot { width: 14px; height: 14px; border-radius: 50%; background: #E0E0E0; }
-  .pronun-dot.correct { background: var(--green); }
-  .pronun-dot.wrong { background: #F44336; }
-  .pronun-dot.great { background: #FFD700; }
+        /* Lesson circles row */
+        .unit-lessons { display: flex; align-items: center; justify-content: space-between; }
+        .lessons-label { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+        .lesson-dots { display: flex; gap: 6px; align-items: center; }
+        .lesson-dot {
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+            background: var(--bg); color: var(--text-muted);
+            border: 2px solid var(--border);
+            transition: all 0.2s;
+        }
+        .lesson-dot.done { background: #dcfce7; color: var(--success); border-color: var(--success); }
+        .lesson-dot.current { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+        .lesson-dot:hover { transform: scale(1.1); }
 
-  .flash-mic-row {
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    margin-top: 16px;
-  }
-  .flash-mic-wrap {
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-  }
-  .flash-mic-label { font-size: 12px; color: var(--text-sub); }
+        /* Locked overlay */
+        .unit-locked { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 0.82rem; margin-top: 4px; }
 
-  /* ===== READING SENTENCE MIC ===== */
-  .sentence-mic-btn {
-    background: var(--blue-light); border: none;
-    border-radius: 8px; padding: 3px 7px;
-    font-size: 14px; cursor: pointer;
-    vertical-align: middle; margin-left: 4px;
-    display: inline-flex; align-items: center; gap: 3px;
-    transition: all 0.15s; color: var(--blue);
-  }
-  .sentence-mic-btn:hover { background: #BBDEFB; }
-  .sentence-mic-btn.recording { background: #FFCDD2; color: #C62828; animation: micPulse 1s infinite; }
-  .sentence-mic-btn.done { background: #C8E6C9; }
-  .passage-sentences .sent-wrap { margin-bottom: 12px; }
-  .passage-sentences .sent-text { font-size: 16px; color: #333; line-height: 1.9; }
-  .passage-sentences .sent-feedback { font-size: 13px; margin-top: 4px; padding-left: 2px; }
-  .passage-sentences .sent-feedback.correct { color: var(--green); }
-  .passage-sentences .sent-feedback.wrong { color: #F44336; }
-  .passage-sentences .sent-feedback.listening { color: var(--text-sub); }
+        /* Locked card */
+        .unit-card.locked .unit-header { opacity: 0.8; }
 
-  /* ===== QUIZ PRONUNCIATION ===== */
-  .quiz-pronun-section {
-    background: white; border-radius: var(--radius);
-    padding: 20px; margin-top: 16px;
-    box-shadow: var(--card-shadow);
-    text-align: center;
-  }
-  .quiz-pronun-label { font-size: 13px; color: var(--text-sub); margin-bottom: 12px; }
+        /* ===== UNIT DETAIL ===== */
+        .unit-detail-header {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .back-btn {
+            width: 40px; height: 40px; background: rgba(255,255,255,0.2);
+            border: none; border-radius: 10px; color: white; font-size: 1.2rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.3); }
+        .unit-detail-info h2 { font-size: 1.5rem; font-weight: 700; }
+        .unit-detail-info p { opacity: 0.9; font-size: 0.9rem; }
 
-  .nav-row { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 20px; }
-  .nav-btn {
-    background: white; border: 2px solid #E0E0E0;
-    border-radius: 50%; width: 48px; height: 48px;
-    font-size: 20px; cursor: pointer; display: flex;
-    align-items: center; justify-content: center;
-    transition: all 0.15s;
-  }
-  .nav-btn:active { transform: scale(0.92); background: var(--blue-light); }
-  .nav-btn:disabled { opacity: 0.3; cursor: default; }
-  .know-btn {
-    background: var(--green); color: white; border: none;
-    border-radius: 24px; padding: 12px 28px;
-    font-size: 15px; font-weight: 600; cursor: pointer;
-    transition: all 0.15s;
-  }
-  .know-btn:active { transform: scale(0.95); }
-  .skip-btn {
-    background: white; color: var(--text-sub); border: 2px solid #E0E0E0;
-    border-radius: 24px; padding: 12px 20px;
-    font-size: 15px; cursor: pointer;
-  }
+        .lesson-grid-v2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+        .lesson-card-v2 { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; transition: all 0.2s; cursor: pointer; }
+        .lesson-card-v2:hover:not(.locked) { transform: translateY(-2px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1); }
+        .lesson-card-v2.locked { opacity: 0.5; cursor: not-allowed; }
+        .lesson-card-v2.done { border-left: 4px solid var(--success); }
+        .lesson-card-header { display: flex; align-items: center; gap: 12px; padding: 1rem; }
+        .lesson-status-icon { width: 28px; height: 28px; background: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+        .lesson-card-v2.done .lesson-status-icon { background: #dcfce7; color: var(--success); }
+        .lesson-num-circle { width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .lesson-card-v2.done .lesson-num-circle { background: var(--success); }
+        .lesson-card-body { padding: 0 1rem 1rem; }
+        .lesson-card-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+        .lesson-card-pages { font-size: 0.8rem; color: var(--text-muted); }
 
-  /* ===== QUIZ PAGE ===== */
-  .quiz-question { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-  .quiz-sub { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; }
-  .quiz-big-word { font-size: 44px; font-weight: 700; color: var(--blue); margin: 10px 0 20px; text-align: center; }
-  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
-  .quiz-option {
-    background: white; border: 2px solid #E0E0E0;
-    border-radius: 12px; padding: 14px 18px;
-    font-size: 16px; cursor: pointer; text-align: left;
-    transition: all 0.15s;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .quiz-option .opt-letter { width: 28px; height: 28px; border-radius: 8px; background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
-  .quiz-option.correct { background: #E8F5E9; border-color: #4CAF50; }
-  .quiz-option.correct .opt-letter { background: #4CAF50; color: white; }
-  .quiz-option.wrong { background: #FFEBEE; border-color: #F44336; }
-  .quiz-option.wrong .opt-letter { background: #F44336; color: white; }
-  .quiz-option:not([disabled]):active { transform: scale(0.98); background: var(--blue-light); border-color: var(--blue); }
+        /* ===== LESSON VIEW (5 TABS) ===== */
+        .lesson-view-header {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .lesson-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg);
+            padding: 6px;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+        .lesson-tab {
+            padding: 10px 18px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .lesson-tab:hover { background: rgba(37,99,235,0.08); color: var(--primary); }
+        .lesson-tab.active { background: var(--primary); color: white; }
+        .lesson-tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .lesson-tab-content.active { display: block; }
 
-  .quiz-score-card {
-    background: white; border-radius: var(--radius);
-    padding: 30px; text-align: center;
-    box-shadow: var(--card-shadow);
-  }
-  .score-emoji { font-size: 60px; margin-bottom: 16px; display: block; }
-  .score-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-  .score-sub { font-size: 15px; color: var(--text-sub); margin-bottom: 24px; }
-  .score-num { font-size: 52px; font-weight: 700; color: var(--blue); }
-  .score-denom { font-size: 20px; color: var(--text-sub); }
+        /* Lesson panel */
+        .lesson-panel {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .lesson-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .lesson-title { font-size: 1.5rem; font-weight: 700; margin: 1rem 0; }
 
-  /* ===== READING PAGE ===== */
-  .passage-card { background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--card-shadow); line-height: 1.85; }
-  .passage-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #EEE; }
-  .passage-text { font-size: 16px; color: #333; }
-  .passage-text .clickable-word { cursor: pointer; border-bottom: 2px dotted #90CAF9; transition: all 0.15s; display: inline-block; }
-  .passage-text .clickable-word:hover, .passage-text .clickable-word.highlight { background: #E3F2FD; border-radius: 4px; color: var(--blue); }
+        /* Vocab cards */
+        .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.25rem; }
+        .vocab-card {
+            background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+            aspect-ratio: 3/4; perspective: 1000px; cursor: pointer;
+            position: relative; z-index: 1;
+        }
+        .vocab-card.flipped { z-index: 10; }
+        .vocab-inner { width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; position: relative; }
+        .vocab-card.flipped .vocab-inner { transform: rotateY(180deg); }
+        .vocab-front, .vocab-back {
+            width: 100%; height: 100%; backface-visibility: hidden; position: absolute;
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 1.25rem; text-align: center;
+        }
+        .vocab-front { background: linear-gradient(135deg, var(--primary), #60a5fa); color: white; position: relative; }
+        .vocab-back { background: var(--card); color: var(--text); transform: rotateY(180deg); border: 2px solid var(--primary); }
+        .vocab-speak-btn {
+            position: absolute; top: 10px; right: 10px;
+            width: 38px; height: 38px; border-radius: 50%;
+            border: none; background: rgba(255,255,255,0.25);
+            font-size: 1.2rem; cursor: pointer; z-index: 5;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .vocab-speak-btn:hover { background: rgba(255,255,255,0.5); }
+        .vocab-word { font-size: 1.4rem; font-weight: 700; }
+        .vocab-phonetic { font-size: 0.88rem; opacity: 0.85; margin-top: 4px; }
+        .vocab-hint { font-size: 0.75rem; opacity: 0.7; margin-top: 12px; }
+        .vocab-meaning { font-size: 1.1rem; font-weight: 600; color: var(--primary); }
+        .vocab-sentence { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; font-style: italic; }
 
-  .word-popup {
-    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-    background: #1A237E; color: white;
-    border-radius: 14px; padding: 14px 20px;
-    min-width: 200px; max-width: 320px;
-    text-align: center; z-index: 200;
-    animation: popupIn 0.2s ease;
-  }
-  @keyframes popupIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-  .word-popup .pw { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-  .word-popup .pp { font-size: 13px; opacity: 0.7; margin-bottom: 2px; }
-  .word-popup .pm { font-size: 16px; }
+        /* Read Along */
+        .readalong-text {
+            background: #f0f9ff;
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 1.1rem;
+            line-height: 2;
+            margin: 1rem 0;
+        }
+        .readalong-text .highlight {
+            background: #fef08a;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+        .readalong-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 1rem 0;
+        }
+        .play-btn {
+            width: 48px; height: 48px; border-radius: 50%; border: none;
+            background: var(--primary); color: white; font-size: 1.2rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .play-btn:hover { background: #1d4ed8; }
 
-  /* ===== REVIEW PAGE ===== */
-  .review-section-title { font-size: 14px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin: 16px 0 10px; }
-  .review-word-list { display: flex; flex-direction: column; gap: 8px; }
-  .review-word-item {
-    background: white; border-radius: 12px;
-    padding: 12px 16px; display: flex; align-items: center; gap: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    cursor: pointer;
-  }
-  .review-word-item .rw-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .rw-dot.due { background: var(--orange); }
-  .rw-dot.learned { background: var(--blue-mid); }
-  .rw-dot.mastered { background: var(--green); }
-  .review-word-item .rw-word { font-size: 16px; font-weight: 600; color: var(--text); }
-  .review-word-item .rw-cn { font-size: 13px; color: var(--text-sub); }
-  .review-word-item .rw-tag { margin-left: auto; font-size: 11px; padding: 2px 8px; border-radius: 8px; font-weight: 600; }
-  .rw-tag.due { background: #FBE9E7; color: var(--orange); }
-  .rw-tag.learned { background: #E3F2FD; color: var(--blue); }
-  .rw-tag.mastered { background: #E8F5E9; color: var(--green); }
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-sub); }
-  .empty-state .e-icon { font-size: 48px; display: block; margin-bottom: 12px; }
+        /* Practice */
+        .practice-question {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .practice-q-num {
+            display: inline-block; width: 30px; height: 30px;
+            background: var(--primary); color: white; border-radius: 50%;
+            text-align: center; line-height: 30px; font-weight: 700; font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        .practice-q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
+        .practice-options { display: flex; flex-direction: column; gap: 8px; }
+        .practice-option {
+            padding: 12px 16px; border: 2px solid var(--border); border-radius: 8px;
+            cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px;
+        }
+        .practice-option:hover { border-color: var(--primary); background: var(--primary-light); }
+        .practice-option.selected { border-color: var(--primary); background: var(--primary-light); }
+        .practice-option.correct { border-color: var(--success); background: #dcfce7; }
+        .practice-option.wrong { border-color: var(--danger); background: #fee2e2; }
 
-  /* ===== BOTTOM NAV ===== */
-  .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: white; border-top: 1px solid #EEE;
-    display: flex; justify-content: space-around;
-    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
-    z-index: 100;
-  }
-  .bottom-nav-item {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-    background: none; border: none; cursor: pointer; padding: 4px 0;
-    color: #BDBDBD; transition: color 0.15s;
-  }
-  .bottom-nav-item.active { color: var(--blue); }
-  .bottom-nav-item .nav-icon { font-size: 22px; }
-  .bottom-nav-item .nav-label { font-size: 11px; font-weight: 500; }
+        /* Quiz */
+        .quiz-question { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.25rem; }
+        .q-num { display: inline-block; width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; text-align: center; line-height: 30px; font-weight: 700; font-size: 0.85rem; margin-bottom: 10px; }
+        .q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
+        .q-options { display: flex; flex-direction: column; gap: 8px; }
+        .q-option { padding: 12px 16px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+        .q-option:hover { border-color: var(--primary); background: var(--primary-light); }
+        .q-option.selected { border-color: var(--primary); background: var(--primary-light); }
+        .q-option.correct { border-color: var(--success); background: #dcfce7; }
+        .q-option.wrong { border-color: var(--danger); background: #fee2e2; }
+        .option-letter { width: 24px; height: 24px; background: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+        .quiz-result { text-align: center; padding: 2rem; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); }
+        .result-score { font-size: 3rem; font-weight: 800; color: var(--primary); }
+        .result-msg { font-size: 1.1rem; color: var(--text-muted); margin-top: 8px; }
 
-  /* ===== UTILS ===== */
-  .btn-primary {
-    background: var(--blue); color: white; border: none;
-    border-radius: 24px; padding: 14px; width: 100%;
-    font-size: 16px; font-weight: 600; cursor: pointer;
-    transition: all 0.15s; margin-top: 16px;
-  }
-  .btn-primary:active { transform: scale(0.97); }
-  .fade-in { animation: fadeIn 0.3s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        /* Buttons */
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: white; }
+        .btn-primary { background: var(--primary); }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #15803d; }
 
-  .confetti { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 999; }
+        /* Vocab section */
+        .vocab-section .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.25rem; }
 
-  /* ===== WRITING FRAME ===== */
-  .wf-card {
-    background: white; border-radius: var(--radius);
-    padding: 20px; box-shadow: var(--card-shadow);
-    margin-bottom: 16px;
-  }
-  .wf-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-  .wf-topic {
-    background: #FFF8E1; border-left: 4px solid #FFB300;
-    padding: 12px 16px; border-radius: 8px;
-    font-size: 14px; color: #795548; margin-bottom: 16px;
-    line-height: 1.6;
-  }
-  .wf-topic-label { font-size: 12px; font-weight: 600; color: #FF8F00; text-transform: uppercase; margin-bottom: 6px; }
-  .wf-frame-row {
-    display: flex; flex-wrap: wrap; align-items: baseline;
-    margin-bottom: 8px; font-size: 16px; line-height: 2;
-  }
-  .wf-frame-text { color: #333; }
-  .wf-placeholder-input {
-    border: none; border-bottom: 2px dashed var(--blue);
-    background: transparent; font-size: 16px;
-    color: var(--blue); font-weight: 600;
-    min-width: 80px; max-width: 180px;
-    padding: 2px 4px; outline: none;
-  }
-  .wf-placeholder-input:focus { border-bottom-color: var(--orange); }
-  .wf-placeholder-input::placeholder { color: #90CAF9; font-weight: 400; }
-  .wf-word-bank {
-    background: #E8EAF6; border-radius: 12px;
-    padding: 14px 16px; margin-top: 16px;
-  }
-  .wf-word-bank-label { font-size: 12px; font-weight: 600; color: var(--purple); margin-bottom: 10px; text-transform: uppercase; }
-  .wf-word-chip {
-    display: inline-block; background: white;
-    border: 1px solid #C5CAE9; border-radius: 20px;
-    padding: 4px 12px; font-size: 13px; color: var(--purple);
-    margin: 4px 4px 4px 0; cursor: pointer;
-    transition: all 0.15s;
-  }
-  .wf-word-chip:hover { background: var(--purple); color: white; border-color: var(--purple); }
-  .wf-write-area {
-    margin-top: 16px;
-  }
-  .wf-write-label { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-bottom: 8px; }
-  .wf-textarea {
-    width: 100%; min-height: 120px; border: 2px solid #E0E0E0;
-    border-radius: 12px; padding: 14px; font-size: 15px;
-    font-family: inherit; resize: vertical; line-height: 1.7;
-    color: #333;
-  }
-  .wf-textarea:focus { border-color: var(--blue); outline: none; }
-  .wf-textarea::placeholder { color: #BDBDBD; }
-  .wf-btn-row { display: flex; gap: 10px; margin-top: 14px; }
-  .wf-btn {
-    flex: 1; padding: 12px; border-radius: 24px;
-    font-size: 14px; font-weight: 600; cursor: pointer;
-    transition: all 0.15s; border: none;
-  }
-  .wf-btn:active { transform: scale(0.97); }
-  .wf-btn-primary { background: var(--blue); color: white; }
-  .wf-btn-secondary { background: white; color: var(--text-sub); border: 2px solid #E0E0E0; }
-  .wf-btn-green { background: var(--green); color: white; }
-  .wf-saved-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: #E8F5E9; color: var(--green);
-    padding: 6px 14px; border-radius: 20px;
-    font-size: 13px; font-weight: 600;
-    margin-top: 10px;
-  }
-  .wf-char-count { font-size: 12px; color: var(--text-sub); text-align: right; margin-top: 6px; }
+        /* Phonics */
+        .phonics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+        .phonics-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; cursor: pointer; transition: all 0.2s; }
+        .phonics-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1); }
+        .phonics-letter { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem; }
+        .phonics-sound { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+        .phonics-examples { display: flex; flex-wrap: wrap; gap: 6px; }
+        .phonics-word { padding: 4px 10px; background: var(--primary-light); color: var(--primary); border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
 
-  /* ===== SPEAKING PRACTICE ===== */
-  .sp-intro-card {
-    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-    border-radius: var(--radius);
-    padding: 24px 20px;
-    color: white;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  .sp-intro-icon { font-size: 48px; margin-bottom: 12px; }
-  .sp-intro-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-  .sp-intro-text { font-size: 14px; opacity: 0.9; line-height: 1.6; }
-  .sp-question-card {
-    background: white; border-radius: var(--radius);
-    padding: 24px 20px; box-shadow: var(--card-shadow);
-    margin-bottom: 16px;
-  }
-  .sp-question-num {
-    font-size: 12px; color: var(--text-sub); margin-bottom: 8px;
-    text-transform: uppercase; letter-spacing: 1px;
-  }
-  .sp-question-text { font-size: 18px; font-weight: 600; color: var(--text); line-height: 1.5; margin-bottom: 12px; }
-  .sp-hint {
-    background: var(--blue-light); border-radius: 10px;
-    padding: 12px 16px; margin-bottom: 16px;
-    font-size: 13px; color: var(--blue);
-    display: flex; align-items: flex-start; gap: 8px;
-  }
-  .sp-hint-icon { flex-shrink: 0; }
-  .sp-mic-area {
-    text-align: center; padding: 20px 0;
-  }
-  .sp-mic-btn {
-    width: 80px; height: 80px; border-radius: 50%;
-    background: var(--blue); border: none;
-    font-size: 32px; cursor: pointer;
-    box-shadow: 0 4px 20px rgba(25,118,210,0.4);
-    transition: all 0.2s;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .sp-mic-btn:hover { transform: scale(1.05); box-shadow: 0 6px 25px rgba(25,118,210,0.5); }
-  .sp-mic-btn.recording {
-    background: var(--orange);
-    animation: pulse 1s infinite;
-    box-shadow: 0 4px 20px rgba(255,112,67,0.5);
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08); }
-  }
-  .sp-mic-label { font-size: 13px; color: var(--text-sub); margin-top: 10px; }
-  .sp-transcript {
-    background: #F5F5F5; border-radius: 12px;
-    padding: 14px 16px; margin: 16px 0;
-    font-size: 15px; color: #333;
-    min-height: 50px;
-    line-height: 1.6;
-  }
-  .sp-transcript-label { font-size: 12px; color: var(--text-sub); margin-bottom: 6px; text-transform: uppercase; }
-  .sp-feedback {
-    border-radius: 12px; padding: 16px;
-    margin: 12px 0;
-  }
-  .sp-feedback-correct { background: #E8F5E9; border: 2px solid var(--green); }
-  .sp-feedback-good { background: #FFF3E0; border: 2px solid var(--orange); }
-  .sp-feedback-try { background: #E3F2FD; border: 2px solid var(--blue); }
-  .sp-feedback-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .sp-feedback-text { font-size: 14px; line-height: 1.6; }
-  .sp-progress-bar {
-    height: 8px; background: #E0E0E0; border-radius: 4px;
-    margin-bottom: 20px; overflow: hidden;
-  }
-  .sp-progress-fill {
-    height: 100%; background: linear-gradient(90deg, var(--blue), var(--purple));
-    border-radius: 4px; transition: width 0.3s ease;
-  }
-  .sp-nav-row { display: flex; gap: 12px; margin-top: 16px; }
-  .sp-nav-btn {
-    flex: 1; padding: 14px; border-radius: 24px;
-    font-size: 15px; font-weight: 600; cursor: pointer;
-    border: none; transition: all 0.15s;
-  }
-  .sp-nav-btn:active { transform: scale(0.97); }
-  .sp-nav-btn-skip { background: #E0E0E0; color: #666; }
-  .sp-nav-btn-next { background: var(--green); color: white; }
-  .sp-nav-btn-speak { background: var(--blue); color: white; }
-  .sp-complete-card {
-    background: linear-gradient(135deg, #11998E 0%, #38EF7D 100%);
-    border-radius: var(--radius); padding: 32px 20px;
-    color: white; text-align: center;
-  }
-  .sp-complete-icon { font-size: 64px; margin-bottom: 16px; }
-  .sp-complete-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-  .sp-complete-text { font-size: 15px; opacity: 0.9; line-height: 1.6; }
-  .sp-score-badge {
-    display: inline-block; background: rgba(255,255,255,0.2);
-    border-radius: 20px; padding: 8px 20px;
-    font-size: 16px; font-weight: 600;
-    margin-top: 16px;
-  }
+        /* Speaking */
+        .speaking-section { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem; margin-bottom: 1.5rem; }
+        .speaking-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; }
+        .practice-item { background: var(--bg); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+        .practice-target { display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem; }
+        .voice-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--primary); color: white; cursor: pointer; font-size: 1rem; }
+        .practice-target-text { font-size: 1rem; font-weight: 500; }
+        .practice-controls { display: flex; align-items: center; gap: 12px; }
+        .record-btn { padding: 8px 16px; border-radius: 20px; border: none; font-weight: 600; cursor: pointer; }
+        .record-btn-idle { background: var(--bg); color: var(--text); }
+        .practice-status { font-size: 0.85rem; color: var(--text-muted); }
 
-  /* ===== GRAMMAR PRACTICE ===== */
-  .gp-rule-card {
-    background: white; border-radius: var(--radius);
-    padding: 20px; box-shadow: var(--card-shadow);
-    margin-bottom: 16px;
-  }
-  .gp-rule-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
-  .gp-rule-text { font-size: 14px; color: #333; line-height: 1.7; margin-bottom: 14px; }
-  .gp-examples {
-    background: #FFF8E1; border-radius: 12px;
-    padding: 14px 16px; margin-bottom: 16px;
-  }
-  .gp-example { font-size: 13px; color: #795548; line-height: 1.8; padding: 4px 0; }
-  .gp-example::before { content: "✓ "; color: #FF8F00; }
-  .gp-exercise {
-    background: white; border-radius: 12px;
-    padding: 16px; margin-bottom: 12px;
-    border: 2px solid #E0E0E0;
-  }
-  .gp-exercise-num { font-size: 12px; color: var(--blue); font-weight: 600; margin-bottom: 8px; }
-  .gp-exercise-q { font-size: 15px; color: var(--text); margin-bottom: 12px; line-height: 1.5; }
-  .gp-input {
-    border: 2px solid #E0E0E0; border-radius: 10px;
-    padding: 10px 14px; font-size: 15px;
-    width: 100%; max-width: 200px;
-  }
-  .gp-input:focus { border-color: var(--blue); outline: none; }
-  .gp-input.correct { border-color: var(--green); background: #E8F5E9; }
-  .gp-input.wrong { border-color: #E53935; background: #FFEBEE; }
-  .gp-feedback-icon { font-size: 18px; margin-left: 8px; }
-  .gp-check-btn {
-    background: var(--blue); color: white;
-    border: none; border-radius: 20px;
-    padding: 8px 20px; font-size: 13px;
-    font-weight: 600; cursor: pointer;
-    margin-left: 12px;
-  }
-  .gp-check-btn:hover { background: #1565C0; }
+        /* Footer */
+        .app-footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.85rem; }
 
-  /* ===== PHONICS PRACTICE ===== */
-  .ph-card {
-    background: white; border-radius: var(--radius);
-    padding: 20px; box-shadow: var(--card-shadow);
-    margin-bottom: 16px;
-  }
-  .ph-patterns {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    margin: 12px 0;
-  }
-  .ph-pattern-chip {
-    background: #E3F2FD; color: var(--blue);
-    padding: 6px 14px; border-radius: 20px;
-    font-size: 13px; font-weight: 600;
-  }
-  .ph-words-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
-  .ph-word-card {
-    background: var(--bg); border-radius: 12px;
-    padding: 14px; text-align: center;
-    cursor: pointer; transition: all 0.15s;
-    border: 2px solid transparent;
-  }
-  .ph-word-card:hover { border-color: var(--blue); transform: translateY(-2px); }
-  .ph-word-card:active { transform: scale(0.98); }
-  .ph-word { font-size: 16px; font-weight: 700; color: var(--text); }
-  .ph-sound { font-size: 12px; color: var(--text-sub); margin: 6px 0; }
-  .ph-tip { font-size: 11px; color: var(--blue); }
-
-  /* ===== EXTRA READING ===== */
-  .er-meta {
-    display: flex; gap: 16px; margin-bottom: 16px;
-    font-size: 13px; color: var(--text-sub);
-  }
-  .er-meta-item { display: flex; align-items: center; gap: 6px; }
-  .er-passage {
-    background: white; border-radius: var(--radius);
-    padding: 20px; box-shadow: var(--card-shadow);
-    font-size: 15px; line-height: 1.9; color: #333;
-    margin-bottom: 20px;
-  }
-  .er-passage p { margin-bottom: 14px; }
-  .er-questions { }
-  .er-q-card {
-    background: white; border-radius: 12px;
-    padding: 16px; margin-bottom: 12px;
-    border-left: 4px solid var(--purple);
-  }
-  .er-q-type { font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 6px; }
-  .er-q-text { font-size: 15px; color: var(--text); line-height: 1.5; }
-  .er-q-hint { font-size: 12px; color: var(--text-sub); margin-top: 8px; font-style: italic; }
-</style>
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; gap: 1rem; }
+            .nav-tabs { width: 100%; overflow-x: auto; }
+            .nav-tab { white-space: nowrap; padding: 8px 12px; font-size: 0.8rem; }
+            .unit-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .lesson-dots { gap: 4px; }
+            .lesson-dot { width: 26px; height: 26px; font-size: 0.7rem; }
+        }
+    </style>
 </head>
 <body>
-
-<div class="app-header">
-  <div class="header-inner">
-    <div class="header-logo">📚</div>
-    <div class="header-title">
-      <h1>Reach Higher 2A</h1>
-      <p>English Learning · Elementary</p>
-    </div>
-    <div class="header-streak" id="streakBadge">🔥 <span id="streakNum">0</span> Days</div>
-  </div>
-</div>
-
-<!-- ===== HOME PAGE ===== -->
-<div class="page active" id="page-home">
-  <div id="reviewBanner" class="review-banner" onclick="goToReview()" style="display:none">
-    <div class="review-banner-icon">🔁</div>
-    <div>
-      <h3>Words to review!</h3>
-      <p>Review now to strengthen memory</p>
-    </div>
-    <div class="badge" id="reviewCount">0 Words</div>
-  </div>
-
-  <div class="section-title">Select a Unit <span>Unit 1 ~ 6</span></div>
-  <div class="unit-grid" id="unitGrid"></div>
-</div>
-
-<!-- ===== UNIT PAGE ===== -->
-<div class="page" id="page-unit">
-  <button class="back-btn" onclick="showPage('home')">‹ Back</button>
-  <div class="unit-header-card" id="unitHeaderCard">
-    <div class="unit-header-icon" id="unitHeaderIcon"></div>
-    <div class="unit-header-info">
-      <h2 id="unitHeaderTitle"></h2>
-      <p id="unitHeaderTheme"></p>
-      <div class="unit-stats">
-        <div class="unit-stat"><strong id="unitStatTotal">0</strong> Words</div>
-        <div class="unit-stat"><strong id="unitStatLearned">0</strong> Learned</div>
-        <div class="unit-stat"><strong id="unitStatMastered">0</strong> Mastered</div>
-      </div>
-    </div>
-  </div>
-  <div class="action-grid">
-    <div class="action-card green" onclick="startLearning('flash')">
-      <span class="action-icon">🃏</span>
-      <div class="action-title">Word Cards</div>
-      <div class="action-desc">Flip to learn new words</div>
-    </div>
-    <div class="action-card orange" onclick="startLearning('quiz')">
-      <span class="action-icon">✏️</span>
-      <div class="action-title">Quiz</div>
-      <div class="action-desc">Multiple choice + Spelling</div>
-    </div>
-    <div class="action-card blue" onclick="startLearning('read')">
-      <span class="action-icon">📖</span>
-      <div class="action-title">Reading</div>
-      <div class="action-desc">Tap words to see meaning</div>
-    </div>
-    <div class="action-card purple" onclick="startLearning('review')">
-      <span class="action-icon">🔁</span>
-      <div class="action-title">Review</div>
-      <div class="action-desc">Spaced repetition review</div>
-    </div>
-  </div>
-  <div class="action-card green" onclick="startLearning('write')" style="border-radius: var(--radius); padding: 18px 16px; cursor: pointer; border: 2px solid #C8E6C9; background: #F1F8E9; text-align: center; transition: all 0.15s; display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
-    <span style="font-size: 30px;">✍️</span>
-    <div style="text-align: left;">
-      <div style="font-size: 14px; font-weight: 600; color: var(--text);">Writing Frame</div>
-      <div style="font-size: 11px; color: var(--text-sub); margin-top: 3px;">Guided writing practice</div>
-    </div>
-  </div>
-  <div class="action-card purple" onclick="startLearning('speak')" style="border-radius: var(--radius); padding: 18px 16px; cursor: pointer; border: 2px solid #CE93D8; background: #F3E5F5; text-align: center; transition: all 0.15s; display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
-    <span style="font-size: 30px;">🎤</span>
-    <div style="text-align: left;">
-      <div style="font-size: 14px; font-weight: 600; color: var(--text);">Speaking Practice</div>
-      <div style="font-size: 11px; color: var(--text-sub); margin-top: 3px;">AI conversation practice</div>
-    </div>
-  </div>
-  <div class="action-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-    <div class="action-card orange" onclick="startLearning('grammar')">
-      <span class="action-icon">📝</span>
-      <div class="action-title">Grammar</div>
-      <div class="action-desc">Grammar exercises</div>
-    </div>
-    <div class="action-card blue" onclick="startLearning('phonics')">
-      <span class="action-icon">🔤</span>
-      <div class="action-title">Phonics</div>
-      <div class="action-desc">Phonics practice</div>
-    </div>
-    <div class="action-card green" onclick="startLearning('extrareading')" style="grid-column: span 2;">
-      <span class="action-icon">📚</span>
-      <div class="action-title">Extra Reading</div>
-      <div class="action-desc">Supplementary passage with comprehension questions</div>
-    </div>
-  </div>
-</div>
-
-  <!-- ===== FLASH CARD PAGE ===== -->
-<div class="page" id="page-flash">
-  <button class="back-btn" onclick="stopFlashMic(); showPage('unit')">‹ Back</button>
-  <div class="word-progress-bar"><div class="word-progress-fill" id="flashProgressFill"></div></div>
-  <div class="word-counter" id="flashCounter"></div>
-
-  <div class="word-card-container" id="wordCardContainer" onclick="flipCard()">
-    <div class="word-card" id="wordCard">
-      <div class="card-face card-front">
-        <div class="word" id="cfWord"></div>
-        <div class="phonetic" id="cfPhonetic"></div>
-        <div class="pos" id="cfPos"></div>
-        <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:6px">
-          <button class="speak-btn" onclick="event.stopPropagation(); speakWord()" title="Listen">🔊</button>
-          <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
-            <button class="mic-btn" id="flashMicBtn" onclick="event.stopPropagation(); toggleFlashMic()">🎤</button>
-            <div class="flash-mic-label" id="flashMicLabel" style="font-size:11px; color:var(--text-sub)">Read</div>
-          </div>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🎓</div>
+                <div>
+                    <h1>Reach Higher 2A</h1>
+                    <span>National Geographic Learning</span>
+                </div>
+            </div>
+            <nav class="nav-tabs" id="navTabs">
+                <button class="nav-tab active" onclick="switchTab('home')">Home</button>
+                <button class="nav-tab" onclick="switchTab('vocab')">Vocab</button>
+                <button class="nav-tab" onclick="switchTab('phonics')">Phonics</button>
+                <button class="nav-tab" onclick="switchTab('quiz')">Quiz</button>
+                <button class="nav-tab" onclick="switchTab('speaking')">Speaking</button>
+            </nav>
         </div>
-        <div class="pronun-feedback" id="flashPronunFeedback"></div>
-        <div class="tap-hint" style="margin-top:6px">Tap to see meaning</div>
-      </div>
-      <div class="card-face card-back">
-        <div class="en-word" id="cbWord"></div>
-        <div class="cn-meaning" id="cbMeaning"></div>
-        <div class="sentence" id="cbSentence"></div>
-        <div style="margin-top:8px">
-          <button class="speak-btn" onclick="event.stopPropagation(); speakWord()" title="Listen again">🔊</button>
-        </div>
-        <div class="pronun-feedback" id="flashPronunFeedback2"></div>
-      </div>
-    </div>
-  </div>
+    </header>
 
-  <div class="nav-row">
-    <button class="nav-btn" id="prevBtn" onclick="prevWord()">‹</button>
-    <button class="skip-btn" onclick="markAndNext(false)">Study 😅</button>
-    <button class="know-btn" onclick="markAndNext(true)">Know It ✓</button>
-    <button class="nav-btn" id="nextBtn" onclick="nextWord()">›</button>
-  </div>
-</div>
+    <main class="main-content">
 
-<!-- ===== QUIZ PAGE ===== -->
-<div class="page" id="page-quiz">
-  <button class="back-btn" onclick="showPage('unit')">‹ Back</button>
-  <div class="word-progress-bar"><div class="word-progress-fill" id="quizProgressFill"></div></div>
-  <div id="quizContent"></div>
-</div>
+        <!-- ===== HOME ===== -->
+        <section id="home" class="section active">
+            <div class="home-banner">
+                <h2>Welcome to English Learning!</h2>
+                <p>Master your textbook with interactive lessons</p>
+            </div>
+            <div class="unit-grid">
+                <!-- Unit 1 -->
+                <div class="unit-card" onclick="switchTab('unit1-detail')">
+                    <div class="unit-header">
+                        <div class="unit-label">Unit 1</div>
+                        <div class="unit-name">Hello, Neighbor!</div>
+                        <div class="unit-question">What is a community?</div>
+                    </div>
+                    <div class="unit-body">
+                        <div class="unit-progress">
+                            <div class="progress-row"><span>Progress</span><span>50%</span></div>
+                            <div class="progress-track"><div class="progress-fill" style="width:50%"></div></div>
+                        </div>
+                        <div class="unit-lessons">
+                            <span class="lessons-label">8 Lessons</span>
+                            <div class="lesson-dots">
+                                <div class="lesson-dot done">1</div>
+                                <div class="lesson-dot done">2</div>
+                                <div class="lesson-dot done">3</div>
+                                <div class="lesson-dot done">4</div>
+                                <div class="lesson-dot current">5</div>
+                                <div class="lesson-dot">6</div>
+                                <div class="lesson-dot">7</div>
+                                <div class="lesson-dot">8</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Unit 2 -->
+                <div class="unit-card locked">
+                    <div class="unit-header">
+                        <div class="unit-label">Unit 2</div>
+                        <div class="unit-name">Staying Alive</div>
+                        <div class="unit-question">What does it take to survive?</div>
+                    </div>
+                    <div class="unit-body">
+                        <div class="unit-locked">🔒 Coming Soon</div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-<!-- ===== READING PAGE ===== -->
-<div class="page" id="page-read">
-  <button class="back-btn" onclick="closePopup(); stopAllSentenceMics(); showPage('unit')">‹ Back</button>
-  <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
-    <div style="flex:1">
-      <div style="font-size:17px; font-weight:700; color:var(--text)" id="readTitle"></div>
-    </div>
-    <button onclick="speakPassage()" style="background:var(--blue-light); border:none; border-radius:12px; padding:8px 14px; font-size:14px; cursor:pointer; color:var(--blue)">🔊 Read All</button>
-  </div>
-  <div class="passage-card">
-    <div class="passage-sentences" id="passageSentences"></div>
-  </div>
-  <div style="margin-top:14px; font-size:13px; color:var(--text-sub); text-align:center;">Tap blue words to see meaning · Tap 🎤 to read sentences</div>
-</div>
+        <!-- ===== UNIT 1 DETAIL ===== -->
+        <section id="unit1-detail" class="section">
+            <div class="unit-detail-header">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="unit-detail-info">
+                    <h2>Unit 1: Hello, Neighbor!</h2>
+                    <p>What is a community? · 8 Lessons · p.2-69</p>
+                </div>
+            </div>
+            <div class="lesson-grid-v2">
+                <div class="lesson-card-v2 done" onclick="goToLesson(1)">
+                    <div class="lesson-card-header">
+                        <div class="lesson-status-icon">✓</div>
+                        <div class="lesson-num-circle">1</div>
+                        <div>
+                            <div style="font-size:0.85rem;color:var(--text-muted);">Lesson 1</div>
+                            <div class="lesson-card-title">Big Question: What is a community?</div>
+                        </div>
+                    </div>
+                    <div class="lesson-card-body">
+                        <div class="lesson-card-pages">Pages 2-9</div>
+                    </div>
+                </div>
+                <div class="lesson-card-v2 done" onclick="goToLesson(2)">
+                    <div class="lesson-card-header">
+                        <div class="lesson-status-icon">✓</div>
+                        <div class="lesson-num-circle">2</div>
+                        <div>
+                            <div style="font-size:0.85rem;color:var(--text-muted);">Lesson 2</div>
+                            <div class="lesson-card-title">Your Community</div>
+                        </div>
+                    </div>
+                    <div class="lesson-card-body">
+                        <div class="lesson-card-pages">Pages 26-27</div>
+                    </div>
+                </div>
+                <div class="lesson-card-v2" onclick="goToLesson(3)">
+                    <div class="lesson-card-header">
+                        <div class="lesson-num-circle">3</div>
+                        <div>
+                            <div style="font-size:0.85rem;color:var(--text-muted);">Lesson 3</div>
+                            <div class="lesson-card-title">Read: A Day with Grandma</div>
+                        </div>
+                    </div>
+                    <div class="lesson-card-body">
+                        <div class="lesson-card-pages">Pages 18-31</div>
+                    </div>
+                </div>
+                <div class="lesson-card-v2" onclick="goToLesson(4)">
+                    <div class="lesson-card-header">
+                        <div class="lesson-num-circle">4</div>
+                        <div>
+                            <div style="font-size:0.85rem;color:var(--text-muted);">Lesson 4</div>
+                            <div class="lesson-card-title">Write: Describing Places</div>
+                        </div>
+                    </div>
+                    <div class="lesson-card-body">
+                        <div class="lesson-card-pages">Pages 32-39</div>
+                    </div>
+                </div>
+                <div class="lesson-card-v2" onclick="goToLesson(5)">
+                    <div class="lesson-card-header">
+                        <div class="lesson-num-circle">5</div>
+                        <div>
+                            <div style="font-size:0.85rem;color:var(--text-muted);">Lesson 5</div>
+                            <div class="lesson-card-title">Our School Community</div>
+                        </div>
+                    </div>
+                    <div class="lesson-card-body">
+                        <div class="lesson-card-pages">Pages 40-51</div>
+                    </div>
+                </div>
+                <div class="lesson-card-v2" onclick="goToLesson(6)">
+                    <div class="lesson-card-header">
+                        <div class="lesson-num-circle">6</div>
+                        <div>
+                            <div style="font-size:0.85rem;color:var(--text-muted);">Lesson 6</div>
+                            <div class="lesson-card-title">Getting Around</div>
+                        </div>
+                    </div>
+                    <div class="lesson-card-body">
+                        <div class="lesson-card-pages">Pages 52-59</div>
+                    </div>
+                </div>
+                <div class="lesson-card-v2" onclick="goToLesson(7)">
+                    <div class="lesson-card-header">
+                        <div class="lesson-num-circle">7</div>
+                        <div>
+                            <div style="font-size:0.85rem;color:var(--text-muted);">Lesson 7</div>
+                            <div class="lesson-card-title">A Trip to the City</div>
+                        </div>
+                    </div>
+                    <div class="lesson-card-body">
+                        <div class="lesson-card-pages">Pages 60-65</div>
+                    </div>
+                </div>
+                <div class="lesson-card-v2" onclick="goToLesson(8)">
+                    <div class="lesson-card-header">
+                        <div class="lesson-num-circle">8</div>
+                        <div>
+                            <div style="font-size:0.85rem;color:var(--text-muted);">Lesson 8</div>
+                            <div class="lesson-card-title">Our Community Project</div>
+                        </div>
+                    </div>
+                    <div class="lesson-card-body">
+                        <div class="lesson-card-pages">Pages 66-69</div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-<!-- ===== REVIEW PAGE ===== -->
-<div class="page" id="page-review">
-  <button class="back-btn" onclick="showPage(reviewFromUnit ? 'unit' : 'home')">‹ Back</button>
-  <div style="font-size:18px; font-weight:700; color:var(--text); margin-bottom:4px;">Review Plan</div>
-  <div style="font-size:13px; color:var(--text-sub); margin-bottom:16px;">Spaced Repetition · Science-based Memory</div>
-  <div id="reviewContent"></div>
-</div>
+        <!-- ===== LESSON VIEW (5 TABS) ===== -->
+        <section id="lesson-view" class="section">
+            <div class="lesson-view-header">
+                <button class="back-btn" onclick="switchTab('unit1-detail')">←</button>
+                <div class="unit-detail-info">
+                    <h2 id="lessonViewTitle">Lesson 1</h2>
+                    <p id="lessonViewSubtitle">Vocabulary · Reading · Practice</p>
+                </div>
+            </div>
 
-<!-- ===== WRITING FRAME PAGE ===== -->
-<div class="page" id="page-write">
-  <button class="back-btn" onclick="showPage('unit')">‹ Back</button>
-  <div id="writeContent"></div>
-</div>
+            <!-- 5 Tabs -->
+            <div class="lesson-tabs">
+                <button class="lesson-tab active" onclick="switchLessonTab('vocab')">📚 Vocabulary</button>
+                <button class="lesson-tab" onclick="switchLessonTab('reading')">📖 Reading</button>
+                <button class="lesson-tab" onclick="switchLessonTab('readalong')">🎧 Read Along</button>
+                <button class="lesson-tab" onclick="switchLessonTab('practice')">✏️ Practice</button>
+                <button class="lesson-tab" onclick="switchLessonTab('quiz')">✅ Quiz</button>
+            </div>
 
-<!-- ===== SPEAKING PRACTICE PAGE ===== -->
-<div class="page" id="page-speak">
-  <button class="back-btn" onclick="stopSpeakingMic(); showPage('unit')">‹ Back</button>
-  <div id="speakContent"></div>
-</div>
+            <!-- Tab: Vocabulary -->
+            <div class="lesson-tab-content active" id="lesson-tab-vocab"></div>
 
-<!-- ===== GRAMMAR PRACTICE PAGE ===== -->
-<div class="page" id="page-grammar">
-  <button class="back-btn" onclick="showPage('unit')">‹ Back</button>
-  <div id="grammarContent"></div>
-</div>
+            <!-- Tab: Reading -->
+            <div class="lesson-tab-content" id="lesson-tab-reading"></div>
 
-<!-- ===== PHONICS PRACTICE PAGE ===== -->
-<div class="page" id="page-phonics">
-  <button class="back-btn" onclick="showPage('unit')">‹ Back</button>
-  <div id="phonicsContent"></div>
-</div>
+            <!-- Tab: Read Along -->
+            <div class="lesson-tab-content" id="lesson-tab-readalong"></div>
 
-<!-- ===== EXTRA READING PAGE ===== -->
-<div class="page" id="page-reading">
-  <button class="back-btn" onclick="showPage('unit')">‹ Back</button>
-  <div id="readingContent"></div>
-</div>
+            <!-- Tab: Practice -->
+            <div class="lesson-tab-content" id="lesson-tab-practice"></div>
 
-<!-- Bottom Nav -->
-<div class="bottom-nav">
-  <button class="bottom-nav-item active" id="nav-home" onclick="switchTab('home')">
-    <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
-  </button>
-  <button class="bottom-nav-item" id="nav-review" onclick="switchTab('review-all')">
-    <span class="nav-icon">🔁</span><span class="nav-label">Review</span>
-  </button>
-  <button class="bottom-nav-item" id="nav-progress" onclick="switchTab('progress')">
-    <span class="nav-icon">📊</span><span class="nav-label">Progress</span>
-  </button>
-</div>
+            <!-- Tab: Quiz -->
+            <div class="lesson-tab-content" id="lesson-tab-quiz"></div>
+        </section>
 
-<!-- Progress Page (in-nav) -->
-<div class="page" id="page-progress">
-  <div style="font-size:18px; font-weight:700; color:var(--text); margin-bottom:16px;">Learning Progress</div>
-  <div id="progressContent"></div>
-</div>
+        <!-- ===== VOCAB (standalone) ===== -->
+        <section id="vocab" class="section">
+            <div class="unit-detail-header" style="background:linear-gradient(135deg, #7c3aed, #db2777);">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="unit-detail-info"><h2>Vocabulary Cards</h2><p>Tap a card to flip</p></div>
+            </div>
+            <div class="vocab-grid" id="vocabGrid">
+                <div class="vocab-card" onclick="event.stopPropagation();this.classList.toggle('flipped')">
+                    <div class="vocab-inner">
+                        <div class="vocab-front"><div class="vocab-word">neighbor</div><div class="vocab-phonetic">/ˈneɪbər/</div><div class="vocab-hint">👂 Say it!</div></div>
+                        <div class="vocab-back"><div class="vocab-meaning">邻居</div><div class="vocab-sentence">My neighbor waves hello.</div></div>
+                    </div>
+                </div>
+                <div class="vocab-card" onclick="event.stopPropagation();this.classList.toggle('flipped')">
+                    <div class="vocab-inner">
+                        <div class="vocab-front"><div class="vocab-word">community</div><div class="vocab-phonetic">/kəˈmjuːnəti/</div><div class="vocab-hint">👂 Say it!</div></div>
+                        <div class="vocab-back"><div class="vocab-meaning">社区</div><div class="vocab-sentence">Our community has many helpers.</div></div>
+                    </div>
+                </div>
+                <div class="vocab-card" onclick="event.stopPropagation();this.classList.toggle('flipped')">
+                    <div class="vocab-inner">
+                        <div class="vocab-front"><div class="vocab-word">teacher</div><div class="vocab-phonetic">/ˈtiːtʃər/</div><div class="vocab-hint">👂 Say it!</div></div>
+                        <div class="vocab-back"><div class="vocab-meaning">老师</div><div class="vocab-sentence">My teacher reads to us.</div></div>
+                    </div>
+                </div>
+                <div class="vocab-card" onclick="event.stopPropagation();this.classList.toggle('flipped')">
+                    <div class="vocab-inner">
+                        <div class="vocab-front"><div class="vocab-word">doctor</div><div class="vocab-phonetic">/ˈdɒktər/</div><div class="vocab-hint">👂 Say it!</div></div>
+                        <div class="vocab-back"><div class="vocab-meaning">医生</div><div class="vocab-sentence">The doctor helps sick people.</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-<script src="data.js"></script>
-<script>
-// ===== STATE =====
-let currentUnit = null;
-let currentMode = null;
-let flashIndex = 0;
-let flashWords = [];
-let isFlipped = false;
-let quizIndex = 0;
-let quizWords = [];
-let quizScore = 0;
-let quizAnswered = false;
-let quizTimeout = null;
-let reviewFromUnit = false;
-let wordPopupTimeout = null;
+        <!-- ===== PHONICS ===== -->
+        <section id="phonics" class="section">
+            <div class="unit-detail-header" style="background:linear-gradient(135deg, #f59e0b, #ef4444);">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="unit-detail-info"><h2>Phonics Practice</h2><p>Learn sound patterns</p></div>
+            </div>
+            <div class="phonics-grid">
+                <div class="phonics-card" onclick="speak('sm- makes the sound sm-, like in smile.')">
+                    <div class="phonics-letter">sm</div>
+                    <div class="phonics-sound">/sm-/</div>
+                    <div class="phonics-examples"><span class="phonics-word">smile</span><span class="phonics-word">smell</span><span class="phonics-word">small</span></div>
+                </div>
+                <div class="phonics-card" onclick="speak('sp- makes the sound sp-, like in spoon.')">
+                    <div class="phonics-letter">sp</div>
+                    <div class="phonics-sound">/sp-/</div>
+                    <div class="phonics-examples"><span class="phonics-word">spoon</span><span class="phonics-word">spin</span><span class="phonics-word">spot</span></div>
+                </div>
+            </div>
+        </section>
 
-// ===== STORAGE =====
-const S = {
-  get: (k) => { try { return JSON.parse(localStorage.getItem(k)) } catch(e) { return null } },
-  set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
-  getProgress: () => S.get('rh2a_progress') || {},
-  saveProgress: (p) => S.set('rh2a_progress', p),
-  getStreak: () => S.get('rh2a_streak') || { count: 0, last: '' },
-  saveStreak: (s) => S.set('rh2a_streak', s),
-};
+        <!-- ===== QUIZ (standalone) ===== -->
+        <section id="quiz" class="section">
+            <div class="unit-detail-header" style="background:linear-gradient(135deg, #16a34a, #0d9488);">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="unit-detail-info"><h2>Quiz</h2><p>Test your knowledge!</p></div>
+            </div>
+            <div id="quizContainer"></div>
+        </section>
 
-function getWordStatus(unitId, word) {
-  const p = S.getProgress();
-  return p[`${unitId}_${word}`] || { status: 'new', learnedAt: null, reviewTimes: 0 };
-}
+        <!-- ===== SPEAKING ===== -->
+        <section id="speaking" class="section">
+            <div class="unit-detail-header" style="background:linear-gradient(135deg, #059669, #0891b2);">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="unit-detail-info"><h2>Speaking Practice</h2><p>Practice pronunciation</p></div>
+            </div>
+            <div class="speaking-section">
+                <div class="speaking-title">🎤 Practice Sentences</div>
+                <div class="practice-item">
+                    <div class="practice-target">
+                        <button class="voice-btn" onclick="speak('What is a community?')">🔊</button>
+                        <span class="practice-target-text">What is a community?</span>
+                    </div>
+                </div>
+                <div class="practice-item">
+                    <div class="practice-target">
+                        <button class="voice-btn" onclick="speak('Here is a neighbor.')">🔊</button>
+                        <span class="practice-target-text">Here is a neighbor.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-function setWordStatus(unitId, word, updates) {
-  const p = S.getProgress();
-  const key = `${unitId}_${word}`;
-  p[key] = { ...getWordStatus(unitId, word), ...updates };
-  S.saveProgress(p);
-}
+    </main>
 
-// Ebbinghaus review intervals (days)
-const REVIEW_INTERVALS = [1, 3, 7, 16, 30];
+    <footer class="app-footer">
+        <p>Reach Higher 2A · National Geographic Learning</p>
+    </footer>
 
-function isDue(learnedAt, reviewTimes) {
-  if (!learnedAt) return false;
-  const interval = REVIEW_INTERVALS[Math.min(reviewTimes, REVIEW_INTERVALS.length - 1)];
-  const dueDate = new Date(learnedAt);
-  dueDate.setDate(dueDate.getDate() + interval);
-  return new Date() >= dueDate;
-}
-
-function countDueWords() {
-  let count = 0;
-  UNITS.forEach(u => {
-    u.words.forEach(w => {
-      const st = getWordStatus(u.id, w.word);
-      if (st.status === 'learned' && isDue(st.learnedAt, st.reviewTimes)) count++;
-    });
-  });
-  return count;
-}
-
-// ===== STREAK =====
-function updateStreak() {
-  const today = new Date().toDateString();
-  const s = S.getStreak();
-  if (s.last === today) return;
-  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
-  if (s.last === yesterday.toDateString()) {
-    s.count++;
-  } else {
-    s.count = 1;
-  }
-  s.last = today;
-  S.saveStreak(s);
-}
-
-// ===== PAGE ROUTING =====
-function showPage(id) {
-  // If leaving quiz mode, clear quiz timers
-  if (currentMode === 'quiz' && id !== 'quiz') {
-    if (quizTimeout) { clearTimeout(quizTimeout); quizTimeout = null; }
-    if (srActive) stopSR();
-  }
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const pg = document.getElementById('page-' + id);
-  if (pg) { pg.classList.add('active'); pg.classList.add('fade-in'); setTimeout(() => pg.classList.remove('fade-in'), 400); }
-  // close popup
-  closePopup();
-  // sync bottom nav
-  ['home','review','progress'].forEach(n => {
-    const el = document.getElementById('nav-' + n);
-    if (el) el.classList.remove('active');
-  });
-  if (id === 'home') document.getElementById('nav-home').classList.add('active');
-  if (id === 'review') document.getElementById('nav-review').classList.add('active');
-  if (id === 'progress') document.getElementById('nav-progress').classList.add('active');
-}
-
-function switchTab(tab) {
-  if (tab === 'home') { renderHome(); showPage('home'); }
-  else if (tab === 'review-all') { reviewFromUnit = false; renderReviewPage(null); showPage('review'); document.getElementById('nav-review').classList.add('active'); }
-  else if (tab === 'progress') { renderProgressPage(); showPage('progress'); document.getElementById('nav-progress').classList.add('active'); }
-}
-
-// ===== HOME =====
-function renderHome() {
-  updateStreak();
-  const s = S.getStreak();
-  document.getElementById('streakNum').textContent = s.count;
-
-  const dueCount = countDueWords();
-  const banner = document.getElementById('reviewBanner');
-  if (dueCount > 0) {
-    banner.style.display = 'flex';
-    document.getElementById('reviewCount').textContent = dueCount + ' Words';
-  } else {
-    banner.style.display = 'none';
-  }
-
-  const grid = document.getElementById('unitGrid');
-  grid.innerHTML = '';
-  UNITS.forEach(u => {
-    const total = u.words.length;
-    const learned = u.words.filter(w => {
-      const st = getWordStatus(u.id, w.word);
-      return st.status === 'learned' || st.status === 'mastered';
-    }).length;
-    const mastered = u.words.filter(w => getWordStatus(u.id, w.word).status === 'mastered').length;
-    const pct = Math.round(learned / total * 100);
-    const card = document.createElement('button');
-    card.className = 'unit-card';
-    card.style.background = u.bgColor;
-    card.style.color = u.color;
-    card.innerHTML = `
-      <span class="unit-icon">${u.icon}</span>
-      <div class="unit-num">Unit ${u.id}</div>
-      <div class="unit-name">${u.title.replace(`Unit ${u.id}: `, '')}</div>
-      <div class="unit-theme">${u.theme}</div>
-      <div class="unit-progress-bar"><div class="unit-progress-fill" style="width:${pct}%"></div></div>
-      <div class="unit-progress-text">${learned}/${total} Words · ${mastered} Mastered</div>
-    `;
-    card.onclick = () => openUnit(u.id);
-    grid.appendChild(card);
-  });
-}
-
-function goToReview() {
-  reviewFromUnit = false;
-  renderReviewPage(null);
-  showPage('review');
-  document.getElementById('nav-review').classList.add('active');
-}
-
-// ===== UNIT =====
-function openUnit(unitId) {
-  currentUnit = UNITS.find(u => u.id === unitId);
-  if (!currentUnit) return;
-
-  document.getElementById('unitHeaderCard').style.background = `linear-gradient(135deg, ${currentUnit.color} 0%, ${currentUnit.color}CC 100%)`;
-  document.getElementById('unitHeaderIcon').textContent = currentUnit.icon;
-  document.getElementById('unitHeaderTitle').textContent = currentUnit.title;
-  document.getElementById('unitHeaderTheme').textContent = currentUnit.theme;
-
-  const total = currentUnit.words.length;
-  const learned = currentUnit.words.filter(w => {
-    const st = getWordStatus(currentUnit.id, w.word);
-    return st.status === 'learned' || st.status === 'mastered';
-  }).length;
-  const mastered = currentUnit.words.filter(w => getWordStatus(currentUnit.id, w.word).status === 'mastered').length;
-  document.getElementById('unitStatTotal').textContent = total;
-  document.getElementById('unitStatLearned').textContent = learned;
-  document.getElementById('unitStatMastered').textContent = mastered;
-
-  showPage('unit');
-}
-
-// ===== FLASH CARDS =====
-function startLearning(mode) {
-  if (!currentUnit) return;
-  currentMode = mode;
-  if (mode === 'flash') startFlash();
-  else if (mode === 'quiz') startQuiz();
-  else if (mode === 'read') startRead();
-  else if (mode === 'review') { reviewFromUnit = true; renderReviewPage(currentUnit.id); showPage('review'); }
-  else if (mode === 'write') startWriting();
-  else if (mode === 'speak') startSpeaking();
-  else if (mode === 'grammar') startGrammar();
-  else if (mode === 'phonics') startPhonics();
-  else if (mode === 'extrareading') startExtraReading();
-}
-
-function startFlash() {
-  flashWords = [...currentUnit.words];
-  flashIndex = 0;
-  isFlipped = false;
-  showPage('flash');
-  renderFlashCard();
-}
-
-function renderFlashCard() {
-  stopFlashMic();
-  if (flashIndex >= flashWords.length) {
-    showFlashComplete();
-    return;
-  }
-  const w = flashWords[flashIndex];
-  const total = flashWords.length;
-  document.getElementById('flashProgressFill').style.width = ((flashIndex / total) * 100) + '%';
-  document.getElementById('flashCounter').textContent = `${flashIndex + 1} / ${total}`;
-  document.getElementById('cfWord').textContent = w.word;
-  document.getElementById('cfPhonetic').textContent = w.phonetic;
-  document.getElementById('cfPos').textContent = w.pos;
-  document.getElementById('cbWord').textContent = w.word + ' ' + w.phonetic;
-  document.getElementById('cbMeaning').textContent = w.cn;
-  document.getElementById('cbSentence').textContent = w.sentence;
-  // reset flip
-  const card = document.getElementById('wordCard');
-  card.classList.remove('flipped');
-  isFlipped = false;
-  // update nav buttons
-  document.getElementById('prevBtn').disabled = flashIndex === 0;
-  document.getElementById('nextBtn').disabled = flashIndex === total - 1;
-}
-
-function flipCard() {
-  const card = document.getElementById('wordCard');
-  isFlipped = !isFlipped;
-  if (isFlipped) card.classList.add('flipped');
-  else card.classList.remove('flipped');
-  if (isFlipped) speakWord();
-}
-
-function prevWord() { if (flashIndex > 0) { flashIndex--; renderFlashCard(); } }
-function nextWord() { if (flashIndex < flashWords.length - 1) { flashIndex++; renderFlashCard(); } }
-
-function markAndNext(known) {
-  const w = flashWords[flashIndex];
-  if (known) {
-    const prev = getWordStatus(currentUnit.id, w.word);
-    setWordStatus(currentUnit.id, w.word, {
-      status: 'learned',
-      learnedAt: prev.learnedAt || new Date().toISOString(),
-      reviewTimes: prev.reviewTimes || 0
-    });
-  }
-  flashIndex++;
-  if (flashIndex >= flashWords.length) showFlashComplete();
-  else renderFlashCard();
-}
-
-function showFlashComplete() {
-  const total = flashWords.length;
-  const known = flashWords.filter(w => {
-    return (getWordStatus(currentUnit.id, w.word).status === 'learned' || getWordStatus(currentUnit.id, w.word).status === 'mastered');
-  }).length;
-  const pageEl = document.getElementById('page-flash');
-  pageEl.innerHTML = `
-    <button class="back-btn" onclick="openUnit(currentUnit.id); showPage('unit');">‹ Back</button>
-    <div class="quiz-score-card fade-in" style="margin-top:40px">
-      <span class="score-emoji">${known >= total * 0.8 ? '🎉' : '💪'}</span>
-      <div class="score-title">${known >= total * 0.8 ? 'Amazing!' : 'Keep going!'}</div>
-      <div class="score-sub">Words learned this round</div>
-      <div><span class="score-num">${known}</span><span class="score-denom"> / ${total}</span></div>
-    <button class="btn-primary" onclick="startFlash()">Try Again</button>
-    <button class="btn-primary" style="background:var(--orange); margin-top:10px;" onclick="startLearning('quiz')">Take a Quiz ✏️</button>
-    </div>
-  `;
-}
-
-// ===== QUIZ =====
-function startQuiz() {
-  quizWords = shuffle([...currentUnit.words]);
-  quizIndex = 0;
-  quizScore = 0;
-  currentMode = 'quiz';
-  // Clear any pending quiz/pronunciation timeouts
-  if (quizTimeout) { clearTimeout(quizTimeout); quizTimeout = null; }
-  if (srTimeout) { clearTimeout(srTimeout); srTimeout = null; }
-  if (srActive) { stopSR(); }
-  showPage('quiz');
-  renderQuizQuestion();
-}
-
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-function renderQuizQuestion() {
-  // Guard: only render if in quiz mode
-  if (currentMode !== 'quiz') return;
-  const total = quizWords.length;
-  if (quizIndex >= total) { showQuizScore(); return; }
-  const pct = Math.round(quizIndex / total * 100);
-  document.getElementById('quizProgressFill').style.width = pct + '%';
-
-  // Insert a pronunciation question every 3 multiple-choice questions (插入在第3、6、9题后)
-  const pronunAfter = [2, 5, 8, 11]; // after answering Q3, Q6, Q9, Q12 → show pronun Q
-  if (pronunAfter.includes(quizIndex) && quizIndex < total) {
-    renderQuizPronun(quizWords[quizIndex]);
-    return;
-  }
-
-  const q = quizWords[quizIndex];
-  quizAnswered = false;
-
-  // Generate 4 options: 1 correct + 3 random wrong
-  const allWords = currentUnit.words.filter(w => w.word !== q.word);
-  const wrongOpts = shuffle(allWords).slice(0, 3);
-  const options = shuffle([q, ...wrongOpts]);
-  const letters = ['A', 'B', 'C', 'D'];
-
-  document.getElementById('quizContent').innerHTML = `
-    <div class="quiz-question">What does this word mean?</div>
-    <div class="quiz-sub">${quizIndex + 1} / ${total}</div>
-    <div class="quiz-big-word">${q.word}</div>
-    <div style="font-size:14px; color:var(--text-sub); text-align:center; margin-bottom:16px;">${q.phonetic} &nbsp; ${q.pos}</div>
-    <div class="quiz-options" id="quizOptions">
-      ${options.map((opt, i) => `
-        <button class="quiz-option" onclick="answerQuiz(this, '${opt.word}', '${q.word}')">
-          <div class="opt-letter">${letters[i]}</div>
-          <span>${opt.cn}</span>
-        </button>
-      `).join('')}
-    </div>
-  `;
-}
-
-function renderQuizPronun(q) {
-  if (currentMode !== 'quiz') return;
-  quizAnswered = false;
-  const total = quizWords.length;
-  document.getElementById('quizContent').innerHTML = `
-    <div class="quiz-pronun-section">
-      <div class="quiz-pronun-label">🎤 Pronunciation Check</div>
-      <div class="quiz-big-word">${q.word}</div>
-      <div style="font-size:14px; color:var(--text-sub); margin-bottom:16px">${q.phonetic} &nbsp; ${q.pos} &nbsp;·&nbsp; ${q.cn}</div>
-      <div style="display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap">
-        <button onclick="speakText('${q.word}')" style="background:var(--blue-light); border:none; border-radius:12px; padding:10px 16px; font-size:15px; cursor:pointer; color:var(--blue)">🔊 Listen</button>
-        <button class="mic-btn" id="quizMicBtn" onclick="toggleQuizMic()">🎤</button>
-      </div>
-      <div class="pronun-feedback" id="quizPronunFeedback" style="margin-top:14px"></div>
-    </div>
-  `;
-  window._quizPronunWord = q.word;
-  window._quizPronunHandled = false;
-}
-
-let quizMicActive = false;
-
-function toggleQuizMic() {
-  if (quizMicActive) { stopSR(); quizMicActive = false; return; }
-  const qWord = window._quizPronunWord;
-  if (!qWord) return;
-  quizMicActive = true;
-  const btn = document.getElementById('quizMicBtn');
-  const fb = document.getElementById('quizPronunFeedback');
-  if (btn) btn.classList.add('recording');
-  if (fb) fb.className = 'pronun-feedback listening';
-  if (fb) fb.innerHTML = 'Please read the word...';
-  speakText(qWord);
-  setTimeout(() => {
-    startSR(qWord, {
-      onResult: (result, heard) => {
-        quizMicActive = false;
-        if (currentMode !== 'quiz') return;
-        if (btn) { btn.classList.remove('recording'); btn.classList.add(result.pass ? 'done-correct' : 'done-wrong'); }
-        if (fb) { fb.className = `pronun-feedback ${result.pass ? 'correct' : 'wrong'}`; fb.innerHTML = `<span>${result.pass ? '✓' : '✗'}</span> ${getEncouragement(result.score)}`; }
-        if (!window._quizPronunHandled) {
-          window._quizPronunHandled = true;
-          if (result.pass) quizScore++;
-          if (currentMode === 'quiz') { quizTimeout = setTimeout(() => { quizIndex++; renderQuizQuestion(); }, 1600); }
+    <script>
+        // ============ CORE NAVIGATION ============
+        function switchTab(sectionId) {
+            console.log('[APP] switchTab:', sectionId);
+            var sections = document.querySelectorAll('.section');
+            for (var i = 0; i < sections.length; i++) sections[i].classList.remove('active');
+            var tabs = document.querySelectorAll('.nav-tab');
+            for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+            var target = document.getElementById(sectionId);
+            if (target) target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-      },
-      onEnd: () => {
-        quizMicActive = false;
-        if (btn && !btn.classList.contains('done-correct') && !btn.classList.contains('done-wrong')) btn.classList.remove('recording');
-      }
-    });
-  }, 1300);
-}
 
-function answerQuiz(btn, chosen, correct) {
-  if (quizAnswered) return;
-  quizAnswered = true;
-  const isCorrect = chosen === correct;
-  if (isCorrect) {
-    btn.classList.add('correct');
-    quizScore++;
-    speakText(correct);
-    setWordStatus(currentUnit.id, correct, { status: 'mastered' });
-  } else {
-    btn.classList.add('wrong');
-    // highlight correct
-    const opts = document.querySelectorAll('.quiz-option');
-    opts.forEach(o => { if (o.onclick && o.getAttribute('onclick').includes(`'${correct}'`)) o.classList.add('correct'); });
-  }
-  document.querySelectorAll('.quiz-option').forEach(o => o.disabled = true);
-  quizTimeout = setTimeout(() => { quizIndex++; renderQuizQuestion(); }, 1200);
-}
-
-function showQuizScore() {
-  const total = quizWords.length;
-  const pct = Math.round(quizScore / total * 100);
-  let emoji = pct >= 80 ? '🏆' : pct >= 60 ? '😊' : '💪';
-  let msg = pct >= 80 ? 'Excellent! Keep it up!' : pct >= 60 ? 'Good job! You can do better' : 'Come on! Practice more';
-  document.getElementById('quizContent').innerHTML = `
-    <div class="quiz-score-card fade-in" style="margin-top:20px">
-      <span class="score-emoji">${emoji}</span>
-      <div class="score-title">${msg}</div>
-      <div class="score-sub">Correct Answers</div>
-      <div><span class="score-num">${quizScore}</span><span class="score-denom"> / ${total}</span></div>
-      <div style="font-size:13px; color:var(--text-sub); margin-top:12px;">Accuracy ${pct}%</div>
-      <button class="btn-primary" onclick="startQuiz()">Try Again</button>
-      <button class="btn-primary" style="background:#9C27B0; margin-top:10px;" onclick="openUnit(currentUnit.id); showPage('unit')">Back to Unit</button>
-    </div>
-  `;
-}
-
-// ===== READING =====
-function startRead() {
-  if (!currentUnit || !currentUnit.passages.length) return;
-  const passage = currentUnit.passages[0];
-  document.getElementById('readTitle').textContent = passage.title;
-  const wordMap = {};
-  currentUnit.words.forEach(w => { wordMap[w.word.toLowerCase()] = w; });
-  sentenceMicStates = {};
-
-  // Split into sentences
-  const rawSentences = passage.text.match(/[^.!?]+[.!?]+/g) || [passage.text];
-  const html = rawSentences.map((sent, i) => {
-    const cleanSent = sent.replace(/[.!?]/g, '').trim();
-    const tokens = cleanSent.split(/(\s+)/);
-    const wordHtml = tokens.map(token => {
-      const clean = token.toLowerCase().replace(/[^a-z]/g, '');
-      if (wordMap[clean]) {
-        const w = wordMap[clean];
-        return `<span class="clickable-word" onclick="showWordPopup('${w.word}','${w.phonetic.replace(/'/g,"\\'")}','${w.pos}','${w.cn}')">${token}</span>`;
-      }
-      return token;
-    }).join('');
-    return `<div class="sent-wrap">
-      <div class="sent-text">${wordHtml}</div>
-      <button class="sentence-mic-btn" id="sent-mic-${i}" onclick="startSentenceMic(${i}, '${cleanSent.replace(/'/g,"\\'")}')">🎤</button>
-      <div class="sent-feedback" id="sent-fb-${i}"></div>
-    </div>`;
-  }).join('');
-
-  document.getElementById('passageSentences').innerHTML = html;
-  showPage('read');
-}
-
-function showWordPopup(word, phonetic, pos, cn) {
-  closePopup();
-  const pop = document.createElement('div');
-  pop.className = 'word-popup';
-  pop.id = 'wordPopup';
-  pop.innerHTML = `<div class="pw">${word}</div><div class="pp">${phonetic} &nbsp; ${pos}</div><div class="pm">${cn}</div>`;
-  document.body.appendChild(pop);
-  speakText(word);
-  if (wordPopupTimeout) clearTimeout(wordPopupTimeout);
-  wordPopupTimeout = setTimeout(closePopup, 3000);
-}
-
-function closePopup() {
-  const p = document.getElementById('wordPopup');
-  if (p) p.remove();
-}
-
-function speakPassage() {
-  if (!currentUnit || !currentUnit.passages.length) return;
-  speakText(currentUnit.passages[0].text);
-}
-
-// ===== REVIEW =====
-function renderReviewPage(unitId) {
-  const content = document.getElementById('reviewContent');
-  const allUnits = unitId ? UNITS.filter(u => u.id === unitId) : UNITS;
-  
-  let dueWords = [], learnedWords = [], masteredWords = [];
-  allUnits.forEach(u => {
-    u.words.forEach(w => {
-      const st = getWordStatus(u.id, w.word);
-      const entry = { ...w, unitId: u.id, unitTitle: u.title, status: st.status, learnedAt: st.learnedAt, reviewTimes: st.reviewTimes || 0 };
-      if (st.status === 'mastered') masteredWords.push(entry);
-      else if (st.status === 'learned') {
-        if (isDue(st.learnedAt, st.reviewTimes)) dueWords.push(entry);
-        else learnedWords.push(entry);
-      }
-    });
-  });
-
-  let html = '';
-  if (dueWords.length === 0 && learnedWords.length === 0 && masteredWords.length === 0) {
-    html = `<div class="empty-state"><span class="e-icon">📚</span><div>Start learning some words first!</div></div>`;
-  }
-
-  if (dueWords.length > 0) {
-    html += `<div class="review-section-title">⏰ Due Today (${dueWords.length})</div>`;
-    html += `<div class="review-word-list">` + dueWords.map(w => `
-      <div class="review-word-item" onclick="reviewWord(${w.unitId}, '${w.word}')">
-        <div class="rw-dot due"></div>
-        <div><div class="rw-word">${w.word}</div><div class="rw-cn">${w.cn}</div></div>
-        <div class="rw-tag due">Review</div>
-      </div>
-    `).join('') + `</div>`;
-    html += `<button class="btn-primary" style="background:var(--orange)" onclick="startBatchReview(${JSON.stringify(dueWords.map(w => w.unitId + '|' + w.word))})">Review All →</button>`;
-  }
-
-  if (learnedWords.length > 0) {
-    html += `<div class="review-section-title" style="margin-top:20px">📖 Learned (${learnedWords.length})</div>`;
-    html += `<div class="review-word-list">` + learnedWords.slice(0, 20).map(w => {
-      const nextReview = getNextReviewDate(w.learnedAt, w.reviewTimes);
-      return `<div class="review-word-item"><div class="rw-dot learned"></div><div><div class="rw-word">${w.word}</div><div class="rw-cn">${w.cn}</div></div><div class="rw-tag learned">${nextReview}</div></div>`;
-    }).join('') + `</div>`;
-  }
-
-  if (masteredWords.length > 0) {
-    html += `<div class="review-section-title" style="margin-top:20px">✅ Mastered (${masteredWords.length})</div>`;
-    html += `<div class="review-word-list">` + masteredWords.slice(0, 10).map(w => `
-      <div class="review-word-item"><div class="rw-dot mastered"></div><div><div class="rw-word">${w.word}</div><div class="rw-cn">${w.cn}</div></div><div class="rw-tag mastered">Mastered</div></div>
-    `).join('') + `</div>`;
-  }
-
-  content.innerHTML = html;
-}
-
-function getNextReviewDate(learnedAt, reviewTimes) {
-  if (!learnedAt) return '--';
-  const interval = REVIEW_INTERVALS[Math.min(reviewTimes, REVIEW_INTERVALS.length - 1)];
-  const d = new Date(learnedAt);
-  d.setDate(d.getDate() + interval);
-  const today = new Date();
-  const diff = Math.round((d - today) / (1000 * 60 * 60 * 24));
-  if (diff <= 0) return 'Today';
-  if (diff === 1) return 'Tomorrow';
-  return `In ${diff} days`;
-}
-
-function reviewWord(unitId, word) {
-  const unit = UNITS.find(u => u.id === unitId);
-  if (!unit) return;
-  currentUnit = unit;
-  flashWords = [unit.words.find(w => w.word === word)].filter(Boolean);
-  flashIndex = 0;
-  showPage('flash');
-  renderFlashCard();
-}
-
-function startBatchReview(wordKeys) {
-  // Find unit for the first word and set up review session
-  if (!wordKeys.length) return;
-  const firstKey = wordKeys[0];
-  const [unitId, wordStr] = firstKey.split('|');
-  const unit = UNITS.find(u => u.id === parseInt(unitId));
-  if (!unit) return;
-  currentUnit = unit;
-  // Collect all due words across units
-  const allDueWords = wordKeys.map(k => {
-    const [uid, wd] = k.split('|');
-    const u = UNITS.find(u2 => u2.id === parseInt(uid));
-    return u ? u.words.find(w => w.word === wd) : null;
-  }).filter(Boolean);
-  flashWords = allDueWords;
-  flashIndex = 0;
-  showPage('flash');
-  renderFlashCard();
-}
-
-// ===== PROGRESS =====
-function renderProgressPage() {
-  let html = '<div style="display:flex; flex-direction:column; gap:14px;">';
-  let totalAll = 0, learnedAll = 0, masteredAll = 0;
-  UNITS.forEach(u => {
-    const total = u.words.length;
-    const learned = u.words.filter(w => {
-      const st = getWordStatus(u.id, w.word);
-      return st.status === 'learned' || st.status === 'mastered';
-    }).length;
-    const mastered = u.words.filter(w => getWordStatus(u.id, w.word).status === 'mastered').length;
-    const pct = Math.round(learned / total * 100);
-    totalAll += total; learnedAll += learned; masteredAll += mastered;
-    html += `<div style="background:white; border-radius:14px; padding:16px; box-shadow:0 1px 6px rgba(0,0,0,0.07)">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px">
-        <span style="font-size:22px">${u.icon}</span>
-        <div>
-          <div style="font-size:14px; font-weight:600; color:var(--text)">${u.title}</div>
-          <div style="font-size:12px; color:var(--text-sub)">${learned}/${total} Learned · ${mastered} Mastered</div>
-        </div>
-        <div style="margin-left:auto; font-size:18px; font-weight:700; color:${u.color}">${pct}%</div>
-      </div>
-      <div style="height:8px; background:#EEE; border-radius:4px">
-        <div style="width:${pct}%; height:100%; background:${u.color}; border-radius:4px; transition:width 0.5s"></div>
-      </div>
-    </div>`;
-  });
-  html += '</div>';
-  const totalPct = Math.round(learnedAll / totalAll * 100);
-  const summary = `<div style="background:var(--blue); color:white; border-radius:16px; padding:20px; margin-bottom:20px; text-align:center">
-    <div style="font-size:13px; opacity:0.85; margin-bottom:4px">Overall Progress</div>
-    <div style="font-size:44px; font-weight:700">${totalPct}%</div>
-    <div style="font-size:13px; opacity:0.85">${learnedAll} / ${totalAll} Words &nbsp;·&nbsp; ${masteredAll} Mastered</div>
-  </div>`;
-  document.getElementById('progressContent').innerHTML = summary + html;
-}
-
-// ===== TTS =====
-function speakWord() {
-  if (!flashWords[flashIndex]) return;
-  speakText(flashWords[flashIndex].word);
-}
-
-function speakText(text) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.lang = 'en-US';
-  utt.rate = 0.85;
-  window.speechSynthesis.speak(utt);
-}
-
-// ===== SPEECH RECOGNITION =====
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let srActive = false;
-let srInstance = null;
-let srTarget = '';
-let srCallback = null;
-let srTimeout = null;
-
-function isSRSupported() { return !!SR; }
-
-function normalize(s) {
-  return s.toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, ' ').trim();
-}
-
-function scorePronunciation(heard, target) {
-  const h = normalize(heard);
-  const t = normalize(target);
-  if (!h) return { pass: false, score: 0 };
-  if (h === t) return { pass: true, score: 100 };
-  // Partial match: check if key parts match
-  const tWords = t.split(' ');
-  const hWords = h.split(' ');
-  let matched = 0;
-  tWords.forEach(tw => {
-    if (hWords.some(hw => hw === tw || (hw.length > 3 && tw.includes(hw)) || (hw.length > 3 && tw.includes(hw)))) matched++;
-  });
-  const ratio = matched / tWords.length;
-  if (ratio >= 0.7) return { pass: true, score: Math.round(ratio * 100) };
-  if (ratio >= 0.4) return { pass: false, score: Math.round(ratio * 100) };
-  return { pass: false, score: Math.round(ratio * 60) };
-}
-
-const encouragements = {
-  great: ['Excellent! 🎉', 'Perfect! You are amazing! 🌟', 'Outstanding pronunciation! 👏'],
-  good: ['Good job! Keep it up! 💪', 'Nice! Practice more to be better! ✨', 'Correct! Keep going! 👍'],
-  retry: ['No worries, try again! 💪', 'Come on! Take your time! 🌱', 'Don\'t give up! Listen again! 🎧']
-};
-
-function getEncouragement(score) {
-  const pool = score >= 85 ? encouragements.great : score >= 60 ? encouragements.good : encouragements.retry;
-  return pool[Math.floor(Math.random() * pool.length)];
-}
-
-function startSR(target, onResult) {
-  if (!SR) { alert('Sorry, your browser does not support speech recognition. Please use Chrome or Edge.'); return; }
-  if (srActive) stopSR();
-  srTarget = target;
-  srCallback = onResult;
-  srInstance = new SR();
-  srInstance.lang = 'en-US';
-  srInstance.continuous = false;
-  srInstance.interimResults = false;
-  srInstance.maxAlternatives = 3;
-
-  srInstance.onstart = () => { srActive = true; if (onResult && onResult.onStart) onResult.onStart(); };
-  srInstance.onresult = (e) => {
-    const results = Array.from(e.results[0]);
-    const heard = results[0].transcript;
-    const result = scorePronunciation(heard, target);
-    if (onResult && onResult.onResult) onResult.onResult(result, heard);
-  };
-  srInstance.onerror = (e) => {
-    srActive = false;
-    if (e.error === 'no-speech') {
-      if (onResult && onResult.onResult) onResult.onResult({ pass: false, score: 0 }, '');
-    }
-    if (onResult && onResult.onEnd) onResult.onEnd();
-  };
-  srInstance.onend = () => { srActive = false; if (onResult && onResult.onEnd) onResult.onEnd(); };
-
-  srInstance.start();
-  // Auto stop after 6 seconds
-  if (srTimeout) clearTimeout(srTimeout);
-  srTimeout = setTimeout(() => { if (srActive) stopSR(); }, 6000);
-}
-
-function stopSR() {
-  if (srInstance) { try { srInstance.stop(); } catch(e) {} }
-  srActive = false;
-  if (srTimeout) { clearTimeout(srTimeout); srTimeout = null; }
-}
-
-// ===== FLASH CARD PRONUNCIATION =====
-let flashMicActive = false;
-
-function toggleFlashMic() {
-  if (flashMicActive) { stopFlashMic(); return; }
-  if (!flashWords[flashIndex]) return;
-  const word = flashWords[flashIndex].word;
-  flashMicActive = true;
-  const btn = document.getElementById('flashMicBtn');
-  const label = document.getElementById('flashMicLabel');
-  const feedback = document.getElementById('flashPronunFeedback');
-  const feedback2 = document.getElementById('flashPronunFeedback2');
-  if (btn) btn.classList.add('recording');
-  if (label) label.textContent = 'Recording...';
-  if (feedback) feedback.innerHTML = '<span style="color:var(--text-sub)">Please read the word...</span>';
-  if (feedback2) feedback2.innerHTML = '';
-  // Play the word first
-  speakText(word);
-  setTimeout(() => {
-    startSR(word, {
-      onStart: () => {},
-      onResult: (result, heard) => {
-        const msg = getEncouragement(result.score);
-        const icon = result.pass ? '✓' : '✗';
-        const cls = result.pass ? 'correct' : 'wrong';
-        const html = `<span>${icon}</span> <span>${msg}</span>`;
-        if (feedback) feedback.innerHTML = html; feedback.className = `pronun-feedback ${cls}`;
-        if (feedback2) feedback2.innerHTML = html; feedback2.className = `pronun-feedback ${cls}`;
-        if (btn) {
-          btn.classList.remove('recording');
-          btn.classList.add(result.pass ? 'done-correct' : 'done-wrong');
-          label.textContent = result.pass ? '✓ Excellent!' : '✗ Try again';
+        // ============ LESSON TAB SWITCHING ============
+        function switchLessonTab(tabName) {
+            console.log('[APP] switchLessonTab:', tabName);
+            var tabs = document.querySelectorAll('.lesson-tab');
+            for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+            var contents = document.querySelectorAll('.lesson-tab-content');
+            for (var j = 0; j < contents.length; j++) contents[j].classList.remove('active');
+            var clickedTab = document.querySelector('.lesson-tab[onclick*="switchLessonTab(\'' + tabName + '\')"]');
+            if (clickedTab) clickedTab.classList.add('active');
+            var target = document.getElementById('lesson-tab-' + tabName);
+            if (target) target.classList.add('active');
         }
-        if (result.pass) {
-          // Auto mark as known
-          setTimeout(() => {
-            const w = flashWords[flashIndex];
-            if (w) {
-              const prev = getWordStatus(currentUnit.id, w.word);
-              setWordStatus(currentUnit.id, w.word, {
-                status: 'learned',
-                learnedAt: prev.learnedAt || new Date().toISOString(),
-                reviewTimes: prev.reviewTimes || 0
-              });
+
+        // ============ LESSON DATA ============
+        var lessonData = {
+            1: {
+                title: 'Lesson 1: What jobs do people do in a community?',
+                subtitle: 'Big Question - Pages 2-9',
+                vocab: [
+                    { word: 'doctor', phonetic: '/dɒktər/', meaning: '医生', sentence: 'The doctor helps sick people.' },
+                    { word: 'cook', phonetic: '/kʊk/', meaning: '厨师', sentence: 'The cook makes delicious food.' },
+                    { word: 'teacher', phonetic: '/tiːtʃər/', meaning: '老师', sentence: 'My teacher teaches reading.' },
+                    { word: 'nurse', phonetic: '/nɜːrs/', meaning: '护士', sentence: 'The nurse gives shots with care.' },
+                    { word: 'belong', phonetic: '/bɪlɒŋ/', meaning: '属于', sentence: 'These girls belong to a softball team.', type: 'verb' },
+                    { word: 'build', phonetic: '/bɪld/', meaning: '建造', sentence: 'They use wood and tools to build a birdhouse.', type: 'verb' },
+                    { word: 'care', phonetic: '/keər/', meaning: '关心，照顾', sentence: 'People in families care about each other.', type: 'verb' },
+                    { word: 'community', phonetic: '/kəmjuːnəti/', meaning: '社区', sentence: 'These people live in a small community.', type: 'noun' },
+                    { word: 'neighbor', phonetic: '/neɪbər/', meaning: '邻居', sentence: 'Say "hello" to a neighbor who lives next door.', type: 'noun' }
+                ],
+                reading: 'Our Hometown Workers\n\nHere is Nathaniel. He is a teacher.\nHe teaches reading at our school.\n\nHere is his friend, Jae, who cooks at Jae\'s Place.\nHe makes cooking look so cool.\n\nHere is Maria. She is a doctor.\nEach year she checks your eyes and ears.\n\nNow here is Vera. She is a good nurse.\nWhen she gives shots there are no tears.',
+                readalong: 'Here is Nathaniel. He is a teacher. He teaches reading at our school. Here is his friend Jae who cooks at Jae\'s Place. Here is Maria. She is a doctor.',
+                practice: [
+                    { q: 'What does Nathaniel do?', options: ['He is a teacher', 'He is a cook', 'He is a doctor'], answer: 0 },
+                    { q: 'Where does Jae work?', options: ['At school', 'At Jae\'s Place', 'At hospital'], answer: 1 },
+                    { q: 'What does Maria check each year?', options: ['Your teeth', 'Your eyes and ears', 'Your height'], answer: 1 }
+                ],
+                quiz: [
+                    { q: 'What does a doctor do?', options: ['Teaches students', 'Cooks food', 'Checks eyes and ears'], answer: 2 },
+                    { q: 'Who is a good nurse?', options: ['Nathaniel', 'Maria', 'Vera'], answer: 2 },
+                    { q: '"Community workers" means ___ .', options: ['Students', 'People with jobs in a community', 'Teachers only'], answer: 1 }
+                ]
+            },
+            2: {
+                title: 'Lesson 2: Your Community',
+                subtitle: 'Talk About It - Pages 26-27',
+                vocab: [
+                    { word: 'farmer', phonetic: '/fɑːrmər/', meaning: '农民', sentence: 'A farmer grows food on a farm.' },
+                    { word: 'firefighter', phonetic: '/faɪərfaɪtər/', meaning: '消防员', sentence: 'A firefighter puts out fires.' },
+                    { word: 'police officer', phonetic: '/pəliːs ɒfɪsər/', meaning: '警察', sentence: 'A police officer helps keep us safe.' },
+                    { word: 'reporter', phonetic: '/rɪpɔːrtər/', meaning: '记者', sentence: 'A reporter writes stories for a newspaper.' },
+                    { word: 'vet', phonetic: '/vet/', meaning: '兽医', sentence: 'A vet takes care of animals.' }
+                ],
+                academicVocab: [
+                    { word: 'equipment', phonetic: '/ɪkwɪpmənt/', meaning: '设备', sentence: 'Firefighters use special equipment to do their jobs.' },
+                    { word: 'job', phonetic: '/dʒɒb/', meaning: '工作', sentence: 'A job is work that people do.' },
+                    { word: 'operate', phonetic: '/ɒpəreɪt/', meaning: '操作', sentence: 'Doctors know how to operate special machines.' },
+                    { word: 'prepare', phonetic: '/prɪper/', meaning: '准备', sentence: 'A chef prepares meals in a kitchen.' },
+                    { word: 'protect', phonetic: '/prətekt/', meaning: '保护', sentence: 'A police officer can protect people.' },
+                    { word: 'serve', phonetic: '/sɜːrv/', meaning: '服务', sentence: 'People serve others by helping them.' }
+                ],
+                reading: 'What is your community like? Does it have shops? Does it have a park where you can play? Does it have neighbors who say hello? Are there busy streets? Do fire trucks scream as they go by? Or is your community quiet?\n\nCommunities are different, but they are also alike in many ways. Communities have people who help take care of you. Firefighters are part of your community. They put out fires. Police officers are also part of your community. They are strong. They protect people. Doctors and nurses in your community help you stay well. They scrub their hands to kill germs. Teachers in your community help you learn. They stress education and exploration.\n\nA community is the place where you live. It is a place where people take care of each other.',
+                readalong: 'What is your community like? Does it have shops? Does it have a park where you can play? Does it have neighbors who say hello? Are there busy streets? Do fire trucks scream as they go by? Or is your community quiet?\n\nCommunities are different, but they are also alike in many ways. Communities have people who help take care of you. Firefighters are part of your community. They put out fires. Police officers are also part of your community. They are strong. They protect people. Doctors and nurses in your community help you stay well. They scrub their hands to kill germs. Teachers in your community help you learn. They stress education and exploration.\n\nA community is the place where you live. It is a place where people take care of each other.',
+                practice: [
+                    { q: 'Who puts out fires?', options: ['Police officer', 'Firefighter', 'Farmer'], answer: 1 },
+                    { q: 'What do doctors and nurses do?', options: ['Put out fires', 'Help us stay well', 'Write stories'], answer: 1 },
+                    { q: 'What do police officers do?', options: ['Grow food', 'Protect people', 'Teach students'], answer: 1 }
+                ],
+                quiz: [
+                    { q: 'Who takes care of animals?', options: ['Farmer', 'Vet', 'Reporter'], answer: 1 },
+                    { q: 'Teachers help you ___', options: ['Learn', 'Get sick', 'Put out fires'], answer: 0 },
+                    { q: '"Protect" means ___', options: ['Put in danger', 'Keep safe', 'Break things'], answer: 1 }
+                ]
+            },
+            3: {
+                title: 'Lesson 3: A Day with Grandma',
+                subtitle: 'Read - Pages 18-31',
+                vocab: [
+                    { word: 'grandma', phonetic: '/ɡrænmɑː/', meaning: '奶奶', sentence: 'I love my grandma.' },
+                    { word: 'exercise', phonetic: '/eksəsaɪz/', meaning: '运动', sentence: 'We exercise every day.' },
+                    { word: 'market', phonetic: '/mɑːkɪt/', meaning: '市场', sentence: 'We go to the market.' }
+                ],
+                reading: 'I will spend the day with my grandma. Grandma meets her friends at the park every morning. They like to exercise together. They walk, stretch, and do yoga. Grandma says exercise is good for you. After exercise, Grandma says hello to her neighbors. She knows everyone in the community. Grandma also goes to the market to buy fresh vegetables. I love spending time with my grandma.',
+                readalong: 'I will spend the day with my grandma. Grandma meets her friends at the park. They like to exercise.',
+                practice: [
+                    { q: 'Where does Grandma meet her friends?', options: ['At school', 'At the park', 'At the market'], answer: 1 },
+                    { q: 'What do Grandma and her friends like to do?', options: ['Cook', 'Exercise', 'Read'], answer: 1 }
+                ],
+                quiz: [
+                    { q: 'What does "grandma" mean?', options: ['Grandpa', 'Grandma', 'Mom'], answer: 1 },
+                    { q: 'Where do they go?', options: ['School', 'Park', 'Hospital'], answer: 1 }
+                ]
+            },
+            4: {
+                title: 'Lesson 4: Describing Places',
+                subtitle: 'Write - Pages 32-39',
+                vocab: [
+                    { word: 'big', phonetic: '/bɪɡ/', meaning: '大的', sentence: 'The school is big.' },
+                    { word: 'beautiful', phonetic: '/bjuːtɪfəl/', meaning: '美丽的', sentence: 'The park is beautiful.' },
+                    { word: 'busy', phonetic: '/bɪzi/', meaning: '忙碌的', sentence: 'The market is busy.' }
+                ],
+                reading: 'Here is the market. It is a big and busy place. She sells vegetables and fruits. Her vegetables are nice and fresh. The market is colorful with red tomatoes, orange carrots, and green lettuce. Many people come to the market every day. What a great community we live in!',
+                readalong: 'Here is the market. She sells vegetables. Her vegetables are nice and fresh. What a great community!',
+                practice: [
+                    { q: 'The market is ___ .', options: ['big', 'busy', 'quiet'], answer: 1 },
+                    { q: 'The vegetables are ___ .', options: ['fresh', 'old', 'bad'], answer: 0 }
+                ],
+                quiz: [
+                    { q: 'What is the opposite of big?', options: ['Small', 'Tall', 'Fast'], answer: 0 },
+                    { q: '"Beautiful" means ___ .', options: ['Ugly', 'Pretty', 'Sad'], answer: 1 }
+                ]
+            },
+            5: {
+                title: 'Lesson 5: Our School Community',
+                subtitle: 'Vocabulary - Pages 40-51',
+                vocab: [
+                    { word: 'library', phonetic: '/laɪbrəri/', meaning: '图书馆', sentence: 'We read books in the library.' },
+                    { word: 'cafeteria', phonetic: '/kæfətɪəriə/', meaning: '餐厅', sentence: 'We eat lunch in the cafeteria.' },
+                    { word: 'gym', phonetic: '/dʒɪm/', meaning: '体育馆', sentence: 'We play sports in the gym.' },
+                    { word: 'playground', phonetic: '/pleɪɡraʊnd/', meaning: '操场', sentence: 'Children play on the playground.' },
+                    { word: 'office', phonetic: '/ɒfɪs/', meaning: '办公室', sentence: 'The principal works in the office.' }
+                ],
+                reading: 'Our school is a special community. There are many places to learn and play. The library has many books for us to read. We can borrow books and read in the quiet library. The cafeteria is where we eat lunch together. The gym is where we exercise and play games. The playground is our favorite place to run and climb. We all work together to make our school a good place.',
+                readalong: 'Our school is a special community. There are many places to learn. We read books in the library. We eat in the cafeteria.',
+                practice: [
+                    { q: 'Where do we read books?', options: ['Library', 'Cafeteria', 'Gym'], answer: 0 },
+                    { q: 'Where do we exercise?', options: ['Playground', 'Gym', 'Office'], answer: 1 }
+                ],
+                quiz: [
+                    { q: 'What do we borrow from the library?', options: ['Food', 'Books', 'Clothes'], answer: 1 },
+                    { q: 'Where do we eat lunch?', options: ['Cafeteria', 'Library', 'Gym'], answer: 0 }
+                ]
+            },
+            6: {
+                title: 'Lesson 6: Getting Around',
+                subtitle: 'Talk About It - Pages 52-59',
+                vocab: [
+                    { word: 'walk', phonetic: '/wɔːk/', meaning: '走路', sentence: 'I walk to school every day.' },
+                    { word: 'bike', phonetic: '/baɪk/', meaning: '自行车', sentence: 'I ride my bike to the park.' },
+                    { word: 'bus', phonetic: '/bʌs/', meaning: '公共汽车', sentence: 'The bus takes us to school.' },
+                    { word: 'car', phonetic: '/kɑːr/', meaning: '汽车', sentence: 'My dad drives a car.' },
+                    { word: 'subway', phonetic: '/sʌbweɪ/', meaning: '地铁', sentence: 'The subway goes under the ground.' }
+                ],
+                reading: 'There are many ways to get around our community. Some people walk to places nearby. Walking is good exercise. Many people ride bikes on bike paths. Some families have cars to drive around. Buses take many people to work and school. The subway is fast and goes under the ground. We can also take the train for long trips. Every way of traveling is part of our community.',
+                readalong: 'There are many ways to get around. Some people walk. Some ride bikes. Buses take many people to work.',
+                practice: [
+                    { q: 'What is good exercise?', options: ['Car', 'Walk', 'Subway'], answer: 1 },
+                    { q: 'Where does the subway go?', options: ['Under the ground', 'On the water', 'In the sky'], answer: 0 }
+                ],
+                quiz: [
+                    { q: 'What has bike paths?', options: ['Water', 'Road', 'Sky'], answer: 1 },
+                    { q: 'What takes many people to work?', options: ['Bike', 'Car', 'Bus'], answer: 2 }
+                ]
+            },
+            7: {
+                title: 'Lesson 7: A Trip to the City',
+                subtitle: 'Read - Pages 60-65',
+                vocab: [
+                    { word: 'museum', phonetic: '/mjuːziəm/', meaning: '博物馆', sentence: 'The museum has old things.' },
+                    { word: 'zoo', phonetic: '/zuː/', meaning: '动物园', sentence: 'The zoo has many animals.' },
+                    { word: 'park', phonetic: '/pɑːrk/', meaning: '公园', sentence: 'We play in the park.' },
+                    { word: 'tower', phonetic: '/taʊər/', meaning: '塔', sentence: 'The tower is very tall.' },
+                    { word: 'bridge', phonetic: '/brɪdʒ/', meaning: '桥', sentence: 'The bridge goes over the river.' }
+                ],
+                reading: 'Last summer, our family took a trip to the city. First, we visited the museum. We saw old things from long ago. Then we went to the zoo. We saw lions, elephants, and monkeys. In the afternoon, we walked in the beautiful park. We took photos by the tall tower. Finally, we walked across the big bridge. It was a wonderful day in our city community!',
+                readalong: 'Last summer, we took a trip to the city. We visited the museum. We saw old things. Then we went to the zoo.',
+                practice: [
+                    { q: 'What did they visit first?', options: ['Zoo', 'Museum', 'Park'], answer: 1 },
+                    { q: 'Where did they take photos?', options: ['Bridge', 'Tower', 'Zoo'], answer: 1 }
+                ],
+                quiz: [
+                    { q: 'What did they see at the zoo?', options: ['Books', 'Animals', 'Food'], answer: 1 },
+                    { q: 'What is very tall?', options: ['Bridge', 'Park', 'Tower'], answer: 2 }
+                ]
+            },
+            8: {
+                title: 'Lesson 8: Our Community Project',
+                subtitle: 'Wrap Up - Pages 66-69',
+                vocab: [
+                    { word: 'project', phonetic: '/prɒdʒekt/', meaning: '项目/计划', sentence: 'We made a project about our community.' },
+                    { word: 'together', phonetic: '/təɡeðər/', meaning: '一起', sentence: 'We work together.' },
+                    { word: 'share', phonetic: '/ʃeər/', meaning: '分享', sentence: 'Let us share our ideas.' },
+                    { word: 'help', phonetic: '/help/', meaning: '帮助', sentence: 'We help each other.' },
+                    { word: 'kind', phonetic: '/kaɪnd/', meaning: '友好的/善良的', sentence: 'Be kind to your neighbors.' }
+                ],
+                reading: 'Our class made a project about our community. We worked together to learn about the places and people in our neighborhood. We drew pictures of our favorite places. We wrote about the helpers who make our community better. We shared our projects with our class. Everyone was kind and listened to each other. We learned that our community is special because we help and care for each other. Together, we make our community a great place to live!',
+                readalong: 'Our class made a project. We worked together. We shared our projects. We learned that our community is special.',
+                practice: [
+                    { q: 'What did our class make?', options: ['A book', 'A project', 'A movie'], answer: 1 },
+                    { q: 'How did we work?', options: ['Alone', 'Together', 'Noisy'], answer: 1 }
+                ],
+                quiz: [
+                    { q: 'What makes our community special?', options: ['Being alone', 'Helping each other', 'Not talking'], answer: 1 },
+                    { q: 'How should we treat neighbors?', options: ['Unkind', 'Kind', 'Mean'], answer: 1 }
+                ]
             }
-          }, 800);
+        };
+
+        // ============ GO TO LESSON ============
+        function goToLesson(lessonNum) {
+            console.log('[APP] goToLesson:', lessonNum);
+            var data = lessonData[lessonNum];
+            if (!data) { console.error('No data for lesson', lessonNum); return; }
+
+            document.getElementById('lessonViewTitle').textContent = data.title;
+            document.getElementById('lessonViewSubtitle').textContent = data.subtitle;
+
+            renderVocabTab(data);
+            renderReadingTab(data);
+            renderReadAlongTab(data);
+            renderPracticeTab(data);
+            renderQuizTab(data);
+
+            switchTab('lesson-view');
+            switchLessonTab('vocab');
         }
-      },
-      onEnd: () => {
-        flashMicActive = false;
-        if (btn && !btn.classList.contains('done-correct') && !btn.classList.contains('done-wrong')) {
-          btn.classList.remove('recording');
-          label.textContent = 'Read';
+
+        // ============ RENDER TABS ============
+        function renderVocabTab(data) {
+            var container = document.getElementById('lesson-tab-vocab');
+            var html = '<div class="lesson-panel"><div class="lesson-badge">Vocabulary</div><h2 class="lesson-title">Key Vocabulary</h2><p style="color:var(--text-muted);margin-bottom:1rem;font-size:0.9rem;">🔊 Tap the speaker to hear the word · Tap the card to flip</p><div class="vocab-grid">';
+            for (var i = 0; i < data.vocab.length; i++) {
+                var v = data.vocab[i];
+                html += '<div class="vocab-card" data-idx="' + i + '">' +
+                    '<div class="vocab-inner">' +
+                    '<div class="vocab-front">' +
+                    '<button class="vocab-speak-btn" data-word="' + v.word + '" onclick="event.stopPropagation();speak(this.getAttribute(\'data-word\'));">🔊</button>' +
+                    '<div class="vocab-word">' + v.word + '</div>' +
+                    '<div class="vocab-phonetic">' + v.phonetic + '</div>' +
+                    '<div class="vocab-hint">Tap to flip</div>' +
+                    '</div>' +
+                    '<div class="vocab-back">' +
+                    '<div class="vocab-meaning">' + v.meaning + '</div>' +
+                    '<div class="vocab-sentence">' + v.sentence + '</div>' +
+                    '<button class="vocab-speak-btn" data-word="' + v.word + '" onclick="event.stopPropagation();speak(this.getAttribute(\'data-word\'));" style="position:relative;margin-top:12px;background:var(--primary-light);color:var(--primary);">🔊 Hear again</button>' +
+                    '</div>' +
+                    '</div></div>';
+            }
+            html += '</div>';
+
+            // Academic Vocabulary
+            if (data.academicVocab && data.academicVocab.length > 0) {
+                html += '<div style="margin-top:2rem;"><div class="lesson-badge" style="background:var(--orange);">Academic Vocabulary</div><div class="vocab-grid">';
+                for (var j = 0; j < data.academicVocab.length; j++) {
+                    var av = data.academicVocab[j];
+                    html += '<div class="vocab-card" data-idx="av-' + j + '">' +
+                        '<div class="vocab-inner">' +
+                        '<div class="vocab-front">' +
+                        '<button class="vocab-speak-btn" data-word="' + av.word + '" onclick="event.stopPropagation();speak(this.getAttribute(\'data-word\'));">🔊</button>' +
+                        '<div class="vocab-word">' + av.word + '</div>' +
+                        '<div class="vocab-phonetic">' + av.phonetic + '</div>' +
+                        '<div class="vocab-hint">Tap to flip</div>' +
+                        '</div>' +
+                        '<div class="vocab-back">' +
+                        '<div class="vocab-meaning">' + av.meaning + '</div>' +
+                        '<div class="vocab-sentence">' + av.sentence + '</div>' +
+                        '<button class="vocab-speak-btn" data-word="' + av.word + '" onclick="event.stopPropagation();speak(this.getAttribute(\'data-word\'));" style="position:relative;margin-top:12px;background:var(--primary-light);color:var(--primary);">🔊 Hear again</button>' +
+                        '</div>' +
+                        '</div></div>';
+                }
+                html += '</div></div>';
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+
+            // Attach flip events
+            var cards = container.querySelectorAll('.vocab-card');
+            for (var k = 0; k < cards.length; k++) {
+                (function(card) {
+                    card.addEventListener('click', function(e) {
+                        e.stopPropagation(); // 阻止冒泡到父级
+                        if (e.target.closest('.vocab-speak-btn')) return; // 喇叭按钮不翻转
+                        card.classList.toggle('flipped');
+                    });
+                })(cards[k]);
+            }
         }
-      }
-    });
-  }, 1200);
-}
 
-function stopFlashMic() {
-  stopSR();
-  flashMicActive = false;
-  const btn = document.getElementById('flashMicBtn');
-  const label = document.getElementById('flashMicLabel');
-  if (btn) { btn.classList.remove('recording'); btn.className = 'mic-btn'; }
-  if (label) label.textContent = 'Read';
-}
-
-// ===== READING PAGE PRONUNCIATION =====
-let sentenceMicStates = {}; // sentIndex -> { active, instance }
-
-function startSentenceMic(sentIndex, text) {
-  if (sentenceMicStates[sentIndex] && sentenceMicStates[sentIndex].active) {
-    // Stop
-    stopSR();
-    sentenceMicStates[sentIndex].active = false;
-    updateSentenceMicUI(sentIndex, false, null);
-    return;
-  }
-  // Stop any other active sentence mics
-  Object.keys(sentenceMicStates).forEach(k => {
-    if (sentenceMicStates[k].active) { stopSR(); sentenceMicStates[k].active = false; updateSentenceMicUI(parseInt(k), false, null); }
-  });
-  sentenceMicStates[sentIndex] = { active: true };
-  updateSentenceMicUI(sentIndex, true, null);
-  // Speak sentence first
-  speakText(text);
-  setTimeout(() => {
-    startSR(text, {
-      onResult: (result, heard) => {
-        sentenceMicStates[sentIndex].active = false;
-        updateSentenceMicUI(sentIndex, false, result);
-      },
-      onEnd: () => {
-        sentenceMicStates[sentIndex].active = false;
-      }
-    });
-  }, text.length * 60 + 500);
-}
-
-function updateSentenceMicUI(sentIndex, recording, result) {
-  const btn = document.getElementById('sent-mic-' + sentIndex);
-  const fbEl = document.getElementById('sent-fb-' + sentIndex);
-  if (!btn) return;
-  if (recording) {
-    btn.className = 'sentence-mic-btn recording';
-    btn.textContent = '⏹ Stop';
-    if (fbEl) fbEl.innerHTML = '';
-  } else if (result) {
-    btn.className = 'sentence-mic-btn done';
-    btn.textContent = result.pass ? '✓' : '🔄';
-    if (fbEl) {
-      fbEl.className = `sent-feedback ${result.pass ? 'correct' : 'wrong'}`;
-      fbEl.innerHTML = result.pass ? getEncouragement(result.score) : `${getEncouragement(result.score)} (Tip: ${result.score < 40 ? 'Listen more carefully' : 'Try speaking slower'}`;
-    }
-  } else {
-    btn.className = 'sentence-mic-btn';
-    btn.textContent = '🎤';
-    if (fbEl) fbEl.innerHTML = '';
-  }
-}
-
-function stopAllSentenceMics() {
-  Object.keys(sentenceMicStates).forEach(k => {
-    if (sentenceMicStates[k].active) { stopSR(); sentenceMicStates[k].active = false; }
-  });
-}
-
-// ===== WRITING FRAME =====
-function startWriting() {
-  if (!currentUnit || !currentUnit.writingFrame) {
-    // Fallback if no writing frame data
-    document.getElementById('writeContent').innerHTML = `
-      <div class="empty-state">
-        <span class="e-icon">✍️</span>
-        <div>Writing Frame coming soon!</div>
-      </div>
-    `;
-    showPage('write');
-    return;
-  }
-  renderWritingFrame();
-  showPage('write');
-}
-
-function renderWritingFrame() {
-  const wf = currentUnit.writingFrame;
-  const savedKey = `rh2a_writing_${currentUnit.id}`;
-  const savedText = S.get(savedKey) || '';
-  const savedDate = S.get(savedKey + '_date') || '';
-
-  let frameHtml = wf.frame.map((f, i) => `
-    <div class="wf-frame-row">
-      <span class="wf-frame-text">${f.text}</span>
-      <input type="text" class="wf-placeholder-input" 
-        id="wf_input_${i}" 
-        placeholder="${f.placeholder}"
-        data-index="${i}"
-        onfocus="speakPlaceholder('${f.placeholder}')"
-        autocomplete="off"
-      />
-    </div>
-  `).join('');
-
-  let wordBankHtml = wf.wordBank.map(w => {
-    const unitWord = currentUnit.words.find(uw => uw.word.toLowerCase() === w.toLowerCase());
-    const phonetic = unitWord ? unitWord.phonetic : '';
-    return `<span class="wf-word-chip" onclick="speakWordFromBank('${w}')" title="${phonetic}">${w}</span>`;
-  }).join('');
-
-  let savedBadge = savedText ? `<div class="wf-saved-badge">✓ Saved ${savedDate ? `(${savedDate})` : ''}</div>` : '';
-
-  document.getElementById('writeContent').innerHTML = `
-    <div class="wf-card fade-in">
-      <div class="wf-title">${wf.title}</div>
-      <div class="wf-topic">
-        <div class="wf-topic-label">📝 Topic</div>
-        ${wf.topic}
-      </div>
-      <div style="font-size:13px; color:var(--text-sub); margin-bottom:12px;">Fill in the blanks to complete your writing:</div>
-      ${frameHtml}
-    </div>
-
-    <div class="wf-word-bank">
-      <div class="wf-word-bank-label">📚 Word Bank (tap to hear)</div>
-      ${wordBankHtml}
-    </div>
-
-    <div class="wf-card">
-      <div class="wf-write-label">✏️ Your Writing</div>
-      <textarea class="wf-textarea" id="wfTextarea" placeholder="Use the frame above to write your paragraph...">${savedText}</textarea>
-      <div class="wf-char-count" id="wfCharCount">0 characters</div>
-      <div class="wf-btn-row">
-        <button class="wf-btn wf-btn-secondary" onclick="clearWriting()">Clear</button>
-        <button class="wf-btn wf-btn-primary" onclick="saveWriting()">💾 Save</button>
-        <button class="wf-btn wf-btn-green" onclick="speakMyWriting()">🔊 Read</button>
-      </div>
-      ${savedBadge}
-    </div>
-
-    <div class="wf-card" style="background:#FFF3E0; border:1px solid #FFE0B2;">
-      <div style="font-size:13px; color:#795548; line-height:1.7;">
-        <strong>💡 Tips:</strong><br>
-        • Tap words in the Word Bank to hear pronunciation<br>
-        • Fill in the blanks to build your paragraph<br>
-        • Click "Read" to hear your writing<br>
-        • Your work is saved automatically!
-      </div>
-    </div>
-  `;
-
-  // Update char count on input
-  const textarea = document.getElementById('wfTextarea');
-  textarea.addEventListener('input', updateCharCount);
-  updateCharCount();
-}
-
-function updateCharCount() {
-  const textarea = document.getElementById('wfTextarea');
-  const count = textarea ? textarea.value.length : 0;
-  const countEl = document.getElementById('wfCharCount');
-  if (countEl) countEl.textContent = `${count} characters`;
-}
-
-function speakPlaceholder(text) {
-  speakText(text);
-}
-
-function speakWordFromBank(word) {
-  // Find the word in unit words to get the full object
-  const unitWord = currentUnit.words.find(w => w.word.toLowerCase() === word.toLowerCase());
-  if (unitWord) {
-    speakText(unitWord.word);
-  } else {
-    speakText(word);
-  }
-}
-
-function clearWriting() {
-  if (!confirm('Clear your writing? This cannot be undone.')) return;
-  document.getElementById('wfTextarea').value = '';
-  updateCharCount();
-  // Clear inputs
-  const inputs = document.querySelectorAll('.wf-placeholder-input');
-  inputs.forEach(inp => inp.value = '');
-}
-
-function saveWriting() {
-  const savedKey = `rh2a_writing_${currentUnit.id}`;
-  const text = document.getElementById('wfTextarea').value;
-  const now = new Date();
-  const dateStr = `${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
-  S.set(savedKey, text);
-  S.set(savedKey + '_date', dateStr);
-
-  // Show saved badge
-  const card = document.querySelector('.wf-btn-row').parentElement;
-  const existing = card.querySelector('.wf-saved-badge');
-  if (existing) existing.remove();
-
-  const badge = document.createElement('div');
-  badge.className = 'wf-saved-badge';
-  badge.textContent = `✓ Saved (${dateStr})`;
-  badge.style.animation = 'fadeIn 0.3s ease';
-  card.appendChild(badge);
-
-  // Visual feedback
-  const saveBtn = document.querySelector('.wf-btn-primary');
-  saveBtn.style.transform = 'scale(1.1)';
-  setTimeout(() => saveBtn.style.transform = '', 200);
-}
-
-function speakMyWriting() {
-  const text = document.getElementById('wfTextarea').value;
-  if (!text.trim()) {
-    alert('Please write something first!');
-    return;
-  }
-  speakText(text);
-}
-
-// ===== SPEAKING PRACTICE =====
-let speakingState = {
-  currentQ: 0,
-  questions: [],
-  score: 0,
-  answered: false,
-  isRecording: false,
-  transcript: ''
-};
-
-function startSpeaking() {
-  if (!currentUnit || !SPEAKING_TOPICS[currentUnit.id]) {
-    document.getElementById('speakContent').innerHTML = `
-      <div class="empty-state">
-        <span class="e-icon">🎤</span>
-        <div>Speaking Practice coming soon!</div>
-      </div>
-    `;
-    showPage('speak');
-    return;
-  }
-
-  speakingState = {
-    currentQ: 0,
-    questions: SPEAKING_TOPICS[currentUnit.id].questions,
-    score: 0,
-    answered: false,
-    isRecording: false,
-    transcript: ''
-  };
-
-  renderSpeakingIntro();
-  showPage('speak');
-}
-
-function renderSpeakingIntro() {
-  const topic = SPEAKING_TOPICS[currentUnit.id];
-  const total = speakingState.questions.length;
-
-  document.getElementById('speakContent').innerHTML = `
-    <div class="sp-intro-card fade-in">
-      <div class="sp-intro-icon">🎤</div>
-      <div class="sp-intro-title">${topic.title}</div>
-      <div class="sp-intro-text">${topic.intro}</div>
-    </div>
-    <div style="background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--card-shadow); margin-bottom: 16px;">
-      <div style="font-size: 14px; color: var(--text-sub); margin-bottom: 12px;">
-        <strong>What you'll practice:</strong>
-      </div>
-      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-        ${topic.questions.map((q, i) => `
-          <div style="background: var(--bg); padding: 8px 14px; border-radius: 20px; font-size: 13px; color: var(--text-sub);">
-            Q${i + 1}: ${q.q.substring(0, 25)}...
-          </div>
-        `).join('')}
-      </div>
-    </div>
-    <div style="background: #FFF3E0; border-radius: var(--radius); padding: 16px; margin-bottom: 20px;">
-      <div style="font-size: 13px; color: #E65100; line-height: 1.6;">
-        <strong>💡 Tips:</strong><br>
-        • Use your microphone to answer questions<br>
-        • Try to use vocabulary from this unit<br>
-        • Don't worry about mistakes - practice makes perfect!
-      </div>
-    </div>
-    <button class="sp-nav-btn sp-nav-btn-next" onclick="renderSpeakingQuestion()">
-      🚀 Start Practice
-    </button>
-  `;
-}
-
-function renderSpeakingQuestion() {
-  const { currentQ, questions, score } = speakingState;
-  const q = questions[currentQ];
-  const total = questions.length;
-  const progress = ((currentQ) / total) * 100;
-
-  document.getElementById('speakContent').innerHTML = `
-    <div class="sp-progress-bar">
-      <div class="sp-progress-fill" style="width: ${progress}%"></div>
-    </div>
-    <div style="text-align: center; font-size: 13px; color: var(--text-sub); margin-bottom: 16px;">
-      Question ${currentQ + 1} of ${total}
-    </div>
-
-    <div class="sp-question-card fade-in">
-      <div class="sp-question-num">🎯 Question</div>
-      <div class="sp-question-text">${q.q}</div>
-      <div class="sp-hint">
-        <span class="sp-hint-icon">💡</span>
-        <span><strong>Hint:</strong> ${q.hint}</span>
-      </div>
-
-      <div class="sp-transcript">
-        <div class="sp-transcript-label">Your Answer:</div>
-        <div id="spTranscriptText" style="color: #999; font-style: italic;">Tap the microphone to speak...</div>
-      </div>
-
-      <div class="sp-mic-area">
-        <button class="sp-mic-btn" id="spMicBtn" onclick="toggleSpeakingMic()">🎤</button>
-        <div class="sp-mic-label" id="spMicLabel">Tap to speak</div>
-      </div>
-
-      <div id="spFeedback" style="display: none;"></div>
-
-      <div class="sp-nav-row">
-        <button class="sp-nav-btn sp-nav-btn-skip" onclick="skipQuestion()">Skip</button>
-        <button class="sp-nav-btn sp-nav-btn-next" id="spNextBtn" onclick="nextQuestion()" style="display: none;">
-          Next Question →
-        </button>
-      </div>
-    </div>
-  `;
-}
-
-function toggleSpeakingMic() {
-  if (speakingState.isRecording) {
-    stopSpeakingMic();
-  } else {
-    startSpeakingMic();
-  }
-}
-
-function startSpeakingMic() {
-  // Check browser support
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    showMicError('❌ 您的浏览器不支持语音识别<br><br>请使用 <strong>Chrome</strong> 或 <strong>Edge</strong> 浏览器');
-    return;
-  }
-
-  // Check HTTPS requirement
-  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-    showMicError('⚠️ 语音识别需要 HTTPS 环境<br><br>请通过 <strong>GitHub Pages</strong> 访问：<br>https://hildaisbest.github.io/reach-higher-2a/');
-    return;
-  }
-
-  // Check microphone permission
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(function(stream) {
-        // Permission granted, stop the stream immediately
-        stream.getTracks().forEach(track => track.stop());
-        // Continue with speech recognition
-        startSpeechRecognition();
-      })
-      .catch(function(err) {
-        showMicError('🎤 麦克风权限被拒绝<br><br>请在浏览器设置中允许使用麦克风');
-      });
-  } else {
-    startSpeechRecognition();
-  }
-}
-
-function showMicError(message) {
-  const transcriptEl = document.getElementById('spTranscriptText');
-  if (transcriptEl) {
-    transcriptEl.innerHTML = message;
-    transcriptEl.style.color = '#F44336';
-    transcriptEl.style.fontStyle = 'normal';
-  }
-}
-
-function startSpeechRecognition() {
-  speakingState.isRecording = true;
-  speakingState.transcript = '';
-
-  const micBtn = document.getElementById('spMicBtn');
-  const micLabel = document.getElementById('spMicLabel');
-
-  if (micBtn) {
-    micBtn.classList.add('recording');
-    micBtn.textContent = '⏹';
-  }
-  if (micLabel) micLabel.textContent = 'Listening...';
-
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = true;
-  recognition.lang = 'en-US';
-
-  recognition.onresult = (event) => {
-    let finalTranscript = '';
-    let interimTranscript = '';
-
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const transcript = event.results[i][0].transcript;
-      if (event.results[i].isFinal) {
-        finalTranscript += transcript;
-      } else {
-        interimTranscript += transcript;
-      }
-    }
-
-    const displayText = finalTranscript || interimTranscript;
-    speakingState.transcript = displayText;
-
-    const transcriptEl = document.getElementById('spTranscriptText');
-    if (transcriptEl) {
-      transcriptEl.textContent = displayText || 'Listening...';
-      transcriptEl.style.color = displayText ? '#333' : '#999';
-      transcriptEl.style.fontStyle = displayText ? 'normal' : 'italic';
-    }
-  };
-
-  recognition.onerror = (event) => {
-    console.log('Speech recognition error:', event.error);
-    stopSpeakingMic();
-    if (event.error === 'no-speech') {
-      const transcriptEl = document.getElementById('spTranscriptText');
-      if (transcriptEl) transcriptEl.textContent = 'No speech detected. Try again!';
-    }
-  };
-
-  recognition.onend = () => {
-    if (speakingState.isRecording) {
-      speakingState.isRecording = false;
-      speakingState.answered = true;
-
-      const micBtn = document.getElementById('spMicBtn');
-      const micLabel = document.getElementById('spMicLabel');
-      if (micBtn) {
-        micBtn.classList.remove('recording');
-        micBtn.textContent = '🎤';
-      }
-      if (micLabel) micLabel.textContent = 'Tap to speak again';
-
-      // Show feedback
-      showSpeakingFeedback();
-    }
-  };
-
-  recognition.start();
-  speakingState.recognition = recognition;
-}
-
-function stopSpeakingMic() {
-  speakingState.isRecording = false;
-  if (speakingState.recognition) {
-    speakingState.recognition.stop();
-    speakingState.recognition = null;
-  }
-
-  const micBtn = document.getElementById('spMicBtn');
-  const micLabel = document.getElementById('spMicLabel');
-  if (micBtn) {
-    micBtn.classList.remove('recording');
-    micBtn.textContent = '🎤';
-  }
-  if (micLabel) micLabel.textContent = 'Tap to speak';
-}
-
-function showSpeakingFeedback() {
-  const q = speakingState.questions[speakingState.currentQ];
-  const transcript = speakingState.transcript.toLowerCase();
-
-  // Check keyword matches
-  let matches = 0;
-  q.keywords.forEach(kw => {
-    if (transcript.includes(kw.toLowerCase())) matches++;
-  });
-
-  const matchRatio = matches / q.keywords.length;
-  let feedback, feedbackClass, feedbackIcon, scoreAdd;
-
-  if (matchRatio >= 0.5 || transcript.length > 50) {
-    feedback = `Great job! You mentioned ${matches} relevant keywords. ${q.followUps[Math.floor(Math.random() * q.followUps.length)]}`;
-    feedbackClass = 'sp-feedback-correct';
-    feedbackIcon = '🎉';
-    scoreAdd = 3;
-  } else if (matchRatio >= 0.25 || transcript.length > 20) {
-    feedback = `Good effort! Try to use more keywords like: ${q.keywords.slice(0, 3).join(', ')}. ${q.followUps[Math.floor(Math.random() * q.followUps.length)]}`;
-    feedbackClass = 'sp-feedback-good';
-    feedbackIcon = '👍';
-    scoreAdd = 2;
-  } else {
-    feedback = `Nice try! Think about using words like: ${q.keywords.slice(0, 3).join(', ')}. Take your time to form your answer.`;
-    feedbackClass = 'sp-feedback-try';
-    feedbackIcon = '💪';
-    scoreAdd = 1;
-  }
-
-  speakingState.score += scoreAdd;
-
-  const feedbackEl = document.getElementById('spFeedback');
-  if (feedbackEl) {
-    feedbackEl.className = `sp-feedback ${feedbackClass}`;
-    feedbackEl.innerHTML = `
-      <div class="sp-feedback-title">${feedbackIcon} AI Feedback</div>
-      <div class="sp-feedback-text">${feedback}</div>
-    `;
-    feedbackEl.style.display = 'block';
-  }
-
-  // Show next button
-  const nextBtn = document.getElementById('spNextBtn');
-  if (nextBtn) {
-    nextBtn.style.display = 'block';
-    if (speakingState.currentQ === speakingState.questions.length - 1) {
-      nextBtn.textContent = '🎯 See Results';
-    }
-  }
-
-  // Speak the feedback
-  speakText(feedback);
-}
-
-function skipQuestion() {
-  speakQuestionText();
-}
-
-function speakQuestionText() {
-  const q = speakingState.questions[speakingState.currentQ];
-  speakText(q.q);
-}
-
-function nextQuestion() {
-  speakingState.currentQ++;
-  speakingState.answered = false;
-  speakingState.transcript = '';
-
-  if (speakingState.currentQ >= speakingState.questions.length) {
-    renderSpeakingComplete();
-  } else {
-    renderSpeakingQuestion();
-  }
-}
-
-function renderSpeakingComplete() {
-  const { score, questions } = speakingState;
-  const maxScore = questions.length * 3;
-  const percentage = Math.round((score / maxScore) * 100);
-
-  let message, icon;
-  if (percentage >= 80) {
-    message = "Outstanding! You're a fantastic speaker!";
-    icon = "🏆";
-  } else if (percentage >= 60) {
-    message = "Great job! Keep practicing to improve!";
-    icon = "🌟";
-  } else {
-    message = "Good effort! Practice makes perfect!";
-    icon = "💪";
-  }
-
-  document.getElementById('speakContent').innerHTML = `
-    <div class="sp-complete-card fade-in">
-      <div class="sp-complete-icon">${icon}</div>
-      <div class="sp-complete-title">Practice Complete!</div>
-      <div class="sp-complete-text">${message}</div>
-      <div class="sp-complete-text" style="margin-top: 12px;">
-        You answered ${questions.length} questions and used the unit vocabulary.
-      </div>
-      <div class="sp-score-badge">
-        Score: ${score}/${maxScore}
-      </div>
-    </div>
-
-    <div style="background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--card-shadow); margin-top: 20px;">
-      <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px;">
-        📚 Vocabulary Used
-      </div>
-      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-        ${questions.flatMap(q => q.keywords.slice(0, 2)).filter((v, i, a) => a.indexOf(v) === i).map(w => `
-          <span style="background: var(--blue-light); color: var(--blue); padding: 6px 12px; border-radius: 16px; font-size: 13px;">${w}</span>
-        `).join('')}
-      </div>
-    </div>
-
-    <div class="sp-nav-row" style="margin-top: 20px;">
-      <button class="sp-nav-btn sp-nav-btn-speak" onclick="startSpeaking()">
-        🔄 Practice Again
-      </button>
-      <button class="sp-nav-btn sp-nav-btn-next" onclick="showPage('unit')">
-        ← Back to Unit
-      </button>
-    </div>
-  `;
-}
-
-// ===== INIT =====
-
-// ===== GRAMMAR PRACTICE =====
-function startGrammar() {
-  if (!currentUnit || !GRAMMAR_PRACTICE[currentUnit.id]) {
-    document.getElementById('grammarContent').innerHTML = `
-      <div class="empty-state">
-        <span class="e-icon">📝</span>
-        <div>Grammar Practice coming soon!</div>
-      </div>
-    `;
-    showPage('grammar');
-    return;
-  }
-  renderGrammarPractice();
-  showPage('grammar');
-}
-
-function renderGrammarPractice() {
-  const gp = GRAMMAR_PRACTICE[currentUnit.id];
-  const exercises = gp.exercises;
-
-  let exercisesHtml = exercises.map((ex, i) => `
-    <div class="gp-exercise" id="gp_ex_${i}">
-      <div class="gp-exercise-num">Exercise ${i + 1}</div>
-      <div class="gp-exercise-q">${ex.sentence}</div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <input type="text" class="gp-input" id="gp_input_${i}" placeholder="Type answer..." autocomplete="off" onkeypress="if(event.key==='Enter')checkGrammar(${i}, '${ex.answer}')"/>
-        <button class="gp-check-btn" onclick="checkGrammar(${i}, '${ex.answer}')">Check</button>
-      </div>
-      <div id="gp_fb_${i}" style="margin-top: 10px; font-size: 13px;"></div>
-    </div>
-  `).join('');
-
-  document.getElementById('grammarContent').innerHTML = `
-    <div class="gp-rule-card fade-in">
-      <div class="gp-rule-title">📖 ${gp.title}</div>
-      <div class="gp-rule-text">${gp.rules}</div>
-      <div style="font-size: 12px; font-weight: 600; color: #FF8F00; margin-bottom: 8px;">EXAMPLES:</div>
-      <div class="gp-examples">
-        ${gp.examples.map(ex => `<div class="gp-example">${ex}</div>`).join('')}
-      </div>
-    </div>
-
-    <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px;">
-      ✏️ Practice Exercises
-    </div>
-
-    ${exercisesHtml}
-  `;
-}
-
-function checkGrammar(index, correctAnswer) {
-  const input = document.getElementById('gp_input_' + index);
-  const feedback = document.getElementById('gp_fb_' + index);
-  if (!input || !feedback) return;
-
-  const userAnswer = input.value.trim().toLowerCase();
-  const correct = correctAnswer.toLowerCase();
-
-  if (userAnswer === correct) {
-    input.className = 'gp-input correct';
-    feedback.innerHTML = '<span style="color: var(--green);">✓ Correct! Well done!</span>';
-    speakText('Correct! Well done!');
-  } else {
-    input.className = 'gp-input wrong';
-    feedback.innerHTML = `<span style="color: #E53935;">✗ Not quite. The answer is: <strong>${correctAnswer}</strong></span>`;
-    speakText('Try again. The answer is ' + correctAnswer);
-  }
-}
-
-// ===== PHONICS PRACTICE =====
-function startPhonics() {
-  if (!currentUnit || !PHONICS_PRACTICE[currentUnit.id]) {
-    document.getElementById('phonicsContent').innerHTML = `
-      <div class="empty-state">
-        <span class="e-icon">🔤</span>
-        <div>Phonics Practice coming soon!</div>
-      </div>
-    `;
-    showPage('phonics');
-    return;
-  }
-  renderPhonicsPractice();
-  showPage('phonics');
-}
-
-function renderPhonicsPractice() {
-  const ph = PHONICS_PRACTICE[currentUnit.id];
-
-  let patternsHtml = ph.patterns.map(p => `<span class="ph-pattern-chip">${p}</span>`).join('');
-
-  let wordsHtml = ph.words.map(w => `
-    <div class="ph-word-card" onclick="speakPhonicsWord('${w.word}', '${w.sound}')">
-      <div class="ph-word">${w.word}</div>
-      <div class="ph-sound">${w.sound}</div>
-      <div class="ph-tip">${w.tip}</div>
-    </div>
-  `).join('');
-
-  document.getElementById('phonicsContent').innerHTML = `
-    <div class="ph-card fade-in">
-      <div style="font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 12px;">
-        🔤 ${ph.title}
-      </div>
-      <div style="font-size: 12px; font-weight: 600; color: #FF8F00; margin-bottom: 8px;">PATTERNS:</div>
-      <div class="ph-patterns">${patternsHtml}</div>
-    </div>
-
-    <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px;">
-      👆 Tap words to hear pronunciation
-    </div>
-
-    <div class="ph-words-grid">${wordsHtml}</div>
-
-    <div style="background: #FFF8E1; border-radius: 12px; padding: 16px; margin-top: 20px;">
-      <div style="font-size: 13px; color: #795548; line-height: 1.7;">
-        <strong>💡 Tips:</strong><br>
-        • Listen carefully to each sound pattern<br>
-        • Practice saying each word out loud<br>
-        • Try to identify the pattern in new words
-      </div>
-    </div>
-  `;
-}
-
-function speakPhonicsWord(word, sound) {
-  speakText(word);
-}
-
-// ===== EXTRA READING =====
-function startExtraReading() {
-  if (!currentUnit || !EXTRA_READING[currentUnit.id]) {
-    document.getElementById('readingContent').innerHTML = `
-      <div class="empty-state">
-        <span class="e-icon">📚</span>
-        <div>Extra Reading coming soon!</div>
-      </div>
-    `;
-    showPage('reading');
-    return;
-  }
-  renderExtraReading();
-  showPage('reading');
-}
-
-function renderExtraReading() {
-  const er = EXTRA_READING[currentUnit.id];
-
-  // Convert text to paragraphs
-  let paragraphs = er.text.split('\n').filter(p => p.trim());
-
-  let passageHtml = paragraphs.map(p => `<p>${p}</p>`).join('');
-
-  let questionsHtml = er.questions.map((q, i) => {
-    let hintText = '';
-    if (q.type === 'literal') hintText = 'Look back at the passage for the answer';
-    else if (q.type === 'inferential') hintText = 'Think about what the author implies';
-    else if (q.type === 'evaluative') hintText = 'Share your opinion and support it';
-
-    return `
-      <div class="er-q-card">
-        <div class="er-q-type">${q.type === 'literal' ? '📌 Literal' : q.type === 'inferential' ? '🤔 Inferential' : '💭 Evaluative'}</div>
-        <div class="er-q-text">${q.q}</div>
-        <div class="er-q-hint">${hintText}</div>
-      </div>
-    `;
-  }).join('');
-
-  document.getElementById('readingContent').innerHTML = `
-    <div class="ph-card fade-in">
-      <div style="font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 12px;">
-        📚 ${er.title}
-      </div>
-      <div class="er-meta">
-        <div class="er-meta-item">
-          <span>📊</span> Level: ${er.level}
-        </div>
-        <div class="er-meta-item">
-          <span>📝</span> ${er.wordCount} words
-        </div>
-      </div>
-      <div style="display: flex; gap: 10px;">
-        <button onclick="speakPassageText('${currentUnit.id}')" style="background: var(--blue); color: white; border: none; border-radius: 20px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer;">
-          🔊 Read Aloud
-        </button>
-      </div>
-    </div>
-
-    <div class="er-passage">
-      ${passageHtml}
-    </div>
-
-    <div style="font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 14px;">
-      ❓ Comprehension Questions
-    </div>
-
-    <div class="er-questions">
-      ${questionsHtml}
-    </div>
-
-    <div style="background: #F3E5F5; border-radius: 12px; padding: 16px; margin-top: 20px;">
-      <div style="font-size: 13px; color: #7B1FA2; line-height: 1.7;">
-        <strong>💡 Question Types:</strong><br>
-        <strong>📌 Literal:</strong> Direct information from the text<br>
-        <strong>🤔 Inferential:</strong> Reading between the lines<br>
-        <strong>💭 Evaluative:</strong> Forming and supporting opinions
-      </div>
-    </div>
-  `;
-}
-
-function speakPassageText(unitId) {
-  const er = EXTRA_READING[unitId];
-  if (er) {
-    speakText(er.text.replace(/\n/g, '. '));
-  }
-}
-if (!isSRSupported()) {
-  const banner = document.createElement('div');
-  banner.style.cssText = 'background:#FFF3E0;border-left:4px solid #FF9800;padding:10px 16px;font-size:13px;color:#E65100;margin-bottom:8px';
-  banner.textContent = '💡 Tip: For best pronunciation practice, use Chrome or Edge browser.';
-  document.querySelector('.app-header').after(banner);
-}
-renderHome();
-</script>
+        function renderReadingTab(data) {
+            var container = document.getElementById('lesson-tab-reading');
+            var lines = data.reading.split('\n');
+            var html = '<div class="lesson-panel"><div class="lesson-badge">Reading</div><h2 class="lesson-title">Read the Text</h2>';
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i].trim()) {
+                    html += '<p style="line-height:2;font-size:1.1rem;margin-bottom:1rem;">' + lines[i] + '</p>';
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderReadAlongTab(data) {
+            var container = document.getElementById('lesson-tab-readalong');
+            container.innerHTML = '<div class="lesson-panel"><div class="lesson-badge">Read Along</div><h2 class="lesson-title">Listen and Repeat</h2>' +
+                '<div class="readalong-controls"><button class="play-btn" id="playReadAlongBtn">Play</button><span>Click to hear the text</span></div>' +
+                '<div class="readalong-text" id="readalongText">' + data.readalong + '</div></div>';
+
+            document.getElementById('playReadAlongBtn').addEventListener('click', function() {
+                speak(data.readalong);
+            });
+        }
+
+        function renderPracticeTab(data) {
+            var container = document.getElementById('lesson-tab-practice');
+            var html = '<div class="lesson-panel"><div class="lesson-badge">Practice</div><h2 class="lesson-title">Exercises</h2>';
+            for (var i = 0; i < data.practice.length; i++) {
+                var p = data.practice[i];
+                html += '<div class="practice-question"><div class="practice-q-num">' + (i+1) + '</div><div class="practice-q-text">' + p.q + '</div><div class="practice-options">';
+                for (var j = 0; j < p.options.length; j++) {
+                    html += '<div class="practice-option" data-qidx="' + i + '" data-aidx="' + j + '" data-correct="' + p.answer + '">' +
+                        '<span class="option-letter">' + String.fromCharCode(65+j) + '</span> ' + p.options[j] + '</div>';
+                }
+                html += '</div></div>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+
+            // Attach click events using event delegation
+            container.addEventListener('click', function(e) {
+                if (e.target.classList.contains('practice-option')) {
+                    selectPracticeOption(e.target);
+                }
+            });
+        }
+
+        function renderQuizTab(data) {
+            var container = document.getElementById('lesson-tab-quiz');
+            var html = '<div class="lesson-panel"><div class="lesson-badge">Quiz</div><h2 class="lesson-title">Check Your Understanding</h2>';
+            for (var i = 0; i < data.quiz.length; i++) {
+                var q = data.quiz[i];
+                html += '<div class="quiz-question"><div class="q-num">' + (i+1) + '</div><div class="q-text">' + q.q + '</div><div class="q-options">';
+                for (var j = 0; j < q.options.length; j++) {
+                    html += '<div class="q-option" data-qidx="' + i + '" data-aidx="' + j + '" data-correct="' + q.answer + '">' +
+                        '<span class="option-letter">' + String.fromCharCode(65+j) + '</span> ' + q.options[j] + '</div>';
+                }
+                html += '</div></div>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+
+            // Attach click events using event delegation
+            container.addEventListener('click', function(e) {
+                if (e.target.classList.contains('q-option')) {
+                    selectQuizOption(e.target);
+                }
+            });
+        }
+
+        // ============ SELECTION ============
+        function selectPracticeOption(el) {
+            var correctAnswer = parseInt(el.getAttribute('data-correct'));
+            var parent = el.parentElement;
+            var siblings = parent.querySelectorAll('.practice-option');
+            for (var i = 0; i < siblings.length; i++) siblings[i].classList.remove('selected', 'correct', 'wrong');
+            el.classList.add('selected');
+            var aidx = parseInt(el.getAttribute('data-aidx'));
+            if (aidx === correctAnswer) el.classList.add('correct');
+            else { el.classList.add('wrong'); siblings[correctAnswer].classList.add('correct'); }
+        }
+
+        function selectQuizOption(el) {
+            var correctAnswer = parseInt(el.getAttribute('data-correct'));
+            var parent = el.parentElement;
+            var siblings = parent.querySelectorAll('.q-option');
+            for (var i = 0; i < siblings.length; i++) siblings[i].classList.remove('selected', 'correct', 'wrong');
+            el.classList.add('selected');
+            var aidx = parseInt(el.getAttribute('data-aidx'));
+            if (aidx === correctAnswer) el.classList.add('correct');
+            else { el.classList.add('wrong'); siblings[correctAnswer].classList.add('correct'); }
+        }
+
+        // ============ TEXT TO SPEECH with best voice ============
+        var preferredVoice = null;
+
+        function loadVoices() {
+            if (!('speechSynthesis' in window)) return;
+            var voices = window.speechSynthesis.getVoices();
+            // Priority: Microsoft en-US > local en-US > any en-US
+            var bestVoice = null;
+            for (var i = 0; i < voices.length; i++) {
+                if (voices[i].lang === 'en-US' && voices[i].name.indexOf('Microsoft') >= 0) { bestVoice = voices[i]; break; }
+            }
+            if (!bestVoice) {
+                for (var i = 0; i < voices.length; i++) {
+                    if (voices[i].lang === 'en-US' && voices[i].localService) { bestVoice = voices[i]; break; }
+                }
+            }
+            if (!bestVoice) {
+                for (var i = 0; i < voices.length; i++) {
+                    if (voices[i].lang === 'en-US') { bestVoice = voices[i]; break; }
+                }
+            }
+            if (bestVoice) preferredVoice = bestVoice;
+            console.log('[TTS] Voices loaded:', voices.length, '| Selected:', preferredVoice ? preferredVoice.name : 'default');
+        }
+
+        // Load voices on init and when voices change
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            loadVoices();
+        }
+
+        function speak(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            var utterance = new SpeechSynthesisUtterance(text);
+            if (preferredVoice) utterance.voice = preferredVoice;
+            utterance.lang = 'en-US';
+            utterance.rate = 0.82;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // ============ INIT ============
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('[APP] DOM loaded');
+        });
+    </script>
 </body>
 </html>
