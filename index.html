@@ -1121,6 +1121,45 @@
 
         var isSpeaking = false;
         var speakResetTimeout = null;
+        var ttsActivated = false;
+
+        function activateTTS(callback) {
+            if (ttsActivated) {
+                if (callback) callback();
+                return;
+            }
+            
+            console.log('[TTS] Activating TTS engine...');
+            
+            // Play a silent utterance to activate the TTS engine
+            var silent = new SpeechSynthesisUtterance('');
+            silent.volume = 0;
+            silent.rate = 10; // Fast as possible
+            
+            silent.onend = function() {
+                ttsActivated = true;
+                console.log('[TTS] TTS engine activated');
+                if (callback) callback();
+            };
+            
+            silent.onerror = function() {
+                // Even if error, try to proceed
+                ttsActivated = true;
+                console.log('[TTS] TTS activation completed (with error)');
+                if (callback) callback();
+            };
+            
+            window.speechSynthesis.speak(silent);
+            
+            // Fallback: if onend doesn't fire within 1s, proceed anyway
+            setTimeout(function() {
+                if (!ttsActivated) {
+                    ttsActivated = true;
+                    console.log('[TTS] TTS activation timeout, proceeding anyway');
+                    if (callback) callback();
+                }
+            }, 1000);
+        }
 
         function speak(text) {
             if (!('speechSynthesis' in window)) {
@@ -1146,76 +1185,53 @@
                 isSpeaking = false;
             }, 5000);
             
-            var utterance = new SpeechSynthesisUtterance(text);
-            
-            // Only set voice if it's valid and matches the language
-            if (preferredVoice && preferredVoice.lang && preferredVoice.lang.indexOf('en') === 0) {
-                utterance.voice = preferredVoice;
-                console.log('[TTS] Using voice:', preferredVoice.name);
-            } else {
-                console.log('[TTS] Using default voice (preferred not available)');
-            }
-            
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
-            
-            utterance.onstart = function() {
-                console.log('[TTS] Speaking:', text);
-            };
-            
-            utterance.onend = function() {
-                console.log('[TTS] Finished:', text);
-                isSpeaking = false;
-                if (speakResetTimeout) {
-                    clearTimeout(speakResetTimeout);
-                    speakResetTimeout = null;
-                }
-            };
-            
-            utterance.onerror = function(e) {
-                console.error('[TTS] Error:', e.error, '-', text);
-                isSpeaking = false;
-                if (speakResetTimeout) {
-                    clearTimeout(speakResetTimeout);
-                    speakResetTimeout = null;
-                }
-            };
-            
-            try {
-                // Chrome sometimes pauses the TTS engine, need to resume it
-                if (window.speechSynthesis.paused) {
-                    window.speechSynthesis.resume();
+            // Activate TTS first, then speak
+            activateTTS(function() {
+                var utterance = new SpeechSynthesisUtterance(text);
+                
+                // Only set voice if it's valid and matches the language
+                if (preferredVoice && preferredVoice.lang && preferredVoice.lang.indexOf('en') === 0) {
+                    utterance.voice = preferredVoice;
+                    console.log('[TTS] Using voice:', preferredVoice.name);
+                } else {
+                    console.log('[TTS] Using default voice (preferred not available)');
                 }
                 
-                window.speechSynthesis.speak(utterance);
-                console.log('[TTS] speak() called for:', text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
                 
-                // Chrome bug: TTS sometimes gets stuck, need to keep it alive
-                var keepAliveInterval = setInterval(function() {
-                    if (!isSpeaking) {
-                        clearInterval(keepAliveInterval);
-                    } else if (window.speechSynthesis.paused) {
-                        window.speechSynthesis.resume();
-                    }
-                }, 1000);
+                utterance.onstart = function() {
+                    console.log('[TTS] Speaking:', text);
+                };
                 
-                // Clean up interval when done
                 utterance.onend = function() {
                     console.log('[TTS] Finished:', text);
                     isSpeaking = false;
-                    clearInterval(keepAliveInterval);
                     if (speakResetTimeout) {
                         clearTimeout(speakResetTimeout);
                         speakResetTimeout = null;
                     }
                 };
                 
-            } catch (e) {
-                console.error('[TTS] speak() threw exception:', e);
-                isSpeaking = false;
-            }
+                utterance.onerror = function(e) {
+                    console.error('[TTS] Error:', e.error, '-', text);
+                    isSpeaking = false;
+                    if (speakResetTimeout) {
+                        clearTimeout(speakResetTimeout);
+                        speakResetTimeout = null;
+                    }
+                };
+                
+                try {
+                    window.speechSynthesis.speak(utterance);
+                    console.log('[TTS] speak() called for:', text);
+                } catch (e) {
+                    console.error('[TTS] speak() threw exception:', e);
+                    isSpeaking = false;
+                }
+            });
         }
 
         // ============ INIT ============
