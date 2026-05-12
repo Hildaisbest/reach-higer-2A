@@ -1119,6 +1119,9 @@
             }, 100);
         }
 
+        var isSpeaking = false;
+        var speakTimeout = null;
+
         function speak(text) {
             if (!('speechSynthesis' in window)) {
                 console.warn('[TTS] Speech synthesis not supported');
@@ -1128,24 +1131,48 @@
             // Ensure voices are loaded before speaking
             loadVoices();
             
-            // Cancel any ongoing speech
+            // Clear any pending speak timeout
+            if (speakTimeout) {
+                clearTimeout(speakTimeout);
+                speakTimeout = null;
+            }
+            
+            // Cancel any ongoing speech and wait a tick before speaking
+            // This prevents Chrome's "interrupted" error from cancel/speak race condition
             window.speechSynthesis.cancel();
             
-            var utterance = new SpeechSynthesisUtterance(text);
-            if (preferredVoice) {
-                utterance.voice = preferredVoice;
-            }
-            utterance.lang = 'en-US';
-            utterance.rate = 0.82;
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
+            isSpeaking = true;
             
-            // Error handling
-            utterance.onerror = function(e) {
-                console.error('[TTS] Error:', e.error);
-            };
-            
-            window.speechSynthesis.speak(utterance);
+            speakTimeout = setTimeout(function() {
+                var utterance = new SpeechSynthesisUtterance(text);
+                if (preferredVoice) {
+                    utterance.voice = preferredVoice;
+                }
+                utterance.lang = 'en-US';
+                utterance.rate = 0.82;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                utterance.onstart = function() {
+                    console.log('[TTS] Speaking:', text);
+                };
+                
+                utterance.onend = function() {
+                    isSpeaking = false;
+                };
+                
+                utterance.onerror = function(e) {
+                    // Ignore "interrupted" errors from rapid clicks - they're expected
+                    if (e.error === 'interrupted' || e.error === 'canceled') {
+                        console.log('[TTS] Speech', e.error, '(expected for rapid clicks)');
+                    } else {
+                        console.error('[TTS] Error:', e.error);
+                    }
+                    isSpeaking = false;
+                };
+                
+                window.speechSynthesis.speak(utterance);
+            }, 50); // 50ms delay to avoid race condition with cancel()
         }
 
         // ============ INIT ============
