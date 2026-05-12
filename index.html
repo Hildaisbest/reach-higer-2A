@@ -1079,6 +1079,8 @@
         function loadVoices() {
             if (!('speechSynthesis' in window)) return;
             var voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) return; // No voices yet, wait for onvoiceschanged
+            
             // Priority: Microsoft en-US > local en-US > any en-US
             var bestVoice = null;
             for (var i = 0; i < voices.length; i++) {
@@ -1098,21 +1100,51 @@
             console.log('[TTS] Voices loaded:', voices.length, '| Selected:', preferredVoice ? preferredVoice.name : 'default');
         }
 
-        // Load voices on init and when voices change
+        // Load voices on init - handle different browser behaviors
         if ('speechSynthesis' in window) {
+            // Some browsers fire onvoiceschanged, some don't
             window.speechSynthesis.onvoiceschanged = loadVoices;
+            
+            // Try immediate load (Chrome sometimes has voices ready)
             loadVoices();
+            
+            // Fallback: try again after a short delay (for Safari and some Edge versions)
+            setTimeout(function() {
+                loadVoices();
+                // Also trigger a dummy speak to pre-warm the TTS engine (fixes iOS/some mobile)
+                var dummyUtterance = new SpeechSynthesisUtterance('');
+                dummyUtterance.volume = 0; // Silent warm-up
+                window.speechSynthesis.speak(dummyUtterance);
+                window.speechSynthesis.cancel();
+            }, 100);
         }
 
         function speak(text) {
-            if (!('speechSynthesis' in window)) return;
+            if (!('speechSynthesis' in window)) {
+                console.warn('[TTS] Speech synthesis not supported');
+                return;
+            }
+            
+            // Ensure voices are loaded before speaking
+            loadVoices();
+            
+            // Cancel any ongoing speech
             window.speechSynthesis.cancel();
+            
             var utterance = new SpeechSynthesisUtterance(text);
-            if (preferredVoice) utterance.voice = preferredVoice;
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            }
             utterance.lang = 'en-US';
             utterance.rate = 0.82;
             utterance.pitch = 1.0;
             utterance.volume = 1.0;
+            
+            // Error handling
+            utterance.onerror = function(e) {
+                console.error('[TTS] Error:', e.error);
+            };
+            
             window.speechSynthesis.speak(utterance);
         }
 
