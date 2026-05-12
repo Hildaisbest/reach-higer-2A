@@ -1184,8 +1184,34 @@
             };
             
             try {
+                // Chrome sometimes pauses the TTS engine, need to resume it
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                }
+                
                 window.speechSynthesis.speak(utterance);
                 console.log('[TTS] speak() called for:', text);
+                
+                // Chrome bug: TTS sometimes gets stuck, need to keep it alive
+                var keepAliveInterval = setInterval(function() {
+                    if (!isSpeaking) {
+                        clearInterval(keepAliveInterval);
+                    } else if (window.speechSynthesis.paused) {
+                        window.speechSynthesis.resume();
+                    }
+                }, 1000);
+                
+                // Clean up interval when done
+                utterance.onend = function() {
+                    console.log('[TTS] Finished:', text);
+                    isSpeaking = false;
+                    clearInterval(keepAliveInterval);
+                    if (speakResetTimeout) {
+                        clearTimeout(speakResetTimeout);
+                        speakResetTimeout = null;
+                    }
+                };
+                
             } catch (e) {
                 console.error('[TTS] speak() threw exception:', e);
                 isSpeaking = false;
