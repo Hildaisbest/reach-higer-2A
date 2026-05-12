@@ -1120,6 +1120,7 @@
         }
 
         var isSpeaking = false;
+        var speakResetTimeout = null;
 
         function speak(text) {
             if (!('speechSynthesis' in window)) {
@@ -1138,12 +1139,25 @@
             
             isSpeaking = true;
             
+            // Safety timeout: if speech doesn't start/end within 5s, reset state
+            if (speakResetTimeout) clearTimeout(speakResetTimeout);
+            speakResetTimeout = setTimeout(function() {
+                console.warn('[TTS] Speech timeout, resetting state');
+                isSpeaking = false;
+            }, 5000);
+            
             var utterance = new SpeechSynthesisUtterance(text);
-            if (preferredVoice) {
+            
+            // Only set voice if it's valid and matches the language
+            if (preferredVoice && preferredVoice.lang && preferredVoice.lang.indexOf('en') === 0) {
                 utterance.voice = preferredVoice;
+                console.log('[TTS] Using voice:', preferredVoice.name);
+            } else {
+                console.log('[TTS] Using default voice (preferred not available)');
             }
+            
             utterance.lang = 'en-US';
-            utterance.rate = 0.82;
+            utterance.rate = 0.9;
             utterance.pitch = 1.0;
             utterance.volume = 1.0;
             
@@ -1152,15 +1166,30 @@
             };
             
             utterance.onend = function() {
+                console.log('[TTS] Finished:', text);
                 isSpeaking = false;
+                if (speakResetTimeout) {
+                    clearTimeout(speakResetTimeout);
+                    speakResetTimeout = null;
+                }
             };
             
             utterance.onerror = function(e) {
-                console.error('[TTS] Error:', e.error);
+                console.error('[TTS] Error:', e.error, '-', text);
                 isSpeaking = false;
+                if (speakResetTimeout) {
+                    clearTimeout(speakResetTimeout);
+                    speakResetTimeout = null;
+                }
             };
             
-            window.speechSynthesis.speak(utterance);
+            try {
+                window.speechSynthesis.speak(utterance);
+                console.log('[TTS] speak() called for:', text);
+            } catch (e) {
+                console.error('[TTS] speak() threw exception:', e);
+                isSpeaking = false;
+            }
         }
 
         // ============ INIT ============
