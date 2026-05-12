@@ -1108,130 +1108,41 @@
             // Try immediate load (Chrome sometimes has voices ready)
             loadVoices();
             
-            // Fallback: try again after a short delay (for Safari and some Edge versions)
+            // Fallback: try again after a short delay
             setTimeout(function() {
                 loadVoices();
-                // Also trigger a dummy speak to pre-warm the TTS engine (fixes iOS/some mobile)
-                var dummyUtterance = new SpeechSynthesisUtterance('');
-                dummyUtterance.volume = 0; // Silent warm-up
-                window.speechSynthesis.speak(dummyUtterance);
-                window.speechSynthesis.cancel();
             }, 100);
         }
 
         var isSpeaking = false;
-        var speakResetTimeout = null;
-        var ttsActivated = false;
-
-        function activateTTS(callback) {
-            if (ttsActivated) {
-                if (callback) callback();
-                return;
-            }
-            
-            console.log('[TTS] Activating TTS engine...');
-            
-            // Play a silent utterance to activate the TTS engine
-            var silent = new SpeechSynthesisUtterance('');
-            silent.volume = 0;
-            silent.rate = 10; // Fast as possible
-            
-            silent.onend = function() {
-                ttsActivated = true;
-                console.log('[TTS] TTS engine activated');
-                if (callback) callback();
-            };
-            
-            silent.onerror = function() {
-                // Even if error, try to proceed
-                ttsActivated = true;
-                console.log('[TTS] TTS activation completed (with error)');
-                if (callback) callback();
-            };
-            
-            window.speechSynthesis.speak(silent);
-            
-            // Fallback: if onend doesn't fire within 1s, proceed anyway
-            setTimeout(function() {
-                if (!ttsActivated) {
-                    ttsActivated = true;
-                    console.log('[TTS] TTS activation timeout, proceeding anyway');
-                    if (callback) callback();
-                }
-            }, 1000);
-        }
-
         function speak(text) {
             if (!('speechSynthesis' in window)) {
-                console.warn('[TTS] Speech synthesis not supported');
+                console.warn('[TTS] Not supported');
                 return;
             }
             
-            // If already speaking, ignore this click (don't interrupt)
-            if (isSpeaking) {
-                console.log('[TTS] Already speaking, ignoring click');
-                return;
+            speechSynthesis.cancel();
+            
+            var utterance = new SpeechSynthesisUtterance(text);
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
             }
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
             
-            // Ensure voices are loaded before speaking
-            loadVoices();
+            utterance.onstart = function() {
+                console.log('[TTS] Speaking:', text);
+            };
             
-            isSpeaking = true;
+            utterance.onend = function() {
+                console.log('[TTS] Done:', text);
+            };
             
-            // Safety timeout: if speech doesn't start/end within 5s, reset state
-            if (speakResetTimeout) clearTimeout(speakResetTimeout);
-            speakResetTimeout = setTimeout(function() {
-                console.warn('[TTS] Speech timeout, resetting state');
-                isSpeaking = false;
-            }, 5000);
+            utterance.onerror = function(e) {
+                console.log('[TTS] Error:', e.error);
+            };
             
-            // Activate TTS first, then speak
-            activateTTS(function() {
-                var utterance = new SpeechSynthesisUtterance(text);
-                
-                // Only set voice if it's valid and matches the language
-                if (preferredVoice && preferredVoice.lang && preferredVoice.lang.indexOf('en') === 0) {
-                    utterance.voice = preferredVoice;
-                    console.log('[TTS] Using voice:', preferredVoice.name);
-                } else {
-                    console.log('[TTS] Using default voice (preferred not available)');
-                }
-                
-                utterance.lang = 'en-US';
-                utterance.rate = 0.9;
-                utterance.pitch = 1.0;
-                utterance.volume = 1.0;
-                
-                utterance.onstart = function() {
-                    console.log('[TTS] Speaking:', text);
-                };
-                
-                utterance.onend = function() {
-                    console.log('[TTS] Finished:', text);
-                    isSpeaking = false;
-                    if (speakResetTimeout) {
-                        clearTimeout(speakResetTimeout);
-                        speakResetTimeout = null;
-                    }
-                };
-                
-                utterance.onerror = function(e) {
-                    console.error('[TTS] Error:', e.error, '-', text);
-                    isSpeaking = false;
-                    if (speakResetTimeout) {
-                        clearTimeout(speakResetTimeout);
-                        speakResetTimeout = null;
-                    }
-                };
-                
-                try {
-                    window.speechSynthesis.speak(utterance);
-                    console.log('[TTS] speak() called for:', text);
-                } catch (e) {
-                    console.error('[TTS] speak() threw exception:', e);
-                    isSpeaking = false;
-                }
-            });
+            speechSynthesis.speak(utterance);
         }
 
         // ============ INIT ============
