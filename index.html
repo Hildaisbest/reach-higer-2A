@@ -1723,7 +1723,12 @@
                 return;
             }
 
+            console.log('[TTS] speak() called with:', text);
+            console.log('[TTS] speaking now?', speechSynthesis.speaking, '| paused?', speechSynthesis.paused, '| pending?', speechSynthesis.pending);
+
             speechSynthesis.cancel();
+
+            console.log('[TTS] after cancel - speaking?', speechSynthesis.speaking, '| paused?', speechSynthesis.paused, '| pending?', speechSynthesis.pending);
 
             var utterance = new SpeechSynthesisUtterance(text);
             if (preferredVoice) {
@@ -1744,15 +1749,14 @@
 
             utterance.onerror = function(e) {
                 isSpeaking = false;
-                // Ignore "interrupted" errors - expected when cancel() is called
+                console.error('[TTS] Error:', e.error, '| details:', JSON.stringify({charIndex:e.charIndex, elapsedTime:e.elapsedTime, name:e.name}));
                 if (e.error === 'interrupted' || e.error === 'canceled') {
-                    console.log('[TTS] Ignored:', e.error);
-                } else {
-                    console.log('[TTS] Error:', e.error);
+                    console.log('[TTS] State after error - speaking?', speechSynthesis.speaking, '| paused?', speechSynthesis.paused, '| pending?', speechSynthesis.pending);
                 }
             };
 
             speechSynthesis.speak(utterance);
+            console.log('[TTS] after speak() - speaking?', speechSynthesis.speaking, '| paused?', speechSynthesis.paused, '| pending?', speechSynthesis.pending);
         }
 
         // ============ SPELLING TEST ============
