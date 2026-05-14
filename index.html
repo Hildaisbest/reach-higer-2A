@@ -1705,10 +1705,10 @@
         if ('speechSynthesis' in window) {
             // Some browsers fire onvoiceschanged, some don't
             window.speechSynthesis.onvoiceschanged = loadVoices;
-            
+
             // Try immediate load (Chrome sometimes has voices ready)
             loadVoices();
-            
+
             // Fallback: try again after a short delay
             setTimeout(function() {
                 loadVoices();
@@ -1716,88 +1716,43 @@
         }
 
         var isSpeaking = false;
-        var voiceLoadAttempts = 0;
-        var currentUtterance = null;
 
         function speak(text) {
-            if (!text || typeof text !== 'string') {
-                console.warn('[TTS] No text to speak');
-                return;
-            }
             if (!('speechSynthesis' in window)) {
-                console.warn('[TTS] Not supported in this browser');
-                alert('Text-to-speech is not supported in your browser. Please use Chrome or Edge for the best experience.');
+                console.warn('[TTS] Not supported');
                 return;
             }
 
-            // Force reload voices if not loaded yet (critical for GitHub Pages)
-            if (!preferredVoice && voiceLoadAttempts < 5) {
-                voiceLoadAttempts++;
-                console.log('[TTS] Voice not ready, retrying... (' + voiceLoadAttempts + '/5)');
-                loadVoices();
-                // Try again shortly
-                setTimeout(function() { speak(text); }, 200);
-                return;
+            speechSynthesis.cancel();
+
+            var utterance = new SpeechSynthesisUtterance(text);
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
             }
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
 
-            // Chrome bug fix: cancel() can cause 'interrupted' errors and leave speechSynthesis in a bad state.
-            // Use resume() + cancel() to reset the queue, then speak after a microtask.
-            try {
-                speechSynthesis.resume();
-            } catch (e) {}
+            utterance.onstart = function() {
+                isSpeaking = true;
+                console.log('[TTS] Speaking:', text);
+            };
 
-            // Clear current utterance to prevent duplicate callbacks
-            if (currentUtterance) {
-                currentUtterance.onstart = null;
-                currentUtterance.onend = null;
-                currentUtterance.onerror = null;
-                currentUtterance = null;
-            }
+            utterance.onend = function() {
+                isSpeaking = false;
+                console.log('[TTS] Done:', text);
+            };
 
-            // Use a small timeout to let the browser finish any pending cancel
-            setTimeout(function() {
-                try {
-                    speechSynthesis.cancel();
-                } catch (e) {}
-
-                var utterance = new SpeechSynthesisUtterance(text);
-                currentUtterance = utterance;
-
-                if (preferredVoice) {
-                    utterance.voice = preferredVoice;
+            utterance.onerror = function(e) {
+                isSpeaking = false;
+                // Ignore "interrupted" errors - expected when cancel() is called
+                if (e.error === 'interrupted' || e.error === 'canceled') {
+                    console.log('[TTS] Ignored:', e.error);
+                } else {
+                    console.log('[TTS] Error:', e.error);
                 }
-                utterance.lang = 'en-US';
-                utterance.rate = 0.9;
-                utterance.pitch = 1.0;
+            };
 
-                utterance.onstart = function() {
-                    isSpeaking = true;
-                    console.log('[TTS] Speaking:', text.substring(0, 50));
-                };
-
-                utterance.onend = function() {
-                    isSpeaking = false;
-                    currentUtterance = null;
-                    console.log('[TTS] Done');
-                };
-
-                utterance.onerror = function(e) {
-                    isSpeaking = false;
-                    // Ignore 'interrupted' and 'canceled' errors - these are expected when cancel() is called
-                    if (e.error === 'interrupted' || e.error === 'canceled') {
-                        console.log('[TTS] Ignored error:', e.error);
-                    } else {
-                        console.log('[TTS] Error:', e.error);
-                    }
-                };
-
-                try {
-                    speechSynthesis.speak(utterance);
-                } catch (err) {
-                    console.error('[TTS] Speak failed:', err);
-                    isSpeaking = false;
-                }
-            }, 50); // 50ms debounce to avoid Chrome cancel/speak race condition
+            speechSynthesis.speak(utterance);
         }
 
         // ============ SPELLING TEST ============
