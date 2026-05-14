@@ -1105,23 +1105,55 @@
 
         function renderReadAlongTab(data) {
             var container = document.getElementById('lesson-tab-readalong');
+            var readAlongText = data.readalong || '';
+
+            // Detect browser support for key features
+            var supportsSpeechRec = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+            var supportsTTS = !!('speechSynthesis' in window);
+            var supportsMic = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+
+            var browserWarning = '';
+            if (!supportsSpeechRec || !supportsMic) {
+                browserWarning = '<div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:12px;margin-bottom:1rem;font-size:0.9rem;color:#92400e;">' +
+                    '⚠️ <strong>Recording works best in Chrome or Edge.</strong> Other browsers may not support microphone recording. TTS (Listen) should still work.';
+            }
+
             container.innerHTML = '<div class="lesson-panel"><div class="lesson-badge">Read Along</div><h2 class="lesson-title">Listen and Repeat</h2>' +
                 '<div class="readalong-controls"><button class="play-btn" id="playReadAlongBtn">Play</button><span>Click to hear the text</span></div>' +
-                '<div class="readalong-text" id="readalongText">' + data.readalong + '</div>' +
+                '<div class="readalong-text" id="readalongText">' + readAlongText.replace(/\n/g, '<br>') + '</div>' +
+                browserWarning +
                 '<div class="record-section">' +
                     '<div class="record-title">🎙️ Your Turn - Record Yourself</div>' +
                     '<div class="record-controls">' +
-                        '<button class="record-mic-btn" id="recordMicBtn" onclick="toggleRecording()">🎤</button>' +
-                        '<button class="btn btn-primary" id="playOriginalBtn" onclick="speak(\'' + data.readalong.replace(/'/g, "\\'") + '\')">🔊 Listen Again</button>' +
+                        '<button class="record-mic-btn" id="recordMicBtn">🎤</button>' +
+                        '<button class="btn btn-primary" id="playOriginalBtn">🔊 Listen Again</button>' +
                     '</div>' +
                     '<div class="record-status" id="recordStatus">Click the microphone to start recording</div>' +
                     '<div class="record-result" id="recordResult" style="display:none;"></div>' +
                 '</div>' +
                 '</div>';
 
-            document.getElementById('playReadAlongBtn').addEventListener('click', function() {
-                speak(data.readalong);
-            });
+            // Attach event listeners safely (avoid inline onclick for complex text)
+            var playBtn = document.getElementById('playReadAlongBtn');
+            if (playBtn) {
+                playBtn.addEventListener('click', function() {
+                    speak(readAlongText);
+                });
+            }
+
+            var playOriginalBtn = document.getElementById('playOriginalBtn');
+            if (playOriginalBtn) {
+                playOriginalBtn.addEventListener('click', function() {
+                    speak(readAlongText);
+                });
+            }
+
+            var micBtn = document.getElementById('recordMicBtn');
+            if (micBtn) {
+                micBtn.addEventListener('click', function() {
+                    toggleRecording();
+                });
+            }
         }
 
         // ============ RECORDING & SPEECH RECOGNITION ============
@@ -1134,22 +1166,23 @@
         var currentReadAlongText = '';
 
         function initSpeechRecognition() {
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                console.warn('Speech recognition not supported');
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                console.warn('Speech recognition not supported in this browser');
                 return null;
             }
-            
-            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
             var rec = new SpeechRecognition();
             rec.lang = 'en-US';
             rec.continuous = true;
             rec.interimResults = true;
             rec.maxAlternatives = 1;
-            
+
             rec.onresult = function(event) {
                 var finalTranscript = '';
                 var interimTranscript = '';
-                
+
                 for (var i = event.resultIndex; i < event.results.length; i++) {
                     var transcript = event.results[i][0].transcript;
                     if (event.results[i].isFinal) {
@@ -1158,30 +1191,63 @@
                         interimTranscript += transcript;
                     }
                 }
-                
-                document.getElementById('recordStatus').textContent = finalTranscript || interimTranscript;
-                
+
+                var statusEl = document.getElementById('recordStatus');
+                if (statusEl) {
+                    statusEl.textContent = finalTranscript || interimTranscript || 'Listening...';
+                }
+
                 if (finalTranscript) {
                     currentReadAlongText = finalTranscript;
                 }
             };
-            
+
             rec.onerror = function(event) {
                 console.error('Speech recognition error:', event.error);
-                document.getElementById('recordStatus').textContent = 'Error: ' + event.error;
+                var statusEl = document.getElementById('recordStatus');
+                if (statusEl) {
+                    if (event.error === 'not-allowed') {
+                        statusEl.textContent = '❌ Microphone access denied. Please allow mic in browser settings.';
+                    } else if (event.error === 'no-speech') {
+                        statusEl.textContent = '⚠️ No speech detected. Please speak clearly.';
+                    } else if (event.error === 'network') {
+                        statusEl.textContent = '⚠️ Network error. Speech recognition needs internet.';
+                    } else {
+                        statusEl.textContent = '⚠️ Recognition error: ' + event.error;
+                    }
+                }
+
+                // Try to restart on error (except for fatal errors)
+                if (isRecording && event.error !== 'not-allowed' && event.error !== 'service-not-allowed') {
+                    setTimeout(function() {
+                        if (isRecording && recognition) {
+                            try { recognition.start(); } catch (e) {}
+                        }
+                    }, 500);
+                }
             };
-            
+
             rec.onend = function() {
                 if (isRecording) {
                     // Restart if still recording
-                    recognition.start();
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.warn('Recognition restart error:', e);
+                    }
                 }
             };
-            
+
             return rec;
         }
 
+        var toggleLock = false; // Prevent rapid double-clicks
+
         function toggleRecording() {
+            if (toggleLock) return;
+            toggleLock = true;
+            setTimeout(function() { toggleLock = false; }, 800); // 800ms lock
+
             if (isRecording) {
                 stopRecording();
             } else {
@@ -1190,77 +1256,107 @@
         }
 
         function startRecording() {
-            // Check for microphone permission
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert('Microphone access is not supported in this browser.');
+            // Check for browser support
+            var supportsSpeechRec = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+            var supportsMic = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+
+            if (!supportsMic) {
+                var msg = 'Your browser does not support microphone access. Please use Chrome or Edge.';
+                document.getElementById('recordStatus').textContent = '❌ ' + msg;
+                alert(msg);
                 return;
             }
-            
+
+            if (!supportsSpeechRec) {
+                var msg2 = 'Your browser does not support speech recognition. Recording will capture audio but may not transcribe. Please use Chrome or Edge for best results.';
+                document.getElementById('recordStatus').textContent = '⚠️ Limited mode - use Chrome/Edge';
+                console.warn(msg2);
+            }
+
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(function(stream) {
                     // Initialize speech recognition
                     if (!recognition) {
                         recognition = initSpeechRecognition();
                     }
-                    
+
                     isRecording = true;
                     audioChunks = [];
                     recordSeconds = 0;
                     currentReadAlongText = '';
-                    
+
                     // Update UI
                     var micBtn = document.getElementById('recordMicBtn');
-                    micBtn.classList.add('recording');
-                    micBtn.textContent = '⏹';
-                    document.getElementById('recordStatus').textContent = 'Recording... 0:00';
-                    document.getElementById('recordResult').style.display = 'none';
-                    
+                    if (micBtn) {
+                        micBtn.classList.add('recording');
+                        micBtn.textContent = '⏹';
+                    }
+                    var statusEl = document.getElementById('recordStatus');
+                    if (statusEl) statusEl.textContent = 'Recording... 0:00';
+                    var resultEl = document.getElementById('recordResult');
+                    if (resultEl) resultEl.style.display = 'none';
+
                     // Start timer
                     recordTimer = setInterval(function() {
                         recordSeconds++;
                         var mins = Math.floor(recordSeconds / 60);
                         var secs = recordSeconds % 60;
-                        document.getElementById('recordStatus').textContent = 'Recording... ' + mins + ':' + (secs < 10 ? '0' : '') + secs;
+                        var statusEl2 = document.getElementById('recordStatus');
+                        if (statusEl2) statusEl2.textContent = 'Recording... ' + mins + ':' + (secs < 10 ? '0' : '') + secs;
                     }, 1000);
-                    
+
                     // Start speech recognition
                     if (recognition) {
-                        recognition.start();
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.warn('Speech recognition start error:', e);
+                        }
                     }
                 })
                 .catch(function(err) {
                     console.error('Microphone error:', err);
-                    alert('Could not access microphone. Please allow microphone access and try again.');
+                    var msg = 'Could not access microphone. Please allow microphone access and try again.\n\nError: ' + err.message;
+                    document.getElementById('recordStatus').textContent = '❌ Microphone denied';
+                    alert(msg);
                 });
         }
 
         function stopRecording() {
             isRecording = false;
-            
+
             // Stop timer
             if (recordTimer) {
                 clearInterval(recordTimer);
                 recordTimer = null;
             }
-            
+
             // Stop speech recognition
             if (recognition) {
-                recognition.stop();
+                try {
+                    recognition.stop();
+                } catch (e) {
+                    console.warn('Recognition stop error:', e);
+                }
             }
-            
+
             // Update UI
             var micBtn = document.getElementById('recordMicBtn');
-            micBtn.classList.remove('recording');
-            micBtn.textContent = '🎤';
-            
+            if (micBtn) {
+                micBtn.classList.remove('recording');
+                micBtn.textContent = '🎤';
+            }
+
             // Calculate and show score
-            var originalText = document.getElementById('readalongText').textContent.trim();
+            var textEl = document.getElementById('readalongText');
+            var originalText = textEl ? textEl.textContent.trim() : '';
             var userText = currentReadAlongText.trim();
-            
-            if (userText) {
+
+            if (userText && userText.length > 0) {
                 showRecordingResult(originalText, userText);
             } else {
-                document.getElementById('recordStatus').textContent = 'No speech detected. Please try again.';
+                var statusEl = document.getElementById('recordStatus');
+                if (statusEl) statusEl.textContent = '⚠️ No speech detected. Please try again in Chrome or Edge.';
             }
         }
 
@@ -1620,34 +1716,59 @@
         }
 
         var isSpeaking = false;
+        var voiceLoadAttempts = 0;
+
         function speak(text) {
-            if (!('speechSynthesis' in window)) {
-                console.warn('[TTS] Not supported');
+            if (!text || typeof text !== 'string') {
+                console.warn('[TTS] No text to speak');
                 return;
             }
-            
+            if (!('speechSynthesis' in window)) {
+                console.warn('[TTS] Not supported in this browser');
+                alert('Text-to-speech is not supported in your browser. Please use Chrome or Edge for the best experience.');
+                return;
+            }
+
+            // Force reload voices if not loaded yet (critical for GitHub Pages)
+            if (!preferredVoice && voiceLoadAttempts < 5) {
+                voiceLoadAttempts++;
+                console.log('[TTS] Voice not ready, retrying... (' + voiceLoadAttempts + '/5)');
+                loadVoices();
+                // Try again shortly
+                setTimeout(function() { speak(text); }, 200);
+                return;
+            }
+
             speechSynthesis.cancel();
-            
+
             var utterance = new SpeechSynthesisUtterance(text);
             if (preferredVoice) {
                 utterance.voice = preferredVoice;
             }
             utterance.lang = 'en-US';
             utterance.rate = 0.9;
-            
+            utterance.pitch = 1.0;
+
             utterance.onstart = function() {
-                console.log('[TTS] Speaking:', text);
+                isSpeaking = true;
+                console.log('[TTS] Speaking:', text.substring(0, 50));
             };
-            
+
             utterance.onend = function() {
-                console.log('[TTS] Done:', text);
+                isSpeaking = false;
+                console.log('[TTS] Done');
             };
-            
+
             utterance.onerror = function(e) {
+                isSpeaking = false;
                 console.log('[TTS] Error:', e.error);
             };
-            
-            speechSynthesis.speak(utterance);
+
+            try {
+                speechSynthesis.speak(utterance);
+            } catch (err) {
+                console.error('[TTS] Speak failed:', err);
+            }
         }
 
         // ============ SPELLING TEST ============
