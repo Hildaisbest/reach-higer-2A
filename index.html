@@ -295,6 +295,31 @@
         }
         .play-btn:hover { background: #1d4ed8; }
 
+        /* Recording */
+        .record-section { margin-top: 2rem; padding-top: 2rem; border-top: 2px dashed var(--border); }
+        .record-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; }
+        .record-controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1rem; }
+        .record-mic-btn { width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--danger); background: white; color: var(--danger); font-size: 1.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .record-mic-btn:hover { background: #fee2e2; transform: scale(1.05); }
+        .record-mic-btn.recording { background: var(--danger); color: white; animation: pulse 1.5s infinite; }
+        .record-mic-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .record-status { font-size: 1rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem; }
+        .record-timer { font-size: 1.5rem; font-weight: 700; color: var(--danger); font-family: monospace; }
+        .record-result { background: var(--card); border-radius: var(--radius); padding: 1.5rem; margin-top: 1rem; box-shadow: var(--shadow); }
+        .record-transcript { background: #f0f9ff; padding: 1rem; border-radius: 8px; margin: 1rem 0; font-size: 1rem; line-height: 1.8; }
+        .record-score { text-align: center; margin-top: 1rem; }
+        .score-circle { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: white; margin: 0 auto 1rem; }
+        .score-excellent { background: linear-gradient(135deg, #16a34a, #059669); }
+        .score-good { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .score-fair { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .score-poor { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+        .score-label { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .score-detail { font-size: 0.9rem; color: var(--text-muted); }
+        .record-actions { display: flex; gap: 10px; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
+        .match-highlight { background: #dcfce7; color: var(--success); padding: 2px 4px; border-radius: 3px; }
+        .miss-highlight { background: #fee2e2; color: var(--danger); padding: 2px 4px; border-radius: 3px; text-decoration: line-through; }
+
         /* Practice */
         .practice-question {
             background: var(--card);
@@ -334,6 +359,37 @@
         .quiz-result { text-align: center; padding: 2rem; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); }
         .result-score { font-size: 3rem; font-weight: 800; color: var(--primary); }
         .result-msg { font-size: 1.1rem; color: var(--text-muted); margin-top: 8px; }
+
+        /* Spelling Test */
+        .spelling-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem; margin-bottom: 1.5rem; }
+        .spelling-prompt { text-align: center; margin-bottom: 1.5rem; }
+        .spelling-meaning { font-size: 1.4rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+        .spelling-hint { font-size: 1rem; color: var(--text-muted); margin-bottom: 1rem; }
+        .spelling-input-wrap { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .spelling-input { padding: 14px 20px; font-size: 1.3rem; border: 2px solid var(--border); border-radius: 10px; text-align: center; min-width: 200px; transition: all 0.2s; }
+        .spelling-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .spelling-input.correct { border-color: var(--success); background: #dcfce7; }
+        .spelling-input.wrong { border-color: var(--danger); background: #fee2e2; }
+        .spelling-btn { padding: 14px 28px; font-size: 1.1rem; }
+        .spelling-feedback { text-align: center; padding: 1rem; font-size: 1.1rem; font-weight: 600; border-radius: 8px; margin-top: 1rem; }
+        .spelling-feedback.correct { background: #dcfce7; color: var(--success); }
+        .spelling-feedback.wrong { background: #fee2e2; color: var(--danger); }
+        .spelling-correct-answer { color: var(--success); font-weight: 700; }
+        .spelling-progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .spelling-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--border); }
+        .spelling-dot.correct { background: var(--success); }
+        .spelling-dot.wrong { background: var(--danger); }
+        .spelling-dot.current { background: var(--primary); transform: scale(1.3); }
+        .spelling-stats { display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; font-size: 1rem; color: var(--text-muted); }
+        .spelling-stat { display: flex; align-items: center; gap: 6px; }
+        .spelling-stat strong { color: var(--text); font-size: 1.3rem; }
+        .spelling-mode-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .spelling-mode-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; border: 3px solid transparent; }
+        .spelling-mode-card:hover { transform: translateY(-4px); border-color: var(--primary-light); }
+        .spelling-mode-card.selected { border-color: var(--primary); background: var(--primary-light); }
+        .spelling-mode-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .spelling-mode-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .spelling-mode-desc { font-size: 0.85rem; color: var(--text-muted); }
 
         /* Buttons */
         .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: white; }
@@ -396,6 +452,7 @@
                 <button class="nav-tab" onclick="switchTab('vocab')">Vocab</button>
                 <button class="nav-tab" onclick="switchTab('phonics')">Phonics</button>
                 <button class="nav-tab" onclick="switchTab('quiz')">Quiz</button>
+                <button class="nav-tab" onclick="switchTab('spelling')">Spelling</button>
                 <button class="nav-tab" onclick="switchTab('speaking')">Speaking</button>
             </nav>
         </div>
@@ -579,6 +636,7 @@
                 <button class="lesson-tab" onclick="switchLessonTab('readalong')">🎧 Read Along</button>
                 <button class="lesson-tab" onclick="switchLessonTab('practice')">✏️ Practice</button>
                 <button class="lesson-tab" onclick="switchLessonTab('quiz')">✅ Quiz</button>
+                <button class="lesson-tab" onclick="switchLessonTab('spelling')">🔤 Spelling</button>
             </div>
 
             <!-- Tab: Vocabulary -->
@@ -595,6 +653,9 @@
 
             <!-- Tab: Quiz -->
             <div class="lesson-tab-content" id="lesson-tab-quiz"></div>
+
+            <!-- Tab: Spelling -->
+            <div class="lesson-tab-content" id="lesson-tab-spelling"></div>
         </section>
 
         <!-- ===== VOCAB (standalone) ===== -->
@@ -678,6 +739,51 @@
                     <div class="practice-target">
                         <button class="voice-btn" onclick="speak('Here is a neighbor.')">🔊</button>
                         <span class="practice-target-text">Here is a neighbor.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SPELLING ===== -->
+        <section id="spelling" class="section">
+            <div class="unit-detail-header" style="background:linear-gradient(135deg, #7c3aed, #db2777);">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="unit-detail-info"><h2>Spelling Challenge</h2><p>Test your spelling skills!</p></div>
+            </div>
+            <div class="main-content">
+                <!-- Mode Selection -->
+                <div class="spelling-mode-select" id="spellingModeSelect">
+                    <div class="spelling-mode-card" onclick="startSpelling('meaning')" id="mode-meaning">
+                        <div class="spelling-mode-icon">📖</div>
+                        <div class="spelling-mode-title">Meaning to Word</div>
+                        <div class="spelling-mode-desc">See the Chinese meaning, type the English word</div>
+                    </div>
+                    <div class="spelling-mode-card" onclick="startSpelling('listen')" id="mode-listen">
+                        <div class="spelling-mode-icon">🎧</div>
+                        <div class="spelling-mode-title">Listen & Spell</div>
+                        <div class="spelling-mode-desc">Hear the word, then type it</div>
+                    </div>
+                </div>
+                
+                <!-- Spelling Game Area -->
+                <div id="spellingGame" style="display:none;">
+                    <div class="spelling-progress" id="spellingProgress"></div>
+                    <div class="spelling-card">
+                        <div class="spelling-prompt">
+                            <div class="spelling-meaning" id="spellingMeaning"></div>
+                            <div class="spelling-hint" id="spellingHint"></div>
+                        </div>
+                        <div class="spelling-input-wrap">
+                            <input type="text" class="spelling-input" id="spellingInput" placeholder="Type your answer..." autocomplete="off" autocapitalize="off" spellcheck="false">
+                            <button class="btn btn-primary spelling-btn" id="spellingVoiceBtn" onclick="playCurrentWord()">🔊</button>
+                            <button class="btn btn-success spelling-btn" onclick="checkSpelling()">Check</button>
+                        </div>
+                        <div class="spelling-feedback" id="spellingFeedback" style="display:none;"></div>
+                    </div>
+                    <div class="spelling-stats" id="spellingStats"></div>
+                    <div style="text-align:center;margin-top:1.5rem;">
+                        <button class="btn btn-primary" onclick="resetSpelling()">🔄 Try Again</button>
+                        <button class="btn" style="background:#64748b;" onclick="backToSpellingModes()">← Choose Mode</button>
                     </div>
                 </div>
             </div>
@@ -900,10 +1006,13 @@
         };
 
         // ============ GO TO LESSON ============
+        var currentUnitId = 1;
         function goToLesson(lessonNum) {
             console.log('[APP] goToLesson:', lessonNum);
             var data = lessonData[lessonNum];
             if (!data) { console.error('No data for lesson', lessonNum); return; }
+            
+            currentUnitId = lessonNum;
 
             document.getElementById('lessonViewTitle').textContent = data.title;
             document.getElementById('lessonViewSubtitle').textContent = data.subtitle;
@@ -913,6 +1022,7 @@
             renderReadAlongTab(data);
             renderPracticeTab(data);
             renderQuizTab(data);
+            renderSpellingLessonTab(data);
 
             switchTab('lesson-view');
             switchLessonTab('vocab');
@@ -997,11 +1107,230 @@
             var container = document.getElementById('lesson-tab-readalong');
             container.innerHTML = '<div class="lesson-panel"><div class="lesson-badge">Read Along</div><h2 class="lesson-title">Listen and Repeat</h2>' +
                 '<div class="readalong-controls"><button class="play-btn" id="playReadAlongBtn">Play</button><span>Click to hear the text</span></div>' +
-                '<div class="readalong-text" id="readalongText">' + data.readalong + '</div></div>';
+                '<div class="readalong-text" id="readalongText">' + data.readalong + '</div>' +
+                '<div class="record-section">' +
+                    '<div class="record-title">🎙️ Your Turn - Record Yourself</div>' +
+                    '<div class="record-controls">' +
+                        '<button class="record-mic-btn" id="recordMicBtn" onclick="toggleRecording()">🎤</button>' +
+                        '<button class="btn btn-primary" id="playOriginalBtn" onclick="speak(\'' + data.readalong.replace(/'/g, "\\'") + '\')">🔊 Listen Again</button>' +
+                    '</div>' +
+                    '<div class="record-status" id="recordStatus">Click the microphone to start recording</div>' +
+                    '<div class="record-result" id="recordResult" style="display:none;"></div>' +
+                '</div>' +
+                '</div>';
 
             document.getElementById('playReadAlongBtn').addEventListener('click', function() {
                 speak(data.readalong);
             });
+        }
+
+        // ============ RECORDING & SPEECH RECOGNITION ============
+        var isRecording = false;
+        var mediaRecorder = null;
+        var audioChunks = [];
+        var recognition = null;
+        var recordTimer = null;
+        var recordSeconds = 0;
+        var currentReadAlongText = '';
+
+        function initSpeechRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                console.warn('Speech recognition not supported');
+                return null;
+            }
+            
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            var rec = new SpeechRecognition();
+            rec.lang = 'en-US';
+            rec.continuous = true;
+            rec.interimResults = true;
+            rec.maxAlternatives = 1;
+            
+            rec.onresult = function(event) {
+                var finalTranscript = '';
+                var interimTranscript = '';
+                
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    var transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                
+                document.getElementById('recordStatus').textContent = finalTranscript || interimTranscript;
+                
+                if (finalTranscript) {
+                    currentReadAlongText = finalTranscript;
+                }
+            };
+            
+            rec.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                document.getElementById('recordStatus').textContent = 'Error: ' + event.error;
+            };
+            
+            rec.onend = function() {
+                if (isRecording) {
+                    // Restart if still recording
+                    recognition.start();
+                }
+            };
+            
+            return rec;
+        }
+
+        function toggleRecording() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        function startRecording() {
+            // Check for microphone permission
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('Microphone access is not supported in this browser.');
+                return;
+            }
+            
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    // Initialize speech recognition
+                    if (!recognition) {
+                        recognition = initSpeechRecognition();
+                    }
+                    
+                    isRecording = true;
+                    audioChunks = [];
+                    recordSeconds = 0;
+                    currentReadAlongText = '';
+                    
+                    // Update UI
+                    var micBtn = document.getElementById('recordMicBtn');
+                    micBtn.classList.add('recording');
+                    micBtn.textContent = '⏹';
+                    document.getElementById('recordStatus').textContent = 'Recording... 0:00';
+                    document.getElementById('recordResult').style.display = 'none';
+                    
+                    // Start timer
+                    recordTimer = setInterval(function() {
+                        recordSeconds++;
+                        var mins = Math.floor(recordSeconds / 60);
+                        var secs = recordSeconds % 60;
+                        document.getElementById('recordStatus').textContent = 'Recording... ' + mins + ':' + (secs < 10 ? '0' : '') + secs;
+                    }, 1000);
+                    
+                    // Start speech recognition
+                    if (recognition) {
+                        recognition.start();
+                    }
+                })
+                .catch(function(err) {
+                    console.error('Microphone error:', err);
+                    alert('Could not access microphone. Please allow microphone access and try again.');
+                });
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            
+            // Stop timer
+            if (recordTimer) {
+                clearInterval(recordTimer);
+                recordTimer = null;
+            }
+            
+            // Stop speech recognition
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            // Update UI
+            var micBtn = document.getElementById('recordMicBtn');
+            micBtn.classList.remove('recording');
+            micBtn.textContent = '🎤';
+            
+            // Calculate and show score
+            var originalText = document.getElementById('readalongText').textContent.trim();
+            var userText = currentReadAlongText.trim();
+            
+            if (userText) {
+                showRecordingResult(originalText, userText);
+            } else {
+                document.getElementById('recordStatus').textContent = 'No speech detected. Please try again.';
+            }
+        }
+
+        function showRecordingResult(original, user) {
+            var result = document.getElementById('recordResult');
+            result.style.display = 'block';
+            
+            // Calculate similarity score
+            var score = calculateSimilarity(original, user);
+            var scoreClass = score >= 80 ? 'score-excellent' : score >= 60 ? 'score-good' : score >= 40 ? 'score-fair' : 'score-poor';
+            var scoreLabel = score >= 80 ? 'Excellent! 🎉' : score >= 60 ? 'Good Job! 👍' : score >= 40 ? 'Keep Practicing 💪' : 'Try Again 📚';
+            
+            // Highlight differences
+            var highlighted = highlightDifferences(original, user);
+            
+            result.innerHTML = 
+                '<div class="record-score">' +
+                    '<div class="score-circle ' + scoreClass + '">' + Math.round(score) + '%</div>' +
+                    '<div class="score-label">' + scoreLabel + '</div>' +
+                    '<div class="score-detail">Match: ' + Math.round(score) + '%</div>' +
+                '</div>' +
+                '<div style="margin-top:1rem;"><strong>Your reading:</strong></div>' +
+                '<div class="record-transcript">' + highlighted + '</div>' +
+                '<div style="font-size:0.85rem;color:var(--text-muted);text-align:center;">Tip: Listen to the original and try again!</div>' +
+                '<div class="record-actions">' +
+                    '<button class="btn btn-primary" onclick="toggleRecording()">🔄 Try Again</button>' +
+                    '<button class="btn" style="background:#64748b;" onclick="speak(\'' + original.replace(/'/g, "\\'") + '\')">🔊 Listen Original</button>' +
+                '</div>';
+            
+            document.getElementById('recordStatus').textContent = 'Recording complete! Score: ' + Math.round(score) + '%';
+        }
+
+        function calculateSimilarity(str1, str2) {
+            // Normalize strings
+            var s1 = str1.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
+            var s2 = str2.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
+            
+            // Count matching words
+            var matches = 0;
+            for (var i = 0; i < s2.length; i++) {
+                if (s1.indexOf(s2[i]) !== -1) {
+                    matches++;
+                }
+            }
+            
+            // Calculate percentage based on original text length
+            var similarity = (matches / s1.length) * 100;
+            return Math.min(100, Math.max(0, similarity));
+        }
+
+        function highlightDifferences(original, user) {
+            // Simple word-by-word comparison
+            var origWords = original.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
+            var userWords = user.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
+            
+            var result = [];
+            var userIndex = 0;
+            
+            for (var i = 0; i < origWords.length; i++) {
+                if (userIndex < userWords.length && origWords[i] === userWords[userIndex]) {
+                    result.push('<span class="match-highlight">' + origWords[i] + '</span>');
+                    userIndex++;
+                } else if (userIndex < userWords.length) {
+                    result.push('<span class="miss-highlight">' + origWords[i] + '</span>');
+                } else {
+                    result.push('<span class="miss-highlight">' + origWords[i] + '</span>');
+                }
+            }
+            
+            return result.join(' ');
         }
 
         function renderPracticeTab(data) {
@@ -1048,6 +1377,182 @@
                     selectQuizOption(e.target);
                 }
             });
+        }
+
+        function renderSpellingLessonTab(data) {
+            var container = document.getElementById('lesson-tab-spelling');
+            var html = '<div class="lesson-panel">';
+            html += '<div class="lesson-badge">Spelling</div>';
+            html += '<h2 class="lesson-title">Spelling Challenge</h2>';
+            
+            if (!data.vocab || data.vocab.length === 0) {
+                html += '<p style="color:var(--text-muted);text-align:center;padding:2rem;">No vocabulary words available for this lesson.</p>';
+            } else {
+                html += '<p style="color:var(--text-muted);margin-bottom:1.5rem;text-align:center;">Practice spelling the vocabulary words from this lesson!</p>';
+                html += '<div style="text-align:center;">';
+                html += '<button class="btn btn-primary" style="font-size:1.1rem;padding:14px 32px;" onclick="startLessonSpelling(' + currentUnitId + ')">';
+                html += '🎯 Start Spelling Test</button>';
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Lesson-specific spelling test
+        var lessonSpellingWords = [];
+        var lessonCurrentIndex = 0;
+        var lessonSpellingResults = [];
+        var lessonSpellingChecked = false;
+
+        function startLessonSpelling(unitId) {
+            var data = lessonData[unitId];
+            if (!data || !data.vocab) return;
+            
+            lessonSpellingWords = data.vocab.slice();
+            lessonSpellingWords = shuffleArray(lessonSpellingWords);
+            lessonCurrentIndex = 0;
+            lessonSpellingResults = [];
+            lessonSpellingChecked = false;
+            
+            showLessonSpellingWord();
+        }
+
+        function showLessonSpellingWord() {
+            var container = document.getElementById('lesson-tab-spelling');
+            var word = lessonSpellingWords[lessonCurrentIndex];
+            
+            var html = '<div class="lesson-panel">';
+            html += '<div class="lesson-badge">Spelling</div>';
+            html += '<h2 class="lesson-title">Spelling Challenge</h2>';
+            html += '<div class="spelling-progress">';
+            for (var i = 0; i < lessonSpellingWords.length; i++) {
+                var cls = 'spelling-dot';
+                if (i < lessonSpellingResults.length) {
+                    cls += lessonSpellingResults[i] ? ' correct' : ' wrong';
+                } else if (i === lessonCurrentIndex) {
+                    cls += ' current';
+                }
+                html += '<div class="' + cls + '"></div>';
+            }
+            html += '</div>';
+            html += '<div class="spelling-card">';
+            html += '<div class="spelling-prompt">';
+            html += '<div class="spelling-meaning">' + word.meaning + '</div>';
+            html += '<div class="spelling-hint">Type the English word:</div>';
+            html += '</div>';
+            html += '<div class="spelling-input-wrap">';
+            html += '<input type="text" class="spelling-input" id="lessonSpellingInput" placeholder="Type your answer..." autocomplete="off" autocapitalize="off" spellcheck="false">';
+            html += '<button class="btn btn-primary spelling-btn" onclick="speak(\'' + word.word + '\')">🔊</button>';
+            html += '<button class="btn btn-success spelling-btn" onclick="checkLessonSpelling()">Check</button>';
+            html += '</div>';
+            html += '<div class="spelling-feedback" id="lessonSpellingFeedback" style="display:none;"></div>';
+            html += '</div>';
+            
+            // Stats
+            var correct = 0, wrong = 0;
+            for (var i = 0; i < lessonSpellingResults.length; i++) {
+                if (lessonSpellingResults[i]) correct++;
+                else wrong++;
+            }
+            html += '<div class="spelling-stats">';
+            html += '<div class="spelling-stat">✅ Correct: <strong>' + correct + '</strong></div>';
+            html += '<div class="spelling-stat">❌ Wrong: <strong>' + wrong + '</strong></div>';
+            html += '</div>';
+            
+            html += '<div style="text-align:center;margin-top:1.5rem;">';
+            html += '<button class="btn btn-primary" onclick="startLessonSpelling(' + currentUnitId + ')">🔄 Try Again</button>';
+            html += '</div>';
+            html += '</div>';
+            
+            container.innerHTML = html;
+            
+            setTimeout(function() {
+                var input = document.getElementById('lessonSpellingInput');
+                if (input) {
+                    input.focus();
+                    input.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            if (lessonSpellingChecked) {
+                                nextLessonSpellingWord();
+                            } else {
+                                checkLessonSpelling();
+                            }
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        function checkLessonSpelling() {
+            if (lessonSpellingChecked) {
+                nextLessonSpellingWord();
+                return;
+            }
+            
+            var input = document.getElementById('lessonSpellingInput');
+            var userAnswer = input.value.trim().toLowerCase();
+            var word = lessonSpellingWords[lessonCurrentIndex];
+            var correctAnswer = word.word.toLowerCase();
+            
+            lessonSpellingChecked = true;
+            input.disabled = true;
+            
+            var isCorrect = userAnswer === correctAnswer;
+            lessonSpellingResults.push(isCorrect);
+            
+            var feedback = document.getElementById('lessonSpellingFeedback');
+            feedback.style.display = 'block';
+            
+            if (isCorrect) {
+                input.classList.add('correct');
+                feedback.className = 'spelling-feedback correct';
+                feedback.innerHTML = '✅ Correct! Well done!';
+            } else {
+                input.classList.add('wrong');
+                feedback.className = 'spelling-feedback wrong';
+                feedback.innerHTML = '❌ The correct spelling is: <span class="spelling-correct-answer">' + word.word + '</span>';
+                speak(word.word);
+            }
+            
+            document.querySelector('#lesson-tab-spelling .btn-success').textContent = 'Next →';
+        }
+
+        function nextLessonSpellingWord() {
+            lessonCurrentIndex++;
+            lessonSpellingChecked = false;
+            
+            if (lessonCurrentIndex >= lessonSpellingWords.length) {
+                showLessonSpellingFinalResult();
+            } else {
+                document.querySelector('#lesson-tab-spelling .btn-success').textContent = 'Check';
+                showLessonSpellingWord();
+            }
+        }
+
+        function showLessonSpellingFinalResult() {
+            var correct = 0;
+            for (var i = 0; i < lessonSpellingResults.length; i++) {
+                if (lessonSpellingResults[i]) correct++;
+            }
+            
+            var percentage = Math.round((correct / lessonSpellingWords.length) * 100);
+            var message = percentage === 100 ? 'Perfect! 🏆' : 
+                          percentage >= 80 ? 'Great job! 🌟' : 
+                          percentage >= 60 ? 'Good effort! 💪' : 'Keep practicing! 📚';
+            
+            var container = document.getElementById('lesson-tab-spelling');
+            container.innerHTML = '<div class="lesson-panel">' +
+                '<div class="lesson-badge">Spelling</div>' +
+                '<h2 class="lesson-title">🎉 Quiz Complete!</h2>' +
+                '<div style="text-align:center;padding:2rem;">' +
+                '<div style="font-size:4rem;font-weight:800;color:var(--primary);">' + correct + '/' + lessonSpellingWords.length + '</div>' +
+                '<div style="font-size:1.3rem;margin-top:1rem;color:var(--text-muted);">' + message + '</div>' +
+                '</div>' +
+                '<div style="text-align:center;margin-top:1.5rem;">' +
+                '<button class="btn btn-primary" onclick="startLessonSpelling(' + currentUnitId + ')">🔄 Try Again</button>' +
+                '</div>' +
+                '</div>';
         }
 
         // ============ SELECTION ============
@@ -1144,6 +1649,271 @@
             
             speechSynthesis.speak(utterance);
         }
+
+        // ============ SPELLING TEST ============
+        var spellingMode = 'meaning'; // 'meaning' or 'listen'
+        var spellingWords = [];
+        var currentSpellingIndex = 0;
+        var spellingResults = []; // true = correct, false = wrong
+        var spellingChecked = false;
+
+        function startSpelling(mode) {
+            spellingMode = mode;
+            
+            // Highlight selected mode
+            document.querySelectorAll('.spelling-mode-card').forEach(function(card) {
+                card.classList.remove('selected');
+            });
+            document.getElementById('mode-' + mode).classList.add('selected');
+            
+            // Collect all vocab words from all lessons
+            spellingWords = [];
+            for (var unitId in lessonData) {
+                var lesson = lessonData[unitId];
+                if (lesson.vocab) {
+                    for (var i = 0; i < lesson.vocab.length; i++) {
+                        spellingWords.push(lesson.vocab[i]);
+                    }
+                }
+            }
+            
+            // Shuffle words
+            spellingWords = shuffleArray(spellingWords);
+            
+            // Take 10 words for a session
+            spellingWords = spellingWords.slice(0, 10);
+            
+            currentSpellingIndex = 0;
+            spellingResults = [];
+            spellingChecked = false;
+            
+            // Show game area
+            document.getElementById('spellingModeSelect').style.display = 'none';
+            document.getElementById('spellingGame').style.display = 'block';
+            
+            renderSpellingProgress();
+            showCurrentSpellingWord();
+        }
+
+        function shuffleArray(array) {
+            var arr = array.slice();
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            return arr;
+        }
+
+        function renderSpellingProgress() {
+            var html = '';
+            for (var i = 0; i < spellingWords.length; i++) {
+                var cls = 'spelling-dot';
+                if (i < spellingResults.length) {
+                    cls += spellingResults[i] ? ' correct' : ' wrong';
+                } else if (i === currentSpellingIndex) {
+                    cls += ' current';
+                }
+                html += '<div class="' + cls + '"></div>';
+            }
+            document.getElementById('spellingProgress').innerHTML = html;
+        }
+
+        function showCurrentSpellingWord() {
+            var word = spellingWords[currentSpellingIndex];
+            
+            if (spellingMode === 'meaning') {
+                document.getElementById('spellingMeaning').textContent = word.meaning;
+                document.getElementById('spellingHint').textContent = 'Type the English word:';
+            } else {
+                document.getElementById('spellingMeaning').innerHTML = '🔊 Listen and spell the word';
+                document.getElementById('spellingHint').textContent = 'Click the speaker button to hear the word';
+                // Auto play the word in listen mode
+                setTimeout(function() {
+                    speak(word.word);
+                }, 300);
+            }
+            
+            // Reset input
+            var input = document.getElementById('spellingInput');
+            input.value = '';
+            input.className = 'spelling-input';
+            input.disabled = false;
+            input.focus();
+            
+            // Hide feedback
+            document.getElementById('spellingFeedback').style.display = 'none';
+            spellingChecked = false;
+            
+            updateSpellingStats();
+        }
+
+        function playCurrentWord() {
+            var word = spellingWords[currentSpellingIndex];
+            speak(word.word);
+        }
+
+        function checkSpelling() {
+            if (spellingChecked) {
+                // Move to next word
+                nextSpellingWord();
+                return;
+            }
+            
+            var input = document.getElementById('spellingInput');
+            var userAnswer = input.value.trim().toLowerCase();
+            var word = spellingWords[currentSpellingIndex];
+            var correctAnswer = word.word.toLowerCase();
+            
+            spellingChecked = true;
+            input.disabled = true;
+            
+            // Check answer (case insensitive, trim spaces)
+            var isCorrect = userAnswer === correctAnswer;
+            spellingResults.push(isCorrect);
+            
+            // Show feedback
+            var feedback = document.getElementById('spellingFeedback');
+            feedback.style.display = 'block';
+            
+            if (isCorrect) {
+                input.classList.add('correct');
+                feedback.className = 'spelling-feedback correct';
+                feedback.innerHTML = '✅ Correct! Well done!';
+            } else {
+                input.classList.add('wrong');
+                feedback.className = 'spelling-feedback wrong';
+                feedback.innerHTML = '❌ The correct spelling is: <span class="spelling-correct-answer">' + word.word + '</span>';
+                // Also speak the correct answer
+                speak(word.word);
+            }
+            
+            renderSpellingProgress();
+            updateSpellingStats();
+            
+            // Change button text to "Next"
+            document.querySelector('#spellingGame .btn-success').textContent = 'Next →';
+        }
+
+        function nextSpellingWord() {
+            currentSpellingIndex++;
+            
+            if (currentSpellingIndex >= spellingWords.length) {
+                // Show final results
+                showSpellingFinalResult();
+            } else {
+                // Reset button text
+                document.querySelector('#spellingGame .btn-success').textContent = 'Check';
+                showCurrentSpellingWord();
+            }
+        }
+
+        function updateSpellingStats() {
+            var correct = 0;
+            var wrong = 0;
+            for (var i = 0; i < spellingResults.length; i++) {
+                if (spellingResults[i]) correct++;
+                else wrong++;
+            }
+            
+            document.getElementById('spellingStats').innerHTML = 
+                '<div class="spelling-stat">✅ Correct: <strong>' + correct + '</strong></div>' +
+                '<div class="spelling-stat">❌ Wrong: <strong>' + wrong + '</strong></div>' +
+                '<div class="spelling-stat">📝 Remaining: <strong>' + (spellingWords.length - currentSpellingIndex) + '</strong></div>';
+        }
+
+        function showSpellingFinalResult() {
+            var correct = 0;
+            for (var i = 0; i < spellingResults.length; i++) {
+                if (spellingResults[i]) correct++;
+            }
+            
+            var percentage = Math.round((correct / spellingWords.length) * 100);
+            var message = '';
+            var emoji = '';
+            
+            if (percentage === 100) {
+                message = 'Perfect! You\'re a spelling champion! 🏆';
+                emoji = '🎉';
+            } else if (percentage >= 80) {
+                message = 'Great job! Keep practicing!';
+                emoji = '🌟';
+            } else if (percentage >= 60) {
+                message = 'Good effort! Review the words and try again.';
+                emoji = '💪';
+            } else {
+                message = 'Keep learning! Practice makes perfect.';
+                emoji = '📚';
+            }
+            
+            document.getElementById('spellingMeaning').innerHTML = emoji + ' Quiz Complete!';
+            document.getElementById('spellingHint').textContent = '';
+            document.getElementById('spellingInput').style.display = 'none';
+            document.getElementById('spellingVoiceBtn').style.display = 'none';
+            document.querySelector('#spellingGame .btn-success').style.display = 'none';
+            
+            var feedback = document.getElementById('spellingFeedback');
+            feedback.style.display = 'block';
+            feedback.className = 'spelling-feedback';
+            feedback.style.background = percentage >= 60 ? '#dcfce7' : '#fee2e2';
+            feedback.style.color = percentage >= 60 ? 'var(--success)' : 'var(--danger)';
+            feedback.innerHTML = 
+                '<div style="font-size:2.5rem;font-weight:800;">' + correct + '/' + spellingWords.length + '</div>' +
+                '<div style="font-size:1.2rem;margin-top:0.5rem;">' + message + '</div>';
+            
+            document.querySelector('#spellingGame .btn-success').textContent = 'Try Again';
+        }
+
+        function resetSpelling() {
+            currentSpellingIndex = 0;
+            spellingResults = [];
+            spellingChecked = false;
+            
+            // Reset UI
+            document.getElementById('spellingInput').style.display = '';
+            document.getElementById('spellingVoiceBtn').style.display = '';
+            document.querySelector('#spellingGame .btn-success').style.display = '';
+            document.querySelector('#spellingGame .btn-success').textContent = 'Check';
+            
+            // Reshuffle
+            spellingWords = shuffleArray(spellingWords).slice(0, 10);
+            
+            renderSpellingProgress();
+            showCurrentSpellingWord();
+        }
+
+        function backToSpellingModes() {
+            document.getElementById('spellingModeSelect').style.display = '';
+            document.getElementById('spellingGame').style.display = 'none';
+            
+            // Reset UI elements
+            document.getElementById('spellingInput').style.display = '';
+            document.getElementById('spellingVoiceBtn').style.display = '';
+            document.querySelector('#spellingGame .btn-success').style.display = '';
+            document.querySelector('#spellingGame .btn-success').textContent = 'Check';
+            
+            // Remove selection highlight
+            document.querySelectorAll('.spelling-mode-card').forEach(function(card) {
+                card.classList.remove('selected');
+            });
+        }
+
+        // Handle Enter key in spelling input
+        document.addEventListener('DOMContentLoaded', function() {
+            var spellingInput = document.getElementById('spellingInput');
+            if (spellingInput) {
+                spellingInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        if (spellingChecked) {
+                            nextSpellingWord();
+                        } else {
+                            checkSpelling();
+                        }
+                    }
+                });
+            }
+        });
 
         // ============ INIT ============
         window.addEventListener('DOMContentLoaded', function() {
