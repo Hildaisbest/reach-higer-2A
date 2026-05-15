@@ -417,6 +417,20 @@
         .practice-target { display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem; }
         .voice-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--primary); color: white; cursor: pointer; font-size: 1rem; }
         .practice-target-text { font-size: 1rem; font-weight: 500; }
+        .speaking-mic-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: #059669; color: white; cursor: pointer; font-size: 1rem;
+            transition: background 0.2s, transform 0.15s;
+            flex-shrink: 0;
+        }
+        .speaking-mic-btn:hover { background: #047857; transform: scale(1.1); }
+        .speaking-mic-btn.recording {
+            background: #dc2626; animation: speaking-pulse 1s infinite;
+        }
+        @keyframes speaking-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
         .practice-controls { display: flex; align-items: center; gap: 12px; }
         .record-btn { padding: 8px 16px; border-radius: 20px; border: none; font-weight: 600; cursor: pointer; }
         .record-btn-idle { background: var(--bg); color: var(--text); }
@@ -729,18 +743,24 @@
             </div>
             <div class="speaking-section">
                 <div class="speaking-title">🎤 Practice Sentences</div>
-                <div class="practice-item">
+                <div class="speaking-hint" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">🔊 Tap the speaker to hear · 🎤 Tap the mic to record your pronunciation · Works best in Chrome or Edge</div>
+                <div class="practice-item" id="speakingItem0">
                     <div class="practice-target">
                         <button class="voice-btn" onclick="speak('What is a community?')">🔊</button>
                         <span class="practice-target-text">What is a community?</span>
+                        <button class="record-mic-btn speaking-mic-btn" onclick="startSpeakingPractice(0)">🎤</button>
                     </div>
+                    <div class="record-status" id="speakingStatus0" style="margin-top:8px;font-size:0.85rem;color:var(--text-muted);">Tap mic to record</div>
                 </div>
-                <div class="practice-item">
+                <div class="practice-item" id="speakingItem1">
                     <div class="practice-target">
                         <button class="voice-btn" onclick="speak('Here is a neighbor.')">🔊</button>
                         <span class="practice-target-text">Here is a neighbor.</span>
+                        <button class="record-mic-btn speaking-mic-btn" onclick="startSpeakingPractice(1)">🎤</button>
                     </div>
+                    <div class="record-status" id="speakingStatus1" style="margin-top:8px;font-size:0.85rem;color:var(--text-muted);">Tap mic to record</div>
                 </div>
+                <div id="speakingResult" style="display:none;"></div>
             </div>
         </section>
 
@@ -1164,6 +1184,9 @@
         var recordTimer = null;
         var recordSeconds = 0;
         var currentReadAlongText = '';
+        var currentStream = null; // Track the media stream for proper cleanup
+        var recognitionRestartCount = 0; // Prevent infinite restart loops
+        var MAX_RECOGNITION_RESTARTS = 5;
 
         function initSpeechRecognition() {
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1171,6 +1194,11 @@
             if (!SpeechRecognition) {
                 console.warn('Speech recognition not supported in this browser');
                 return null;
+            }
+
+            // Check for secure context requirement
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                console.warn('Speech recognition requires HTTPS or localhost');
             }
 
             var rec = new SpeechRecognition();
@@ -1212,25 +1240,36 @@
                         statusEl.textContent = '⚠️ No speech detected. Please speak clearly.';
                     } else if (event.error === 'network') {
                         statusEl.textContent = '⚠️ Network error. Speech recognition needs internet.';
+                    } else if (event.error === 'service-not-allowed') {
+                        statusEl.textContent = '❌ Speech recognition service not available. Please use Chrome or Edge.';
+                        isRecording = false; // Don't retry for service errors
                     } else {
                         statusEl.textContent = '⚠️ Recognition error: ' + event.error;
                     }
                 }
 
-                // Try to restart on error (except for fatal errors)
+                // Try to restart on error (with limit to prevent infinite loops)
                 if (isRecording && event.error !== 'not-allowed' && event.error !== 'service-not-allowed') {
-                    setTimeout(function() {
-                        if (isRecording && recognition) {
-                            try { recognition.start(); } catch (e) {}
-                        }
-                    }, 500);
+                    if (recognitionRestartCount < MAX_RECOGNITION_RESTARTS) {
+                        recognitionRestartCount++;
+                        setTimeout(function() {
+                            if (isRecording && recognition) {
+                                try { recognition.start(); } catch (e) {}
+                            }
+                        }, 500);
+                    } else {
+                        console.warn('Max recognition restart attempts reached, stopping.');
+                        isRecording = false;
+                        stopRecording();
+                    }
                 }
             };
 
             rec.onend = function() {
-                if (isRecording) {
-                    // Restart if still recording
+                if (isRecording && recognitionRestartCount < MAX_RECOGNITION_RESTARTS) {
+                    // Restart if still recording (SpeechRecognition auto-stops after silence)
                     try {
+                        recognitionRestartCount++;
                         recognition.start();
                     } catch (e) {
                         console.warn('Recognition restart error:', e);
@@ -1239,6 +1278,160 @@
             };
 
             return rec;
+        }
+
+        // ============ SPEAKING TAB RECORDING ============
+        var speakingSentences = ['What is a community?', 'Here is a neighbor.'];
+        var speakingRecording = false;
+        var speakingRecognition = null;
+        var speakingStream = null;
+        var speakingTargetIndex = -1;
+        var speakingTranscript = '';
+
+        function startSpeakingPractice(index) {
+            if (speakingRecording && speakingTargetIndex === index) {
+                // Stop current recording
+                stopSpeakingPractice();
+                return;
+            }
+
+            // Stop any existing recording first
+            if (speakingRecording) stopSpeakingPractice();
+
+            var targetText = speakingSentences[index];
+            if (!targetText) return;
+
+            speakingTargetIndex = index;
+            speakingRecording = true;
+            speakingTranscript = '';
+
+            // Update UI
+            var micBtn = document.querySelector('#speakingItem' + index + ' .speaking-mic-btn');
+            if (micBtn) {
+                micBtn.classList.add('recording');
+                micBtn.textContent = '⏹';
+            }
+            var statusEl = document.getElementById('speakingStatus' + index);
+            if (statusEl) statusEl.textContent = '🔴 Recording... speak now';
+
+            // Hide previous result
+            var resultEl = document.getElementById('speakingResult');
+            if (resultEl) resultEl.style.display = 'none';
+
+            // Check HTTPS
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                if (statusEl) statusEl.textContent = '❌ Speech recognition requires HTTPS';
+                speakingRecording = false;
+                return;
+            }
+
+            // Get microphone access
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    speakingStream = stream;
+
+                    // Initialize speech recognition
+                    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    if (!SpeechRecognition) {
+                        if (statusEl) statusEl.textContent = '⚠️ Not supported in this browser. Use Chrome/Edge.';
+                        speakingRecording = false;
+                        return;
+                    }
+
+                    speakingRecognition = new SpeechRecognition();
+                    speakingRecognition.lang = 'en-US';
+                    speakingRecognition.continuous = true;
+                    speakingRecognition.interimResults = true;
+                    speakingRecognition.maxAlternatives = 1;
+
+                    speakingRecognition.onresult = function(event) {
+                        var final = '';
+                        var interim = '';
+                        for (var i = event.resultIndex; i < event.results.length; i++) {
+                            if (event.results[i].isFinal) {
+                                final += event.results[i][0].transcript;
+                            } else {
+                                interim += event.results[i][0].transcript;
+                            }
+                        }
+                        speakingTranscript = final || interim || '';
+                        if (statusEl) statusEl.textContent = speakingTranscript || 'Listening...';
+                    };
+
+                    speakingRecognition.onerror = function(event) {
+                        if (event.error === 'not-allowed') {
+                            if (statusEl) statusEl.textContent = '❌ Mic denied';
+                        } else if (event.error === 'no-speech') {
+                            if (statusEl) statusEl.textContent = '⚠️ No speech detected, try again';
+                        }
+                        // Auto-stop on error
+                        if (speakingRecording) stopSpeakingPractice();
+                    };
+
+                    speakingRecognition.onend = function() {
+                        // Auto-stop recognition when it ends naturally (after silence)
+                        if (speakingRecording) stopSpeakingPractice();
+                    };
+
+                    speakingRecognition.start();
+                })
+                .catch(function(err) {
+                    console.error('Speaking mic error:', err);
+                    if (statusEl) statusEl.textContent = '❌ Could not access microphone';
+                    speakingRecording = false;
+                });
+        }
+
+        function stopSpeakingPractice() {
+            speakingRecording = false;
+
+            // Stop recognition
+            if (speakingRecognition) {
+                try { speakingRecognition.stop(); } catch (e) {}
+                speakingRecognition = null;
+            }
+
+            // Release stream
+            if (speakingStream) {
+                speakingStream.getTracks().forEach(function(track) { track.stop(); });
+                speakingStream = null;
+            }
+
+            // Update mic button
+            var micBtn = document.querySelector('#speakingItem' + speakingTargetIndex + ' .speaking-mic-btn');
+            if (micBtn) {
+                micBtn.classList.remove('recording');
+                micBtn.textContent = '🎤';
+            }
+
+            // Show result if we got a transcript
+            if (speakingTranscript && speakingTargetIndex >= 0) {
+                var targetText = speakingSentences[speakingTargetIndex];
+                showSpeakingResult(targetText, speakingTranscript, speakingTargetIndex);
+            } else {
+                var statusEl = document.getElementById('speakingStatus' + speakingTargetIndex);
+                if (statusEl) statusEl.textContent = 'No speech detected. Tap mic to try again.';
+            }
+        }
+
+        function showSpeakingResult(original, user, index) {
+            var statusEl = document.getElementById('speakingStatus' + index);
+            var score = calculateSimilarity(original, user);
+            var scoreLabel = score >= 80 ? 'Excellent! 🎉' : score >= 60 ? 'Good Job! 👍' : score >= 40 ? 'Keep Practicing 💪' : 'Try Again 📚';
+
+            if (statusEl) statusEl.textContent = 'Score: ' + Math.round(score) + '% — ' + scoreLabel;
+
+            var highlighted = highlightDifferences(original, user);
+            var resultEl = document.getElementById('speakingResult');
+            if (resultEl) {
+                resultEl.style.display = 'block';
+                resultEl.innerHTML =
+                    '<div style="margin-top:1rem;padding:1rem;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);">' +
+                        '<div style="font-size:0.9rem;margin-bottom:0.5rem;"><strong>Original:</strong> ' + original + '</div>' +
+                        '<div style="font-size:0.9rem;"><strong>You said:</strong> ' + highlighted + '</div>' +
+                        '<div style="font-size:0.85rem;color:var(--text-muted);margin-top:0.5rem;">Tip: Listen again and repeat!</div>' +
+                    '</div>';
+            }
         }
 
         var toggleLock = false; // Prevent rapid double-clicks
@@ -1260,6 +1453,15 @@
             var supportsSpeechRec = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
             var supportsMic = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 
+            // HTTPS check
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                var httpsMsg = 'Speech recognition requires HTTPS. Your page is served over ' + location.protocol + '. If testing locally, use a local server (not file://).';
+                var statusEl = document.getElementById('recordStatus');
+                if (statusEl) statusEl.textContent = '❌ ' + httpsMsg;
+                alert(httpsMsg);
+                return;
+            }
+
             if (!supportsMic) {
                 var msg = 'Your browser does not support microphone access. Please use Chrome or Edge.';
                 document.getElementById('recordStatus').textContent = '❌ ' + msg;
@@ -1269,12 +1471,19 @@
 
             if (!supportsSpeechRec) {
                 var msg2 = 'Your browser does not support speech recognition. Recording will capture audio but may not transcribe. Please use Chrome or Edge for best results.';
-                document.getElementById('recordStatus').textContent = '⚠️ Limited mode - use Chrome/Edge';
+                var statusEl2 = document.getElementById('recordStatus');
+                if (statusEl2) statusEl2.textContent = '⚠️ Limited mode - use Chrome/Edge';
                 console.warn(msg2);
             }
 
+            // Reset restart counter for each new recording session
+            recognitionRestartCount = 0;
+
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(function(stream) {
+                    // Track the stream for proper cleanup
+                    currentStream = stream;
+
                     // Initialize speech recognition
                     if (!recognition) {
                         recognition = initSpeechRecognition();
@@ -1338,6 +1547,15 @@
                 } catch (e) {
                     console.warn('Recognition stop error:', e);
                 }
+            }
+
+            // Release microphone - stop all tracks on the stream
+            if (currentStream) {
+                currentStream.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+                currentStream = null;
+                console.log('[Recording] Microphone stream released');
             }
 
             // Update UI
