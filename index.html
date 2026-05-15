@@ -1723,13 +1723,22 @@
                 return;
             }
 
-            console.log('[TTS] speak() called with:', text);
-            console.log('[TTS] speaking now?', speechSynthesis.speaking, '| paused?', speechSynthesis.paused, '| pending?', speechSynthesis.pending);
+            // Chrome bug fix: if speechSynthesis is stuck in "speaking" state,
+            // force resume() to clear the internal queue before cancel()
+            if (speechSynthesis.speaking || speechSynthesis.pending) {
+                console.log('[TTS] Clearing stuck queue...');
+                speechSynthesis.resume();
+                speechSynthesis.cancel();
+                // Give Chrome a moment to clean up
+                setTimeout(function() {
+                    doSpeak(text);
+                }, 100);
+            } else {
+                doSpeak(text);
+            }
+        }
 
-            speechSynthesis.cancel();
-
-            console.log('[TTS] after cancel - speaking?', speechSynthesis.speaking, '| paused?', speechSynthesis.paused, '| pending?', speechSynthesis.pending);
-
+        function doSpeak(text) {
             var utterance = new SpeechSynthesisUtterance(text);
             if (preferredVoice) {
                 utterance.voice = preferredVoice;
@@ -1749,14 +1758,14 @@
 
             utterance.onerror = function(e) {
                 isSpeaking = false;
-                console.error('[TTS] Error:', e.error, '| details:', JSON.stringify({charIndex:e.charIndex, elapsedTime:e.elapsedTime, name:e.name}));
-                if (e.error === 'interrupted' || e.error === 'canceled') {
-                    console.log('[TTS] State after error - speaking?', speechSynthesis.speaking, '| paused?', speechSynthesis.paused, '| pending?', speechSynthesis.pending);
+                console.error('[TTS] Error:', e.error);
+                // Force reset if Chrome gets stuck
+                if (e.error === 'interrupted') {
+                    speechSynthesis.cancel();
                 }
             };
 
             speechSynthesis.speak(utterance);
-            console.log('[TTS] after speak() - speaking?', speechSynthesis.speaking, '| paused?', speechSynthesis.paused, '| pending?', speechSynthesis.pending);
         }
 
         // ============ SPELLING TEST ============
