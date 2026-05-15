@@ -1682,14 +1682,15 @@
             var voices = window.speechSynthesis.getVoices();
             if (voices.length === 0) return; // No voices yet, wait for onvoiceschanged
             
-            // Priority: Microsoft en-US > local en-US > any en-US
+            // Priority: local en-US (localService=true) > Microsoft en-US > any en-US
+            // CRITICAL: Use localService=true voices on HTTPS pages to avoid network issues
             var bestVoice = null;
             for (var i = 0; i < voices.length; i++) {
-                if (voices[i].lang === 'en-US' && voices[i].name.indexOf('Microsoft') >= 0) { bestVoice = voices[i]; break; }
+                if (voices[i].lang === 'en-US' && voices[i].localService) { bestVoice = voices[i]; break; }
             }
             if (!bestVoice) {
                 for (var i = 0; i < voices.length; i++) {
-                    if (voices[i].lang === 'en-US' && voices[i].localService) { bestVoice = voices[i]; break; }
+                    if (voices[i].lang === 'en-US' && voices[i].name.indexOf('Microsoft') >= 0) { bestVoice = voices[i]; break; }
                 }
             }
             if (!bestVoice) {
@@ -1698,7 +1699,7 @@
                 }
             }
             if (bestVoice) preferredVoice = bestVoice;
-            console.log('[TTS] Voices loaded:', voices.length, '| Selected:', preferredVoice ? preferredVoice.name : 'default');
+            console.log('[TTS] Voices loaded:', voices.length, '| Selected:', preferredVoice ? preferredVoice.name + ' (local:' + preferredVoice.localService + ')' : 'default');
         }
 
         // Load voices on init - handle different browser behaviors
@@ -1723,40 +1724,40 @@
                 return;
             }
 
-            // Always cancel first, then speak with a small delay
-            // This prevents the "interrupted" error on HTTPS pages
+            // Use pause/resume to clear any stuck state
+            if (speechSynthesis.paused) {
+                speechSynthesis.resume();
+            }
             speechSynthesis.cancel();
 
-            setTimeout(function() {
-                var utterance = new SpeechSynthesisUtterance(text);
-                if (preferredVoice) {
-                    utterance.voice = preferredVoice;
+            // Create utterance with user gesture
+            var utterance = new SpeechSynthesisUtterance(text);
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            }
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+
+            utterance.onstart = function() {
+                isSpeaking = true;
+                console.log('[TTS] Speaking:', text);
+            };
+
+            utterance.onend = function() {
+                isSpeaking = false;
+                console.log('[TTS] Done:', text);
+            };
+
+            utterance.onerror = function(e) {
+                isSpeaking = false;
+                if (e.error === 'interrupted' || e.error === 'canceled') {
+                    console.log('[TTS] Ignored:', e.error);
+                } else {
+                    console.error('[TTS] Error:', e.error);
                 }
-                utterance.lang = 'en-US';
-                utterance.rate = 0.9;
+            };
 
-                utterance.onstart = function() {
-                    isSpeaking = true;
-                    console.log('[TTS] Speaking:', text);
-                };
-
-                utterance.onend = function() {
-                    isSpeaking = false;
-                    console.log('[TTS] Done:', text);
-                };
-
-                utterance.onerror = function(e) {
-                    isSpeaking = false;
-                    // Ignore interrupted/canceled - these are expected
-                    if (e.error === 'interrupted' || e.error === 'canceled') {
-                        console.log('[TTS] Ignored:', e.error);
-                    } else {
-                        console.error('[TTS] Error:', e.error);
-                    }
-                };
-
-                speechSynthesis.speak(utterance);
-            }, 50);
+            speechSynthesis.speak(utterance);
         }
 
         // ============ SPELLING TEST ============
