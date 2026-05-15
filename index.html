@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -743,7 +743,7 @@
             </div>
             <div class="speaking-section">
                 <div class="speaking-title">🎤 Practice Sentences</div>
-                <div class="speaking-hint" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">🔊 Tap the speaker to hear · 🎤 Tap the mic to record your pronunciation · Works best in Chrome or Edge</div>
+                <div class="speaking-hint" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">🔊 Tap the speaker to hear · 🎤 Tap the mic to record your pronunciation · Works best in <strong>Microsoft Edge</strong> (Chrome may show network error in China)</div>
                 <div class="practice-item" id="speakingItem0">
                     <div class="practice-target">
                         <button class="voice-btn" onclick="speak('What is a community?')">🔊</button>
@@ -1176,6 +1176,19 @@
             }
         }
 
+        // ============ BROWSER & NETWORK HELPERS ============
+        var isEdgeBrowser = /Edg\//.test(navigator.userAgent);
+        var isChromeBrowser = /Chrome\//.test(navigator.userAgent) && !isEdgeBrowser;
+        var hasNetworkError = false;
+
+        function showNetworkErrorHint(targetEl) {
+            if (!targetEl) return;
+            targetEl.innerHTML = '<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px;margin-top:8px;">' +
+                '<div style="color:#dc2626;font-weight:600;">Network Error - Speech Recognition Unavailable</div>' +
+                '<div style="font-size:0.85rem;color:#991b1b;margin-top:4px;">Chrome uses Google servers for speech recognition, which may be blocked on your network.<br>' +
+                '<strong>Solution: Open this page in Microsoft Edge.</strong> Edge uses Microsoft servers and works in China.</div></div>';
+        }
+
         // ============ RECORDING & SPEECH RECOGNITION ============
         var isRecording = false;
         var mediaRecorder = null;
@@ -1239,7 +1252,8 @@
                     } else if (event.error === 'no-speech') {
                         statusEl.textContent = '⚠️ No speech detected. Please speak clearly.';
                     } else if (event.error === 'network') {
-                        statusEl.textContent = '⚠️ Network error. Speech recognition needs internet.';
+                        statusEl.textContent = '⚠️ Network error - Google speech server unreachable.';
+                        hasNetworkError = true;
                     } else if (event.error === 'service-not-allowed') {
                         statusEl.textContent = '❌ Speech recognition service not available. Please use Chrome or Edge.';
                         isRecording = false; // Don't retry for service errors
@@ -1249,7 +1263,7 @@
                 }
 
                 // Try to restart on error (with limit to prevent infinite loops)
-                if (isRecording && event.error !== 'not-allowed' && event.error !== 'service-not-allowed') {
+                if (isRecording && event.error !== 'not-allowed' && event.error !== 'service-not-allowed' && event.error !== 'network') {
                     if (recognitionRestartCount < MAX_RECOGNITION_RESTARTS) {
                         recognitionRestartCount++;
                         setTimeout(function() {
@@ -1304,6 +1318,7 @@
             speakingTargetIndex = index;
             speakingRecording = true;
             speakingTranscript = '';
+            hasNetworkError = false;
 
             // Update UI
             var micBtn = document.querySelector('#speakingItem' + index + ' .speaking-mic-btn');
@@ -1363,6 +1378,11 @@
                             if (statusEl) statusEl.textContent = '❌ Mic denied';
                         } else if (event.error === 'no-speech') {
                             if (statusEl) statusEl.textContent = '⚠️ No speech detected, try again';
+                        } else if (event.error === 'network') {
+                            hasNetworkError = true;
+                            if (statusEl) statusEl.textContent = 'Network error - try Edge browser';
+                            var hintEl = document.getElementById('speakingResult');
+                            if (hintEl) { hintEl.style.display = 'block'; showNetworkErrorHint(hintEl); }
                         }
                         // Auto-stop on error
                         if (speakingRecording) stopSpeakingPractice();
@@ -1478,6 +1498,7 @@
 
             // Reset restart counter for each new recording session
             recognitionRestartCount = 0;
+            hasNetworkError = false;
 
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(function(stream) {
@@ -2250,3 +2271,4 @@
     </script>
 </body>
 </html>
+
