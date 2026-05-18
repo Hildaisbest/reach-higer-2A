@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -417,24 +417,17 @@
         .practice-target { display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem; }
         .voice-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--primary); color: white; cursor: pointer; font-size: 1rem; }
         .practice-target-text { font-size: 1rem; font-weight: 500; }
-        .speaking-mic-btn {
-            width: 36px; height: 36px; border-radius: 50%; border: none;
-            background: #059669; color: white; cursor: pointer; font-size: 1rem;
-            transition: background 0.2s, transform 0.15s;
-            flex-shrink: 0;
-        }
-        .speaking-mic-btn:hover { background: #047857; transform: scale(1.1); }
-        .speaking-mic-btn.recording {
-            background: #dc2626; animation: speaking-pulse 1s infinite;
-        }
-        @keyframes speaking-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
         .practice-controls { display: flex; align-items: center; gap: 12px; }
         .record-btn { padding: 8px 16px; border-radius: 20px; border: none; font-weight: 600; cursor: pointer; }
         .record-btn-idle { background: var(--bg); color: var(--text); }
         .practice-status { font-size: 0.85rem; color: var(--text-muted); }
+        
+        /* Listening */
+        .listening-part { }
+        .listening-header { display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem; }
+        .listening-label { background: var(--secondary); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
+        .listening-instruction { font-size: 0.95rem; font-weight: 500; color: var(--text); }
+        .listening-content { padding-left: 0.5rem; }
 
         /* Footer */
         .app-footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.85rem; }
@@ -739,28 +732,86 @@
         <section id="speaking" class="section">
             <div class="unit-detail-header" style="background:linear-gradient(135deg, #059669, #0891b2);">
                 <button class="back-btn" onclick="switchTab('home')">←</button>
-                <div class="unit-detail-info"><h2>Speaking Practice</h2><p>Practice pronunciation</p></div>
+                <div class="unit-detail-info"><h2>Speaking & Listening</h2><p>Practice pronunciation and listening</p></div>
             </div>
-            <div class="speaking-section">
-                <div class="speaking-title">🎤 Practice Sentences</div>
-                <div class="speaking-hint" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">🔊 Tap the speaker to hear · 🎤 Tap the mic to record your pronunciation · Works best in <strong>Microsoft Edge</strong> (Chrome may show network error in China)</div>
-                <div class="practice-item" id="speakingItem0">
-                    <div class="practice-target">
-                        <button class="voice-btn" onclick="speak('What is a community?')">🔊</button>
-                        <span class="practice-target-text">What is a community?</span>
-                        <button class="record-mic-btn speaking-mic-btn" onclick="startSpeakingPractice(0)">🎤</button>
+            <div class="main-content">
+                <!-- Listening Section -->
+                <div class="speaking-section" style="margin-top:1rem;">
+                    <div class="speaking-title">🎧 Listening Practice</div>
+                    
+                    <!-- Part 1 -->
+                    <div class="practice-item">
+                        <div class="listening-part">
+                            <div class="listening-header">
+                                <span class="listening-label">Part 1</span>
+                                <span class="listening-instruction">Listen and fill in the circle</span>
+                            </div>
+                            <div class="listening-content">
+                                <p style="margin-bottom:1rem;font-size:0.95rem;color:var(--text-muted);">Listen to the description. Who is being described?</p>
+                                <button class="btn btn-primary" onclick="speak('Listen carefully. Here is a description of someone in the community. This person helps sick people. This person works in a clinic or hospital. Who is this? Is it a doctor, a nurse, or a teacher?')" style="margin-bottom:0.5rem;">🔊 Play Instructions</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="record-status" id="speakingStatus0" style="margin-top:8px;font-size:0.85rem;color:var(--text-muted);">Tap mic to record</div>
-                </div>
-                <div class="practice-item" id="speakingItem1">
-                    <div class="practice-target">
-                        <button class="voice-btn" onclick="speak('Here is a neighbor.')">🔊</button>
-                        <span class="practice-target-text">Here is a neighbor.</span>
-                        <button class="record-mic-btn speaking-mic-btn" onclick="startSpeakingPractice(1)">🎤</button>
+                    
+                    <!-- Part 2 -->
+                    <div class="practice-item">
+                        <div class="listening-part">
+                            <div class="listening-header">
+                                <span class="listening-label">Part 2</span>
+                                <span class="listening-instruction">Listen and draw lines</span>
+                            </div>
+                            <div class="listening-content">
+                                <p style="margin-bottom:1rem;font-size:0.95rem;color:var(--text-muted);">Listen and match each person to their job.</p>
+                                <button class="btn btn-primary" onclick="speak('Now draw lines to match. Nathaniel is a teacher. He teaches reading. Maria is a doctor. She checks eyes and ears. Vera is a nurse. She gives shots with care. Jae is a cook. He makes delicious food.')" style="margin-bottom:0.5rem;">🔊 Play Instructions</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="record-status" id="speakingStatus1" style="margin-top:8px;font-size:0.85rem;color:var(--text-muted);">Tap mic to record</div>
+                    
+                    <!-- Part 3 -->
+                    <div class="practice-item">
+                        <div class="listening-part">
+                            <div class="listening-header">
+                                <span class="listening-label">Part 3</span>
+                                <span class="listening-instruction">Listen and check the box</span>
+                            </div>
+                            <div class="listening-content">
+                                <p style="margin-bottom:1rem;font-size:0.95rem;color:var(--text-muted);">Listen. Is each sentence true or false? Check the box.</p>
+                                <button class="btn btn-primary" onclick="speak('Listen and check true or false. One: Jae works at a school. Is this true or false? Two: A doctor helps sick people. Is this true or false? Three: A nurse teaches reading. Is this true or false? Four: A cook makes food. Is this true or false?')" style="margin-bottom:0.5rem;">🔊 Play Instructions</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Part 4 -->
+                    <div class="practice-item">
+                        <div class="listening-part">
+                            <div class="listening-header">
+                                <span class="listening-label">Part 4</span>
+                                <span class="listening-instruction">Listen and number the pictures</span>
+                            </div>
+                            <div class="listening-content">
+                                <p style="margin-bottom:1rem;font-size:0.95rem;color:var(--text-muted);">Listen to the story and number the pictures in the correct order.</p>
+                                <button class="btn btn-primary" onclick="speak('Listen to the story. Then number the pictures. Today was both scary and fun! My mom picked me up early from school. First, we went to the clinic. I saw my doctor. Her name is Dr. Lopez. She said I am healthy! Then we went to a new restaurant called Jae\'s Place. The food was so good! Mom thanked the cook. Soon Jae will feel like he belongs here.')" style="margin-bottom:0.5rem;">🔊 Play Full Story</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="speakingResult" style="display:none;"></div>
+                
+                <!-- Speaking Section -->
+                <div class="speaking-section">
+                    <div class="speaking-title">🎤 Speaking Practice</div>
+                    <div class="practice-item">
+                        <div class="practice-target">
+                            <button class="voice-btn" onclick="speak('What is a community?')">🔊</button>
+                            <span class="practice-target-text">What is a community?</span>
+                        </div>
+                    </div>
+                    <div class="practice-item">
+                        <div class="practice-target">
+                            <button class="voice-btn" onclick="speak('Here is a neighbor.')">🔊</button>
+                            <span class="practice-target-text">Here is a neighbor.</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -858,7 +909,7 @@
                     { word: 'neighbor', phonetic: '/neɪbər/', meaning: '邻居', sentence: 'Say "hello" to a neighbor who lives next door.', type: 'noun' }
                 ],
                 reading: 'Our Hometown Workers\n\nHere is Nathaniel. He is a teacher.\nHe teaches reading at our school.\n\nHere is his friend, Jae, who cooks at Jae\'s Place.\nHe makes cooking look so cool.\n\nHere is Maria. She is a doctor.\nEach year she checks your eyes and ears.\n\nNow here is Vera. She is a good nurse.\nWhen she gives shots there are no tears.',
-                readalong: 'Here is Nathaniel. He is a teacher. He teaches reading at our school. Here is his friend Jae who cooks at Jae\'s Place. Here is Maria. She is a doctor.',
+                readalong: 'September 15, 20__. Today was both scary and fun! My mom picked me up early from school. "Come on, Kevin," she said. "We have places to go!" First, we went to the clinic. I saw my doctor. Her name is Dr. Lopez, and she cares for kids like me. Years ago, her father helped build the clinic! Dr. Lopez said that I am healthy. Yay! No more medicine! I left Dr. Lopez\'s office with a smile on my face. Then we went to a new restaurant called Jae\'s Place. The food was so good! Mom wanted to thank the cook. That\'s how we met Jae. He is new to our community. Mom told him that soon he will feel like he belongs here.',
                 practice: [
                     { q: 'What does Nathaniel do?', options: ['He is a teacher', 'He is a cook', 'He is a doctor'], answer: 0 },
                     { q: 'Where does Jae work?', options: ['At school', 'At Jae\'s Place', 'At hospital'], answer: 1 },
@@ -902,22 +953,30 @@
                 ]
             },
             3: {
-                title: 'Lesson 3: A Day with Grandma',
-                subtitle: 'Read - Pages 18-31',
+                title: 'Lesson 3: Li Min\'s Community',
+                subtitle: 'Reading - Pages 13-25',
                 vocab: [
-                    { word: 'grandma', phonetic: '/ɡrænmɑː/', meaning: '奶奶', sentence: 'I love my grandma.' },
-                    { word: 'exercise', phonetic: '/eksəsaɪz/', meaning: '运动', sentence: 'We exercise every day.' },
-                    { word: 'market', phonetic: '/mɑːkɪt/', meaning: '市场', sentence: 'We go to the market.' }
+                    { word: 'community', phonetic: '/kəˈmjuːnəti/', meaning: '社区', sentence: 'I live in a great community.' },
+                    { word: 'jobs', phonetic: '/dʒɒbz/', meaning: '工作', sentence: 'My parents go to their jobs.' },
+                    { word: 'nurse', phonetic: '/nɜːrs/', meaning: '护士', sentence: 'My mom is a nurse.' },
+                    { word: 'cook', phonetic: '/kʊk/', meaning: '厨师', sentence: 'My dad is a cook.' },
+                    { word: 'exercise', phonetic: '/ˈeksərsaɪz/', meaning: '运动', sentence: 'Grandma and her friends like to exercise.' },
+                    { word: 'neighbor', phonetic: '/ˈneɪbər/', meaning: '邻居', sentence: 'Mrs. Chen is our neighbor.' },
+                    { word: 'food stall', phonetic: '/fuːd stɔːl/', meaning: '小吃摊', sentence: 'We stop at Mr. Wu\'s food stall.' },
+                    { word: 'fresh', phonetic: '/freʃ/', meaning: '新鲜的', sentence: 'Her vegetables are nice and fresh.' },
+                    { word: 'bok choy', phonetic: '/bɒk tʃɔɪ/', meaning: '白菜', sentence: 'We buy some bok choy for dinner.' }
                 ],
-                reading: 'I will spend the day with my grandma. Grandma meets her friends at the park every morning. They like to exercise together. They walk, stretch, and do yoga. Grandma says exercise is good for you. After exercise, Grandma says hello to her neighbors. She knows everyone in the community. Grandma also goes to the market to buy fresh vegetables. I love spending time with my grandma.',
-                readalong: 'I will spend the day with my grandma. Grandma meets her friends at the park. They like to exercise.',
+                reading: 'I wake up early. I say good-bye to Mom and Dad. They are going to their jobs. My mom is a nurse, and my dad is a cook.\n\nI don\'t have school today. I will spend the day with my grandma in our community.\n\nFirst we go to our community center. Grandma meets her friends at the center. They like to exercise.\n\nThen Grandma and I walk around our community. We say hello to our friends and neighbors.\n\nWe stop at Mr. Wu\'s food stall. He gives me a meat sandwich. Yum!\n\nMrs. Chen is our neighbor. She sells vegetables at the market.\n\nHer vegetables are nice and fresh. We buy some bok choy for dinner.\n\n"Min," I hear someone call. I look up and see my dad. "Ba Ba" I say.\n\nGrandma and I stop to eat Dad\'s dumplings. My dad is a very good cook.\n\nWe walk some more. We shop some more, and then it is time to go home.\n\nWhat a great day! What a great community I live in!',
+                readalong: 'I wake up early. I say good-bye to Mom and Dad. They are going to their jobs. My mom is a nurse, and my dad is a cook.\n\nI don\'t have school today. I will spend the day with my grandma in our community.\n\nFirst we go to our community center. Grandma meets her friends at the center. They like to exercise.\n\nThen Grandma and I walk around our community. We say hello to our friends and neighbors.\n\nWe stop at Mr. Wu\'s food stall. He gives me a meat sandwich. Yum!\n\nMrs. Chen is our neighbor. She sells vegetables at the market.\n\nHer vegetables are nice and fresh. We buy some bok choy for dinner.\n\n"Min," I hear someone call. I look up and see my dad. "Ba Ba" I say.\n\nGrandma and I stop to eat Dad\'s dumplings. My dad is a very good cook.\n\nWe walk some more. We shop some more, and then it is time to go home.\n\nWhat a great day! What a great community I live in!',
                 practice: [
-                    { q: 'Where does Grandma meet her friends?', options: ['At school', 'At the park', 'At the market'], answer: 1 },
-                    { q: 'What do Grandma and her friends like to do?', options: ['Cook', 'Exercise', 'Read'], answer: 1 }
+                    { q: 'What is Li Min\'s mom?', options: ['A cook', 'A nurse', 'A teacher'], answer: 1 },
+                    { q: 'Where do Grandma and her friends exercise?', options: ['At the park', 'At the community center', 'At home'], answer: 1 },
+                    { q: 'What do Li Min and Grandma buy from Mrs. Chen?', options: ['Bok choy', 'A sandwich', 'Dumplings'], answer: 0 }
                 ],
                 quiz: [
-                    { q: 'What does "grandma" mean?', options: ['Grandpa', 'Grandma', 'Mom'], answer: 1 },
-                    { q: 'Where do they go?', options: ['School', 'Park', 'Hospital'], answer: 1 }
+                    { q: 'What does Li Min\'s dad do?', options: ['He is a nurse', 'He is a cook', 'He is a farmer'], answer: 1 },
+                    { q: 'Who sells vegetables at the market?', options: ['Mr. Wu', 'Mrs. Chen', 'Grandma'], answer: 1 },
+                    { q: '"Ba Ba" means ___ in Chinese.', options: ['Mother', 'Father', 'Grandma'], answer: 1 }
                 ]
             },
             4: {
@@ -1176,19 +1235,6 @@
             }
         }
 
-        // ============ BROWSER & NETWORK HELPERS ============
-        var isEdgeBrowser = /Edg\//.test(navigator.userAgent);
-        var isChromeBrowser = /Chrome\//.test(navigator.userAgent) && !isEdgeBrowser;
-        var hasNetworkError = false;
-
-        function showNetworkErrorHint(targetEl) {
-            if (!targetEl) return;
-            targetEl.innerHTML = '<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px;margin-top:8px;">' +
-                '<div style="color:#dc2626;font-weight:600;">Network Error - Speech Recognition Unavailable</div>' +
-                '<div style="font-size:0.85rem;color:#991b1b;margin-top:4px;">Chrome uses Google servers for speech recognition, which may be blocked on your network.<br>' +
-                '<strong>Solution: Open this page in Microsoft Edge.</strong> Edge uses Microsoft servers and works in China.</div></div>';
-        }
-
         // ============ RECORDING & SPEECH RECOGNITION ============
         var isRecording = false;
         var mediaRecorder = null;
@@ -1197,9 +1243,6 @@
         var recordTimer = null;
         var recordSeconds = 0;
         var currentReadAlongText = '';
-        var currentStream = null; // Track the media stream for proper cleanup
-        var recognitionRestartCount = 0; // Prevent infinite restart loops
-        var MAX_RECOGNITION_RESTARTS = 5;
 
         function initSpeechRecognition() {
             var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1207,11 +1250,6 @@
             if (!SpeechRecognition) {
                 console.warn('Speech recognition not supported in this browser');
                 return null;
-            }
-
-            // Check for secure context requirement
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                console.warn('Speech recognition requires HTTPS or localhost');
             }
 
             var rec = new SpeechRecognition();
@@ -1252,38 +1290,26 @@
                     } else if (event.error === 'no-speech') {
                         statusEl.textContent = '⚠️ No speech detected. Please speak clearly.';
                     } else if (event.error === 'network') {
-                        statusEl.textContent = '⚠️ Network error - Google speech server unreachable.';
-                        hasNetworkError = true;
-                    } else if (event.error === 'service-not-allowed') {
-                        statusEl.textContent = '❌ Speech recognition service not available. Please use Chrome or Edge.';
-                        isRecording = false; // Don't retry for service errors
+                        statusEl.textContent = '⚠️ Network error. Speech recognition needs internet.';
                     } else {
                         statusEl.textContent = '⚠️ Recognition error: ' + event.error;
                     }
                 }
 
-                // Try to restart on error (with limit to prevent infinite loops)
-                if (isRecording && event.error !== 'not-allowed' && event.error !== 'service-not-allowed' && event.error !== 'network') {
-                    if (recognitionRestartCount < MAX_RECOGNITION_RESTARTS) {
-                        recognitionRestartCount++;
-                        setTimeout(function() {
-                            if (isRecording && recognition) {
-                                try { recognition.start(); } catch (e) {}
-                            }
-                        }, 500);
-                    } else {
-                        console.warn('Max recognition restart attempts reached, stopping.');
-                        isRecording = false;
-                        stopRecording();
-                    }
+                // Try to restart on error (except for fatal errors)
+                if (isRecording && event.error !== 'not-allowed' && event.error !== 'service-not-allowed') {
+                    setTimeout(function() {
+                        if (isRecording && recognition) {
+                            try { recognition.start(); } catch (e) {}
+                        }
+                    }, 500);
                 }
             };
 
             rec.onend = function() {
-                if (isRecording && recognitionRestartCount < MAX_RECOGNITION_RESTARTS) {
-                    // Restart if still recording (SpeechRecognition auto-stops after silence)
+                if (isRecording) {
+                    // Restart if still recording
                     try {
-                        recognitionRestartCount++;
                         recognition.start();
                     } catch (e) {
                         console.warn('Recognition restart error:', e);
@@ -1292,166 +1318,6 @@
             };
 
             return rec;
-        }
-
-        // ============ SPEAKING TAB RECORDING ============
-        var speakingSentences = ['What is a community?', 'Here is a neighbor.'];
-        var speakingRecording = false;
-        var speakingRecognition = null;
-        var speakingStream = null;
-        var speakingTargetIndex = -1;
-        var speakingTranscript = '';
-
-        function startSpeakingPractice(index) {
-            if (speakingRecording && speakingTargetIndex === index) {
-                // Stop current recording
-                stopSpeakingPractice();
-                return;
-            }
-
-            // Stop any existing recording first
-            if (speakingRecording) stopSpeakingPractice();
-
-            var targetText = speakingSentences[index];
-            if (!targetText) return;
-
-            speakingTargetIndex = index;
-            speakingRecording = true;
-            speakingTranscript = '';
-            hasNetworkError = false;
-
-            // Update UI
-            var micBtn = document.querySelector('#speakingItem' + index + ' .speaking-mic-btn');
-            if (micBtn) {
-                micBtn.classList.add('recording');
-                micBtn.textContent = '⏹';
-            }
-            var statusEl = document.getElementById('speakingStatus' + index);
-            if (statusEl) statusEl.textContent = '🔴 Recording... speak now';
-
-            // Hide previous result
-            var resultEl = document.getElementById('speakingResult');
-            if (resultEl) resultEl.style.display = 'none';
-
-            // Check HTTPS
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                if (statusEl) statusEl.textContent = '❌ Speech recognition requires HTTPS';
-                speakingRecording = false;
-                return;
-            }
-
-            // Get microphone access
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(function(stream) {
-                    speakingStream = stream;
-
-                    // Initialize speech recognition
-                    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                    if (!SpeechRecognition) {
-                        if (statusEl) statusEl.textContent = '⚠️ Not supported in this browser. Use Chrome/Edge.';
-                        speakingRecording = false;
-                        return;
-                    }
-
-                    speakingRecognition = new SpeechRecognition();
-                    speakingRecognition.lang = 'en-US';
-                    speakingRecognition.continuous = true;
-                    speakingRecognition.interimResults = true;
-                    speakingRecognition.maxAlternatives = 1;
-
-                    speakingRecognition.onresult = function(event) {
-                        var final = '';
-                        var interim = '';
-                        for (var i = event.resultIndex; i < event.results.length; i++) {
-                            if (event.results[i].isFinal) {
-                                final += event.results[i][0].transcript;
-                            } else {
-                                interim += event.results[i][0].transcript;
-                            }
-                        }
-                        speakingTranscript = final || interim || '';
-                        if (statusEl) statusEl.textContent = speakingTranscript || 'Listening...';
-                    };
-
-                    speakingRecognition.onerror = function(event) {
-                        if (event.error === 'not-allowed') {
-                            if (statusEl) statusEl.textContent = '❌ Mic denied';
-                        } else if (event.error === 'no-speech') {
-                            if (statusEl) statusEl.textContent = '⚠️ No speech detected, try again';
-                        } else if (event.error === 'network') {
-                            hasNetworkError = true;
-                            if (statusEl) statusEl.textContent = 'Network error - try Edge browser';
-                            var hintEl = document.getElementById('speakingResult');
-                            if (hintEl) { hintEl.style.display = 'block'; showNetworkErrorHint(hintEl); }
-                        }
-                        // Auto-stop on error
-                        if (speakingRecording) stopSpeakingPractice();
-                    };
-
-                    speakingRecognition.onend = function() {
-                        // Auto-stop recognition when it ends naturally (after silence)
-                        if (speakingRecording) stopSpeakingPractice();
-                    };
-
-                    speakingRecognition.start();
-                })
-                .catch(function(err) {
-                    console.error('Speaking mic error:', err);
-                    if (statusEl) statusEl.textContent = '❌ Could not access microphone';
-                    speakingRecording = false;
-                });
-        }
-
-        function stopSpeakingPractice() {
-            speakingRecording = false;
-
-            // Stop recognition
-            if (speakingRecognition) {
-                try { speakingRecognition.stop(); } catch (e) {}
-                speakingRecognition = null;
-            }
-
-            // Release stream
-            if (speakingStream) {
-                speakingStream.getTracks().forEach(function(track) { track.stop(); });
-                speakingStream = null;
-            }
-
-            // Update mic button
-            var micBtn = document.querySelector('#speakingItem' + speakingTargetIndex + ' .speaking-mic-btn');
-            if (micBtn) {
-                micBtn.classList.remove('recording');
-                micBtn.textContent = '🎤';
-            }
-
-            // Show result if we got a transcript
-            if (speakingTranscript && speakingTargetIndex >= 0) {
-                var targetText = speakingSentences[speakingTargetIndex];
-                showSpeakingResult(targetText, speakingTranscript, speakingTargetIndex);
-            } else {
-                var statusEl = document.getElementById('speakingStatus' + speakingTargetIndex);
-                if (statusEl) statusEl.textContent = 'No speech detected. Tap mic to try again.';
-            }
-        }
-
-        function showSpeakingResult(original, user, index) {
-            var statusEl = document.getElementById('speakingStatus' + index);
-            var score = calculateSimilarity(original, user);
-            var scoreLabel = score >= 80 ? 'Excellent! 🎉' : score >= 60 ? 'Good Job! 👍' : score >= 40 ? 'Keep Practicing 💪' : 'Try Again 📚';
-
-            if (statusEl) statusEl.textContent = 'Score: ' + Math.round(score) + '% — ' + scoreLabel;
-
-            var highlighted = highlightDifferences(original, user);
-            var resultEl = document.getElementById('speakingResult');
-            if (resultEl) {
-                resultEl.style.display = 'block';
-                resultEl.innerHTML =
-                    '<div style="margin-top:1rem;padding:1rem;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);">' +
-                        '<div style="font-size:0.9rem;margin-bottom:0.5rem;"><strong>Original:</strong> ' + original + '</div>' +
-                        '<div style="font-size:0.9rem;"><strong>You said:</strong> ' + highlighted + '</div>' +
-                        '<div style="font-size:0.85rem;color:var(--text-muted);margin-top:0.5rem;">Tip: Listen again and repeat!</div>' +
-                    '</div>';
-            }
         }
 
         var toggleLock = false; // Prevent rapid double-clicks
@@ -1473,15 +1339,6 @@
             var supportsSpeechRec = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
             var supportsMic = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 
-            // HTTPS check
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                var httpsMsg = 'Speech recognition requires HTTPS. Your page is served over ' + location.protocol + '. If testing locally, use a local server (not file://).';
-                var statusEl = document.getElementById('recordStatus');
-                if (statusEl) statusEl.textContent = '❌ ' + httpsMsg;
-                alert(httpsMsg);
-                return;
-            }
-
             if (!supportsMic) {
                 var msg = 'Your browser does not support microphone access. Please use Chrome or Edge.';
                 document.getElementById('recordStatus').textContent = '❌ ' + msg;
@@ -1491,20 +1348,12 @@
 
             if (!supportsSpeechRec) {
                 var msg2 = 'Your browser does not support speech recognition. Recording will capture audio but may not transcribe. Please use Chrome or Edge for best results.';
-                var statusEl2 = document.getElementById('recordStatus');
-                if (statusEl2) statusEl2.textContent = '⚠️ Limited mode - use Chrome/Edge';
+                document.getElementById('recordStatus').textContent = '⚠️ Limited mode - use Chrome/Edge';
                 console.warn(msg2);
             }
 
-            // Reset restart counter for each new recording session
-            recognitionRestartCount = 0;
-            hasNetworkError = false;
-
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(function(stream) {
-                    // Track the stream for proper cleanup
-                    currentStream = stream;
-
                     // Initialize speech recognition
                     if (!recognition) {
                         recognition = initSpeechRecognition();
@@ -1568,15 +1417,6 @@
                 } catch (e) {
                     console.warn('Recognition stop error:', e);
                 }
-            }
-
-            // Release microphone - stop all tracks on the stream
-            if (currentStream) {
-                currentStream.getTracks().forEach(function(track) {
-                    track.stop();
-                });
-                currentStream = null;
-                console.log('[Recording] Microphone stream released');
             }
 
             // Update UI
@@ -2271,4 +2111,3 @@
     </script>
 </body>
 </html>
-
