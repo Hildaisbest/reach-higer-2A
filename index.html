@@ -1949,32 +1949,73 @@
             else { el.classList.add('wrong'); siblings[correctAnswer].classList.add('correct'); }
         }
 
-        // ============ TEXT TO SPEECH with best voice ============
+        // ============ TEXT TO SPEECH with VOA-quality American English voice ============
         var preferredVoice = null;
 
         function loadVoices() {
             if (!('speechSynthesis' in window)) return;
             var voices = window.speechSynthesis.getVoices();
             if (voices.length === 0) return; // No voices yet, wait for onvoiceschanged
-            
-            // Priority: local en-US (localService=true) > Microsoft en-US > any en-US
-            // CRITICAL: Use localService=true voices on HTTPS pages to avoid network issues
-            var bestVoice = null;
+
+            var langMatch = 'en-US';
+            var scored = [];
+
             for (var i = 0; i < voices.length; i++) {
-                if (voices[i].lang === 'en-US' && voices[i].localService) { bestVoice = voices[i]; break; }
+                var v = voices[i];
+                // Only consider en-US voices
+                if (v.lang !== langMatch) continue;
+
+                var score = 0;
+                var name = v.name;
+                var nameLower = name.toLowerCase();
+
+                // --- Tier 1: Premium neural/natural en-US voices (native-like, VOA quality) ---
+                if (nameLower.indexOf('natural') >= 0) score = 100;
+                // Google en-US voices (Chrome built-in, excellent quality)
+                else if (nameLower.indexOf('google') >= 0) score = 95;
+                // Samsung / OS-level premium voices
+                else if (nameLower.indexOf('samantha') >= 0) score = 90;   // macOS premium female
+                else if (nameLower.indexOf('alex') >= 0) score = 88;       // macOS standard male
+                else if (nameLower.indexOf('ava') >= 0) score = 85;        // macOS premium female
+
+                // --- Tier 2: Microsoft voices (Windows built-in, good quality) ---
+                // Zira: female, clear and natural for teaching
+                else if (nameLower.indexOf('zira') >= 0) score = 80;
+                // David: male, also good
+                else if (nameLower.indexOf('david') >= 0) score = 78;
+                // Mark: male
+                else if (nameLower.indexOf('mark') >= 0) score = 75;
+                // Other Microsoft voices
+                else if (nameLower.indexOf('microsoft') >= 0) score = 70;
+
+                // --- Tier 3: Other local en-US voices ---
+                else if (v.localService) score = 50;
+
+                // --- Tier 4: Online/fallback en-US voices ---
+                else score = 30;
+
+                // Bonus: prefer localService (offline-reliable) when scores are close
+                if (v.localService) score += 5;
+
+                scored.push({ voice: v, score: score });
             }
-            if (!bestVoice) {
-                for (var i = 0; i < voices.length; i++) {
-                    if (voices[i].lang === 'en-US' && voices[i].name.indexOf('Microsoft') >= 0) { bestVoice = voices[i]; break; }
+
+            // Sort by score descending
+            scored.sort(function(a, b) { return b.score - a.score; });
+
+            if (scored.length > 0) {
+                preferredVoice = scored[0].voice;
+                console.log('[TTS] Voices loaded:', voices.length,
+                    '| en-US candidates:', scored.length,
+                    '| Selected:', preferredVoice.name,
+                    '(score:' + scored[0].score + ', local:' + preferredVoice.localService + ')');
+                // Log all candidates for debugging
+                for (var i = 0; i < Math.min(scored.length, 5); i++) {
+                    console.log('[TTS]   #' + (i+1) + ': ' + scored[i].voice.name + ' (score:' + scored[i].score + ')');
                 }
+            } else {
+                console.warn('[TTS] No en-US voices found among', voices.length, 'total voices');
             }
-            if (!bestVoice) {
-                for (var i = 0; i < voices.length; i++) {
-                    if (voices[i].lang === 'en-US') { bestVoice = voices[i]; break; }
-                }
-            }
-            if (bestVoice) preferredVoice = bestVoice;
-            console.log('[TTS] Voices loaded:', voices.length, '| Selected:', preferredVoice ? preferredVoice.name + ' (local:' + preferredVoice.localService + ')' : 'default');
         }
 
         // Load voices on init - handle different browser behaviors
@@ -2011,7 +2052,8 @@
                 utterance.voice = preferredVoice;
             }
             utterance.lang = 'en-US';
-            utterance.rate = 0.9;
+            utterance.rate = 0.85;   // Slightly slower for clear, VOA-style articulation
+            utterance.pitch = 1.0;    // Neutral pitch, natural tone
 
             utterance.onstart = function() {
                 isSpeaking = true;
