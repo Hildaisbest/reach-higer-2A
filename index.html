@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -439,6 +439,192 @@
         /* Footer */
         .app-footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.85rem; }
 
+        /* ===== Voice Settings Panel ===== */
+        .voice-settings-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .voice-settings-btn:hover { background: rgba(255,255,255,0.35); transform: rotate(30deg); }
+
+        .voice-settings-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+            animation: fadeIn 0.2s ease;
+        }
+        .voice-settings-overlay.active { display: flex; align-items: center; justify-content: center; }
+
+        .voice-settings-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 520px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            color: var(--text);
+        }
+        .voice-settings-panel h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .voice-settings-panel .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .voice-setting-group {
+            margin-bottom: 1.5rem;
+        }
+        .voice-setting-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .voice-setting-group .hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .voice-select-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .voice-select-row select {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .voice-select-row select:focus { border-color: var(--primary); outline: none; }
+
+        .voice-preview-btn {
+            padding: 10px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .voice-preview-btn:hover { background: #1d4ed8; transform: translateY(-1px); }
+        .voice-preview-btn:active { transform: translateY(0); }
+
+        .voice-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        .voice-tag.neural { background: #dcfce7; color: #166534; }
+        .voice-tag.premium { background: #dbeafe; color: #1e40af; }
+        .voice-tag.standard { background: #f3f4f6; color: #6b7280; }
+
+        .rate-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .rate-control input[type="range"] {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--border);
+            border-radius: 3px;
+            outline: none;
+        }
+        .rate-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .rate-control input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        .rate-value {
+            min-width: 48px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .voice-settings-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        .voice-settings-actions button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-reset { background: #f3f4f6; border: none; color: #6b7280; }
+        .btn-reset:hover { background: #e5e7eb; }
+        .btn-save { background: var(--primary); border: none; color: white; }
+        .btn-save:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+        .current-voice-info {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .current-voice-info .voice-name {
+            font-weight: 700;
+            color: #166534;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header-content { flex-direction: column; gap: 1rem; }
@@ -469,8 +655,60 @@
                 <button class="nav-tab" onclick="switchTab('spelling')">Spelling</button>
                 <button class="nav-tab" onclick="switchTab('speaking')">Speaking</button>
             </nav>
+            <button class="voice-settings-btn" onclick="toggleVoiceSettings()" title="Voice Settings">⚙</button>
         </div>
     </header>
+
+    <!-- Voice Settings Overlay -->
+    <div class="voice-settings-overlay" id="voiceSettingsOverlay" onclick="if(event.target===this)toggleVoiceSettings()">
+        <div class="voice-settings-panel">
+            <h3>🔊 Voice Settings</h3>
+            <p class="subtitle">Choose a natural American English voice and adjust speed</p>
+
+            <div class="current-voice-info" id="currentVoiceInfo">
+                <span>✅</span>
+                <span>Current: <span class="voice-name" id="currentVoiceName">Loading...</span></span>
+            </div>
+
+            <div class="voice-setting-group">
+                <label>🎙️ Voice</label>
+                <div class="voice-select-row">
+                    <select id="voicePickerSelect" onchange="onVoicePickerChange()">
+                        <option>Loading voices...</option>
+                    </select>
+                    <button class="voice-preview-btn" onclick="previewVoice()">▶ Test</button>
+                </div>
+                <p class="hint" id="voicePickerHint">Select a voice and click Test to hear a sample.</p>
+            </div>
+
+            <div class="voice-setting-group">
+                <label>🏃 Speed</label>
+                <div class="rate-control">
+                    <span style="font-size:0.75rem;color:var(--text-muted)">Slow</span>
+                    <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.05" value="0.9" oninput="onRateSliderChange()">
+                    <span style="font-size:0.75rem;color:var(--text-muted)">Fast</span>
+                    <span class="rate-value" id="rateValueLabel">0.9x</span>
+                </div>
+                <p class="hint">0.9x is natural for learning. 1.0x is normal conversational speed.</p>
+            </div>
+
+            <div class="voice-setting-group">
+                <label>🎵 Pitch</label>
+                <div class="rate-control">
+                    <span style="font-size:0.75rem;color:var(--text-muted)">Low</span>
+                    <input type="range" id="pitchSlider" min="0.5" max="1.5" step="0.05" value="1.0" oninput="onPitchSliderChange()">
+                    <span style="font-size:0.75rem;color:var(--text-muted)">High</span>
+                    <span class="rate-value" id="pitchValueLabel">1.0</span>
+                </div>
+                <p class="hint">1.0 is default. Lower pitch sounds more natural for some voices.</p>
+            </div>
+
+            <div class="voice-settings-actions">
+                <button class="btn-reset" onclick="resetVoiceSettings()">Reset Default</button>
+                <button class="btn-save" onclick="saveAndCloseVoiceSettings()">Save & Close</button>
+            </div>
+        </div>
+    </div>
 
     <main class="main-content">
 
@@ -935,22 +1173,28 @@
                 listening: 'Where I Live\n\nI live in a small town. It is not big, but I love it. Let me tell you about my community.\n\nWhen I walk out my door, the first thing I see is a big oak tree. It has been there longer than anyone can remember. In summer, kids sit under it and read books. In fall, the leaves turn golden and we jump into big piles of them.\n\nDown the street is our library. It is my favorite place. Mrs. Allen, the librarian, knows my name. She always saves new books for me. Last week, I read a book about space. Did you know there are more stars in the sky than grains of sand on all the beaches? That is amazing!\n\nNext to the library is a little park. There is a basketball court where my brother and his friends play after school. Moms push babies on the swings. Old people feed the birds on the benches. I like to sit and watch everyone. It feels like the whole town is here.\n\nOn Saturdays, my family goes to the farmers\' market. Farmers bring vegetables and fruit from their farms. We always buy apples from Mr. Green. "These are the sweetest apples in town!" he says. And he is right.\n\nThere is a fire station, too. The firefighters wave at us when they drive by. Sometimes they visit our school and let us climb on the big red truck. I think they are heroes.\n\nAt night, I look out my window. The streetlights come on, one by one, like stars waking up. I can hear music from someone\'s radio. I can smell dinner from next door.\n\nMy community is not fancy, but it is home. The people here know each other. They help each other. They care.\n\nAnd that is what makes a community \u2014 not just buildings and streets, but people living together.'
             },
             4: {
-                title: 'Lesson 4: Describing Places',
-                subtitle: 'Write - Pages 32-39',
+                title: 'Lesson 4: Around the World',
+                subtitle: 'Reading - Pages 29-31',
                 vocab: [
-                    { word: 'big', phonetic: '/bɪɡ/', meaning: '大的', sentence: 'The school is big.' },
-                    { word: 'beautiful', phonetic: '/bjuːtɪfəl/', meaning: '美丽的', sentence: 'The park is beautiful.' },
-                    { word: 'busy', phonetic: '/bɪzi/', meaning: '忙碌的', sentence: 'The market is busy.' }
+                    { word: 'world', phonetic: '/wɜːld/', meaning: '世界', sentence: 'She travels around the world.' },
+                    { word: 'travel', phonetic: '/ˈtrævəl/', meaning: '旅行', sentence: 'Annie travels to many places.' },
+                    { word: 'community', phonetic: '/kəˈmjuːnəti/', meaning: '社区', sentence: 'People live and work in a community.' },
+                    { word: 'photographer', phonetic: '/fəˈtɒɡrəfər/', meaning: '摄影师', sentence: 'Annie Griffiths is a photographer.' },
+                    { word: 'different', phonetic: '/ˈdɪfərənt/', meaning: '不同的', sentence: 'There are many different jobs.' },
+                    { word: 'genre', phonetic: '/ˈʒɒnrə/', meaning: '体裁', sentence: 'A photo-essay is a nonfiction genre.' },
+                    { word: 'photo-essay', phonetic: '/ˈfəʊtəʊ ˈeseɪ/', meaning: '摄影散文', sentence: 'A photo-essay uses photos and text to tell about a topic.' },
+                    { word: 'job', phonetic: '/dʒɒb/', meaning: '工作', sentence: 'Her job is to take photos.' }
                 ],
-                reading: 'Here is the market. It is a big and busy place. She sells vegetables and fruits. Her vegetables are nice and fresh. The market is colorful with red tomatoes, orange carrots, and green lettuce. Many people come to the market every day. What a great community we live in!',
-                readalong: 'Here is the market. She sells vegetables. Her vegetables are nice and fresh. What a great community!',
+                reading: 'Around the World\n\nAnnie Griffiths is a National Geographic photographer. She travels around the world and visits many communities. Her job is to take photos of what she sees.\n\nThere are many different jobs in every community. These photos show people at work.\n\nIn Nebraska, a cowboy and his horse work hard. They make sure the cattle stay together. In Oman, a man is a teacher. He helps children learn. In Mexico, a Pai Pai Indian grandmother cares for her grandson. In Mozambique, Africa, a fisherman catches fish.\n\nWhat jobs do people do in your community?',
+                readalong: 'Annie Griffiths takes photos around the world. There are many jobs in every community. A cowboy works in Nebraska. A teacher works in Oman. A grandmother cares for her grandson in Mexico. A fisherman catches fish in Mozambique.',
                 practice: [
-                    { q: 'The market is ___ .', options: ['big', 'busy', 'quiet'], answer: 1 },
-                    { q: 'The vegetables are ___ .', options: ['fresh', 'old', 'bad'], answer: 0 }
+                    { q: 'What is Annie\'s job? She is a ___ .', options: ['teacher', 'photographer', 'cook'], answer: 1 },
+                    { q: 'Where does the fisherman work?', options: ['Oman', 'Nebraska', 'Mozambique'], answer: 2 }
                 ],
                 quiz: [
-                    { q: 'What is the opposite of big?', options: ['Small', 'Tall', 'Fast'], answer: 0 },
-                    { q: '"Beautiful" means ___ .', options: ['Ugly', 'Pretty', 'Sad'], answer: 1 }
+                    { q: 'What genre is "Around the World"?', options: ['Fairy tale', 'Photo-essay', 'Realistic fiction'], answer: 1 },
+                    { q: 'Who cares for her grandson in Mexico?', options: ['Annie Griffiths', 'A Pai Pai Indian grandmother', 'A teacher'], answer: 1 },
+                    { q: 'What does the cowboy do?', options: ['He catches fish.', 'He takes photos.', 'He works hard with his horse.'], answer: 2 }
                 ]
             },
             5: {
@@ -1154,7 +1398,7 @@
             }
 
             container.innerHTML = '<div class="lesson-panel"><div class="lesson-badge">Read Along</div><h2 class="lesson-title">Listen and Repeat</h2>' +
-                '<div class="readalong-controls"><button class="play-btn" id="playReadAlongBtn">Play</button><span>Click to hear the text</span></div>' +
+                '<div class="readalong-controls"><button class="play-btn" id="playReadAlongBtn">Play</button><span id="readAlongPlayStatus">Click to hear the text</span></div>' +
                 '<div class="readalong-text" id="readalongText">' + readAlongText.replace(/\n/g, '<br>') + '</div>' +
                 browserWarning +
                 '<div class="record-section">' +
@@ -1168,18 +1412,42 @@
                 '</div>' +
                 '</div>';
 
+            // Helper to toggle play/stop on TTS buttons
+            function _toggleTTS(btn, statusSpan, text) {
+                if (isSpeaking) {
+                    speechSynthesis.cancel();
+                    isSpeaking = false;
+                    speakQueue = [];
+                    speakQueueIndex = 0;
+                    btn.textContent = btn.id === 'playReadAlongBtn' ? 'Play' : '🔊 Listen Again';
+                    if (statusSpan) statusSpan.textContent = 'Click to hear the text';
+                    return;
+                }
+                btn.textContent = btn.id === 'playReadAlongBtn' ? '⏹ Stop' : '⏹ Stop';
+                if (statusSpan) statusSpan.textContent = 'Playing...';
+                var checkEnd = setInterval(function() {
+                    if (!isSpeaking) {
+                        clearInterval(checkEnd);
+                        btn.textContent = btn.id === 'playReadAlongBtn' ? 'Play' : '🔊 Listen Again';
+                        if (statusSpan) statusSpan.textContent = 'Click to hear the text';
+                    }
+                }, 300);
+                speak(text);
+            }
+
             // Attach event listeners safely (avoid inline onclick for complex text)
             var playBtn = document.getElementById('playReadAlongBtn');
+            var playStatus = document.getElementById('readAlongPlayStatus');
             if (playBtn) {
                 playBtn.addEventListener('click', function() {
-                    speak(readAlongText);
+                    _toggleTTS(playBtn, playStatus, readAlongText);
                 });
             }
 
             var playOriginalBtn = document.getElementById('playOriginalBtn');
             if (playOriginalBtn) {
                 playOriginalBtn.addEventListener('click', function() {
-                    speak(readAlongText);
+                    _toggleTTS(playOriginalBtn, null, readAlongText);
                 });
             }
 
@@ -1201,13 +1469,33 @@
             }
 
             container.innerHTML = '<div class="lesson-panel"><div class="lesson-badge">Listening</div><h2 class="lesson-title">Listen to the Story</h2>' +
-                '<div class="readalong-controls"><button class="play-btn" id="playListeningBtn">▶️</button><span>Click to hear the text</span></div>' +
+                '<div class="readalong-controls"><button class="play-btn" id="playListeningBtn">▶️</button><span id="listeningPlayStatus">Click to hear the text</span></div>' +
                 '<div class="readalong-text" id="listeningText">' + listeningText.replace(/\n/g, '<br>') + '</div>' +
                 '</div>';
 
             var playBtn = document.getElementById('playListeningBtn');
+            var statusEl = document.getElementById('listeningPlayStatus');
             if (playBtn) {
                 playBtn.addEventListener('click', function() {
+                    if (isSpeaking) {
+                        speechSynthesis.cancel();
+                        isSpeaking = false;
+                        speakQueue = [];
+                        speakQueueIndex = 0;
+                        playBtn.textContent = '▶️';
+                        if (statusEl) statusEl.textContent = 'Click to hear the text';
+                        return;
+                    }
+                    playBtn.textContent = '⏹';
+                    if (statusEl) statusEl.textContent = 'Playing...';
+                    // Watch for speech end to restore button
+                    var checkEnd = setInterval(function() {
+                        if (!isSpeaking) {
+                            clearInterval(checkEnd);
+                            playBtn.textContent = '▶️';
+                            if (statusEl) statusEl.textContent = 'Click to hear the text';
+                        }
+                    }, 300);
                     speak(listeningText);
                 });
             }
@@ -1658,10 +1946,16 @@
                 '<div class="record-transcript">' + highlighted + '</div>' +
                 '<div style="font-size:0.85rem;color:var(--text-muted);text-align:center;">Tip: Listen to the original and try again!</div>' +
                 '<div class="record-actions">' +
-                    '<button class="btn btn-primary" onclick="toggleRecording()">🔄 Try Again</button>' +
-                    '<button class="btn" style="background:#64748b;" onclick="speak(\'' + original.replace(/'/g, "\\'") + '\')">🔊 Listen Original</button>' +
+                    '<button class="btn btn-primary" id="tryAgainBtn">🔄 Try Again</button>' +
+                    '<button class="btn" style="background:#64748b;" id="listenOriginalBtn">🔊 Listen Original</button>' +
                 '</div>';
             
+            // Attach listeners after innerHTML is set (avoids quote-escaping bugs)
+            document.getElementById('tryAgainBtn').addEventListener('click', toggleRecording);
+            document.getElementById('listenOriginalBtn').addEventListener('click', function() {
+                speak(original);
+            });
+
             document.getElementById('recordStatus').textContent = 'Recording complete! Score: ' + Math.round(score) + '%';
         }
 
@@ -1815,7 +2109,7 @@
             html += '</div>';
             html += '<div class="spelling-input-wrap">';
             html += '<input type="text" class="spelling-input" id="lessonSpellingInput" placeholder="Type your answer..." autocomplete="off" autocapitalize="off" spellcheck="false">';
-            html += '<button class="btn btn-primary spelling-btn" onclick="speak(\'' + word.word + '\')">🔊</button>';
+            html += '<button class="btn btn-primary spelling-btn" id="spellingHearBtn">🔊</button>';
             html += '<button class="btn btn-success spelling-btn" onclick="checkLessonSpelling()">Check</button>';
             html += '</div>';
             html += '<div class="spelling-feedback" id="lessonSpellingFeedback" style="display:none;"></div>';
@@ -1838,6 +2132,14 @@
             html += '</div>';
             
             container.innerHTML = html;
+            
+            // Attach speak listener safely (avoid inline onclick quote-escaping issues)
+            var hearBtn = document.getElementById('spellingHearBtn');
+            if (hearBtn) {
+                (function(w) {
+                    hearBtn.addEventListener('click', function() { speak(w); });
+                })(word.word);
+            }
             
             setTimeout(function() {
                 var input = document.getElementById('lessonSpellingInput');
@@ -1950,70 +2252,137 @@
             else { el.classList.add('wrong'); siblings[correctAnswer].classList.add('correct'); }
         }
 
-        // ============ TEXT TO SPEECH with VOA-quality American English voice ============
+        // ============ TEXT TO SPEECH with natural American English voice ============
         var preferredVoice = null;
+        var allEnUSVoices = []; // Store all en-US voices for the picker UI
+        var ttsRate = 0.9;      // Default rate: slightly slower for clarity but still natural
+        var ttsPitch = 1.0;
+
+        // Load saved preferences from localStorage
+        (function loadTTSPrefs() {
+            try {
+                var saved = localStorage.getItem('rh2a_tts_prefs');
+                if (saved) {
+                    var p = JSON.parse(saved);
+                    if (p.rate) ttsRate = p.rate;
+                    if (p.pitch) ttsPitch = p.pitch;
+                }
+            } catch(e) {}
+        })();
+
+        function saveTTSPrefs() {
+            try {
+                localStorage.setItem('rh2a_tts_prefs', JSON.stringify({
+                    voiceName: preferredVoice ? preferredVoice.name : '',
+                    rate: ttsRate,
+                    pitch: ttsPitch
+                }));
+            } catch(e) {}
+        }
+
+        function _scoreVoice(v) {
+            var nameLower = v.name.toLowerCase();
+            var score = 0;
+
+            // ---- Tier 0: Neural / Online (Cloud) Natural voices — BEST quality ----
+            // Microsoft Neural voices (Windows 11 / Edge): "Jenny", "Aria", "Guy", "Christopher", "Erica"
+            // These are the most natural-sounding TTS voices available
+            if (nameLower.indexOf('jenny') >= 0) score = 110;       // Microsoft Neural Female (most natural)
+            else if (nameLower.indexOf('aria') >= 0) score = 108;    // Microsoft Neural Female
+            else if (nameLower.indexOf('guy') >= 0) score = 106;     // Microsoft Neural Male
+            else if (nameLower.indexOf('christopher') >= 0) score = 105; // Microsoft Neural Male
+            else if (nameLower.indexOf('eric') >= 0) score = 104;    // Microsoft Neural Female
+            else if (nameLower.indexOf('michelle') >= 0) score = 104; // Microsoft Neural Female
+            else if (nameLower.indexOf('brian') >= 0) score = 103;   // Microsoft Neural Male
+
+            // ---- Tier 1: Other "Natural" labeled voices ----
+            else if (nameLower.indexOf('natural') >= 0) score = 100;
+
+            // ---- Tier 1b: Google en-US voices (Chrome built-in, good quality) ----
+            else if (nameLower.indexOf('google') >= 0 && nameLower.indexOf('us') >= 0) score = 95;
+            else if (nameLower.indexOf('google') >= 0) score = 90;
+
+            // ---- Tier 2: macOS premium voices ----
+            else if (nameLower.indexOf('samantha') >= 0) score = 88;  // macOS premium female
+            else if (nameLower.indexOf('karen') >= 0) score = 86;     // macOS enhanced female
+            else if (nameLower.indexOf('moira') >= 0) score = 84;     // macOS enhanced female
+            else if (nameLower.indexOf('tessa') >= 0) score = 83;     // macOS enhanced female
+            else if (nameLower.indexOf('alex') >= 0) score = 82;      // macOS standard male
+            else if (nameLower.indexOf('ava') >= 0) score = 80;       // macOS premium female
+            else if (nameLower.indexOf('victoria') >= 0) score = 78;  // macOS enhanced female
+
+            // ---- Tier 3: Windows built-in voices ----
+            else if (nameLower.indexOf('zira') >= 0) score = 75;     // Windows female (decent)
+            else if (nameLower.indexOf('david') >= 0) score = 73;    // Windows male
+            else if (nameLower.indexOf('mark') >= 0) score = 70;     // Windows male
+            else if (nameLower.indexOf('microsoft') >= 0) score = 65; // Other Microsoft voices
+
+            // ---- Tier 4: Other local en-US voices ----
+            else if (v.localService) score = 50;
+
+            // ---- Tier 5: Online/fallback en-US voices ----
+            else score = 30;
+
+            // Bonus: strongly prefer local voices (offline-reliable, no latency)
+            if (v.localService) score += 5;
+
+            return score;
+        }
 
         function loadVoices() {
             if (!('speechSynthesis' in window)) return;
             var voices = window.speechSynthesis.getVoices();
-            if (voices.length === 0) return; // No voices yet, wait for onvoiceschanged
+            if (voices.length === 0) return;
 
             var langMatch = 'en-US';
             var scored = [];
 
             for (var i = 0; i < voices.length; i++) {
                 var v = voices[i];
-                // Only consider en-US voices
                 if (v.lang !== langMatch) continue;
-
-                var score = 0;
-                var name = v.name;
-                var nameLower = name.toLowerCase();
-
-                // --- Tier 1: Premium neural/natural en-US voices (native-like, VOA quality) ---
-                if (nameLower.indexOf('natural') >= 0) score = 100;
-                // Google en-US voices (Chrome built-in, excellent quality)
-                else if (nameLower.indexOf('google') >= 0) score = 95;
-                // Samsung / OS-level premium voices
-                else if (nameLower.indexOf('samantha') >= 0) score = 90;   // macOS premium female
-                else if (nameLower.indexOf('alex') >= 0) score = 88;       // macOS standard male
-                else if (nameLower.indexOf('ava') >= 0) score = 85;        // macOS premium female
-
-                // --- Tier 2: Microsoft voices (Windows built-in, good quality) ---
-                // Zira: female, clear and natural for teaching
-                else if (nameLower.indexOf('zira') >= 0) score = 80;
-                // David: male, also good
-                else if (nameLower.indexOf('david') >= 0) score = 78;
-                // Mark: male
-                else if (nameLower.indexOf('mark') >= 0) score = 75;
-                // Other Microsoft voices
-                else if (nameLower.indexOf('microsoft') >= 0) score = 70;
-
-                // --- Tier 3: Other local en-US voices ---
-                else if (v.localService) score = 50;
-
-                // --- Tier 4: Online/fallback en-US voices ---
-                else score = 30;
-
-                // Bonus: prefer localService (offline-reliable) when scores are close
-                if (v.localService) score += 5;
-
+                var score = _scoreVoice(v);
                 scored.push({ voice: v, score: score });
             }
 
             // Sort by score descending
             scored.sort(function(a, b) { return b.score - a.score; });
+            allEnUSVoices = scored.map(function(s) { return s.voice; });
 
             if (scored.length > 0) {
-                preferredVoice = scored[0].voice;
+                // Check if user has a saved voice preference
+                var savedVoiceName = '';
+                try {
+                    var saved = localStorage.getItem('rh2a_tts_prefs');
+                    if (saved) savedVoiceName = JSON.parse(saved).voiceName || '';
+                } catch(e) {}
+
+                // Try to restore saved voice first
+                if (savedVoiceName) {
+                    for (var j = 0; j < scored.length; j++) {
+                        if (scored[j].voice.name === savedVoiceName) {
+                            preferredVoice = scored[j].voice;
+                            break;
+                        }
+                    }
+                }
+
+                // Fall back to highest-scoring voice
+                if (!preferredVoice) {
+                    preferredVoice = scored[0].voice;
+                }
+
                 console.log('[TTS] Voices loaded:', voices.length,
                     '| en-US candidates:', scored.length,
                     '| Selected:', preferredVoice.name,
-                    '(score:' + scored[0].score + ', local:' + preferredVoice.localService + ')');
+                    '| Best available:', scored[0].voice.name,
+                    '(score:' + scored[0].score + ', local:' + scored[0].voice.localService + ')');
                 // Log all candidates for debugging
-                for (var i = 0; i < Math.min(scored.length, 5); i++) {
-                    console.log('[TTS]   #' + (i+1) + ': ' + scored[i].voice.name + ' (score:' + scored[i].score + ')');
+                for (var k = 0; k < Math.min(scored.length, 8); k++) {
+                    console.log('[TTS]   #' + (k+1) + ': ' + scored[k].voice.name + ' (score:' + scored[k].score + ', local:' + scored[k].voice.localService + ')');
                 }
+
+                // Update voice picker UI if it exists
+                _updateVoicePickerUI();
             } else {
                 console.warn('[TTS] No en-US voices found among', voices.length, 'total voices');
             }
@@ -2021,53 +2390,114 @@
 
         // Load voices on init - handle different browser behaviors
         if ('speechSynthesis' in window) {
-            // Some browsers fire onvoiceschanged, some don't
             window.speechSynthesis.onvoiceschanged = loadVoices;
-
-            // Try immediate load (Chrome sometimes has voices ready)
             loadVoices();
-
-            // Fallback: try again after a short delay
-            setTimeout(function() {
-                loadVoices();
-            }, 100);
+            setTimeout(function() { loadVoices(); }, 100);
+            // Some browsers need more time
+            setTimeout(function() { loadVoices(); }, 500);
         }
 
         var isSpeaking = false;
+        var speakQueue = [];       // Queue for long-text chunking
+        var speakQueueIndex = 0;
+
+        // Chrome has a known bug: speechSynthesis silently stops for text > ~200 chars.
+        // Workaround: split long text into sentence-level chunks and play sequentially.
+        var TTS_CHUNK_LIMIT = 180;  // Stay well under the 200-char Chrome limit
 
         function speak(text) {
             if (!('speechSynthesis' in window)) {
                 console.warn('[TTS] Not supported');
                 return;
             }
+            if (!text || !text.trim()) return;
 
-            // Use pause/resume to clear any stuck state
-            if (speechSynthesis.paused) {
-                speechSynthesis.resume();
-            }
+            // Cancel anything currently playing (including queued chunks)
             speechSynthesis.cancel();
+            speakQueue = [];
+            speakQueueIndex = 0;
+            isSpeaking = false;
 
-            // Create utterance with user gesture
+            // Normalize whitespace but preserve sentence boundaries
+            var cleanText = text.replace(/\s+/g, ' ').trim();
+
+            // If short enough, speak directly
+            if (cleanText.length <= TTS_CHUNK_LIMIT) {
+                _speakSingle(cleanText);
+                return;
+            }
+
+            // Split into sentence-level chunks for long text
+            speakQueue = _splitIntoChunks(cleanText);
+            console.log('[TTS] Long text split into', speakQueue.length, 'chunks');
+            _speakNextChunk();
+        }
+
+        function _splitIntoChunks(text) {
+            // Split by sentence-ending punctuation, keeping the punctuation with the sentence
+            var sentences = text.match(/[^.!?]+[.!?]+\s*/g) || [text];
+            var chunks = [];
+            var current = '';
+
+            for (var i = 0; i < sentences.length; i++) {
+                var s = sentences[i].trim();
+                if (!s) continue;
+
+                if (current.length + s.length + 1 > TTS_CHUNK_LIMIT && current.length > 0) {
+                    chunks.push(current.trim());
+                    current = s;
+                } else {
+                    current = current ? current + ' ' + s : s;
+                }
+            }
+            if (current.trim()) {
+                chunks.push(current.trim());
+            }
+            return chunks;
+        }
+
+        function _speakNextChunk() {
+            if (speakQueueIndex >= speakQueue.length) {
+                isSpeaking = false;
+                speakQueue = [];
+                speakQueueIndex = 0;
+                console.log('[TTS] All chunks done');
+                return;
+            }
+
+            var chunk = speakQueue[speakQueueIndex];
+            speakQueueIndex++;
+            _speakSingle(chunk, true);
+        }
+
+        function _speakSingle(text, isChunk) {
             var utterance = new SpeechSynthesisUtterance(text);
             if (preferredVoice) {
                 utterance.voice = preferredVoice;
             }
             utterance.lang = 'en-US';
-            utterance.rate = 0.85;   // Slightly slower for clear, VOA-style articulation
-            utterance.pitch = 1.0;    // Neutral pitch, natural tone
+            utterance.rate = ttsRate;
+            utterance.pitch = ttsPitch;
 
             utterance.onstart = function() {
                 isSpeaking = true;
-                console.log('[TTS] Speaking:', text);
+                console.log('[TTS] Speaking:', isChunk ? 'chunk ' + speakQueueIndex + '/' + speakQueue.length : text.substring(0, 60));
             };
 
             utterance.onend = function() {
-                isSpeaking = false;
-                console.log('[TTS] Done:', text);
+                if (isChunk && speakQueue.length > 0) {
+                    // Play next chunk with a tiny gap for natural pacing
+                    setTimeout(_speakNextChunk, 120);
+                } else {
+                    isSpeaking = false;
+                    console.log('[TTS] Done');
+                }
             };
 
             utterance.onerror = function(e) {
                 isSpeaking = false;
+                speakQueue = [];
+                speakQueueIndex = 0;
                 if (e.error === 'interrupted' || e.error === 'canceled') {
                     console.log('[TTS] Ignored:', e.error);
                 } else {
@@ -2075,7 +2505,161 @@
                 }
             };
 
+            // Chrome workaround: periodically resume to prevent the 15-second pause bug
+            if (/Chrome\//.test(navigator.userAgent) && !/Edg\//.test(navigator.userAgent)) {
+                var keepAlive = setInterval(function() {
+                    if (!isSpeaking) {
+                        clearInterval(keepAlive);
+                        return;
+                    }
+                    if (speechSynthesis.paused) {
+                        speechSynthesis.resume();
+                    }
+                }, 10000);
+                utterance.addEventListener('end', function() { clearInterval(keepAlive); });
+                utterance.addEventListener('error', function() { clearInterval(keepAlive); });
+            }
+
             speechSynthesis.speak(utterance);
+        }
+
+        // ============ VOICE SETTINGS UI ============
+        function toggleVoiceSettings() {
+            var overlay = document.getElementById('voiceSettingsOverlay');
+            overlay.classList.toggle('active');
+            if (overlay.classList.contains('active')) {
+                _updateVoicePickerUI();
+            }
+        }
+
+        function _updateVoicePickerUI() {
+            var select = document.getElementById('voicePickerSelect');
+            var currentNameEl = document.getElementById('currentVoiceName');
+            if (!select) return;
+
+            // Update current voice display
+            if (preferredVoice && currentNameEl) {
+                currentNameEl.textContent = preferredVoice.name;
+            }
+
+            // Populate the select with available voices
+            if (allEnUSVoices.length === 0) {
+                select.innerHTML = '<option>No en-US voices available</option>';
+                return;
+            }
+
+            var html = '';
+            var currentIdx = 0;
+            for (var i = 0; i < allEnUSVoices.length; i++) {
+                var v = allEnUSVoices[i];
+                var score = _scoreVoice(v);
+                var tag = '';
+                var nameLower = v.name.toLowerCase();
+
+                // Determine voice quality tag
+                if (score >= 100) tag = ' ★ Neural';
+                else if (score >= 80) tag = ' ★ Premium';
+                else if (score >= 60) tag = '';
+
+                var label = v.name + tag + (v.localService ? '' : ' (cloud)');
+                html += '<option value="' + i + '">' + label + '</option>';
+
+                if (preferredVoice && v.name === preferredVoice.name) {
+                    currentIdx = i;
+                }
+            }
+            select.innerHTML = html;
+            select.value = currentIdx;
+
+            // Update sliders
+            var rateSlider = document.getElementById('rateSlider');
+            var rateLabel = document.getElementById('rateValueLabel');
+            var pitchSlider = document.getElementById('pitchSlider');
+            var pitchLabel = document.getElementById('pitchValueLabel');
+            if (rateSlider) { rateSlider.value = ttsRate; }
+            if (rateLabel) { rateLabel.textContent = ttsRate.toFixed(2) + 'x'; }
+            if (pitchSlider) { pitchSlider.value = ttsPitch; }
+            if (pitchLabel) { pitchLabel.textContent = ttsPitch.toFixed(2); }
+
+            // Update hint with voice info
+            var hint = document.getElementById('voicePickerHint');
+            if (hint && preferredVoice) {
+                var score = _scoreVoice(preferredVoice);
+                var quality = score >= 100 ? 'Neural (very natural)' : score >= 80 ? 'Premium' : score >= 60 ? 'Standard' : 'Basic';
+                hint.textContent = preferredVoice.name + ' — ' + quality + (preferredVoice.localService ? ', offline' : ', cloud');
+            }
+        }
+
+        function onVoicePickerChange() {
+            var select = document.getElementById('voicePickerSelect');
+            var idx = parseInt(select.value);
+            if (allEnUSVoices[idx]) {
+                preferredVoice = allEnUSVoices[idx];
+                var hint = document.getElementById('voicePickerHint');
+                var score = _scoreVoice(preferredVoice);
+                var quality = score >= 100 ? 'Neural (very natural)' : score >= 80 ? 'Premium' : score >= 60 ? 'Standard' : 'Basic';
+                if (hint) hint.textContent = preferredVoice.name + ' — ' + quality + (preferredVoice.localService ? ', offline' : ', cloud');
+                var currentNameEl = document.getElementById('currentVoiceName');
+                if (currentNameEl) currentNameEl.textContent = preferredVoice.name;
+                console.log('[TTS] Voice changed to:', preferredVoice.name, '(score:' + score + ')');
+            }
+        }
+
+        function previewVoice() {
+            // Stop any current speech
+            speechSynthesis.cancel();
+            isSpeaking = false;
+            speakQueue = [];
+            speakQueueIndex = 0;
+
+            var select = document.getElementById('voicePickerSelect');
+            var idx = parseInt(select.value);
+            var voice = allEnUSVoices[idx] || preferredVoice;
+
+            var utterance = new SpeechSynthesisUtterance('Hello! I am your English learning assistant. How are you doing today?');
+            if (voice) utterance.voice = voice;
+            utterance.lang = 'en-US';
+            utterance.rate = ttsRate;
+            utterance.pitch = ttsPitch;
+            speechSynthesis.speak(utterance);
+        }
+
+        function onRateSliderChange() {
+            var slider = document.getElementById('rateSlider');
+            var label = document.getElementById('rateValueLabel');
+            ttsRate = parseFloat(slider.value);
+            label.textContent = ttsRate.toFixed(2) + 'x';
+        }
+
+        function onPitchSliderChange() {
+            var slider = document.getElementById('pitchSlider');
+            var label = document.getElementById('pitchValueLabel');
+            ttsPitch = parseFloat(slider.value);
+            label.textContent = ttsPitch.toFixed(2);
+        }
+
+        function resetVoiceSettings() {
+            ttsRate = 0.9;
+            ttsPitch = 1.0;
+            preferredVoice = null;
+
+            // Re-pick the best voice
+            if (allEnUSVoices.length > 0) {
+                preferredVoice = allEnUSVoices[0]; // Already sorted by score
+            }
+
+            // Clear localStorage
+            try { localStorage.removeItem('rh2a_tts_prefs'); } catch(e) {}
+
+            // Update UI
+            _updateVoicePickerUI();
+            console.log('[TTS] Settings reset to defaults');
+        }
+
+        function saveAndCloseVoiceSettings() {
+            saveTTSPrefs();
+            toggleVoiceSettings();
+            console.log('[TTS] Settings saved:', preferredVoice ? preferredVoice.name : 'default', 'rate:', ttsRate, 'pitch:', ttsPitch);
         }
 
         // ============ SPELLING TEST ============
